@@ -6,9 +6,13 @@ define([
 ], function(_, $, actionView, bus) {
 
     var UID = '_ckActionViewUid',
-    
         uid = 0,
-        lib = {};
+        lib = {},
+        custom = {
+            className: 'ck-actionview',
+            confirmText: '确定',
+            cancelText: '取消'
+        };
 
     function exports(elm, opt){
         var id = elm;
@@ -24,8 +28,7 @@ define([
         if (elm) {
             id = elm[0][UID] = ++uid;
         }
-        opt = opt || {};
-        opt.className = 'ck-actionview';
+        opt = _.mix({}, custom, opt);
         var view = lib[id] = actionView(opt);
         var eprops = {
             component: view
@@ -66,6 +69,8 @@ define([
         });
         return view;
     }
+
+    exports.defaults = _.copy(custom);
 
     return exports;
 

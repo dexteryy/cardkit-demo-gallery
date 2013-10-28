@@ -11,6 +11,7 @@ define([
         lib = {},
 
         default_config = {
+            loadingLabel: '稍等...',
             disableRequest: false,
             enableUrl: '',
             enableJsonUrl: '',

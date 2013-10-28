@@ -6,6 +6,8 @@ define([
 ], function($, net, modal, supports) {
 
     var modalCard = modal({
+            confirmText: '确认',
+            cancelText: '取消',
             className: 'ck-modalview',
             closeDelay: 400
         }),

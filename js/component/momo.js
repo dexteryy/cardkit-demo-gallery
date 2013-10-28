@@ -29,6 +29,7 @@ define('momo', [
             return this;
         },
         trigger: function(e, ev){
+            e = e.originalEvent || e;
             $(e.target).trigger(ev, e);
             return this;
         }
