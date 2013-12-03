@@ -19,8 +19,9 @@ module.exports = function(grunt) {
             originDir: 'origin',
             examplesDir: 'examples',
             examplesStaticDir: 'examples/static',
+            tplDir: "tpl",
             jstplDir: "js/<%= pkg.name %>/tpl",
-            jsComponentDir: "js/component",
+            jsVendorDir: "js/vendor",
             jsStaticDir: config.jsStaticDir || (config.staticDir + '/<%= pkg.name %>/js'),
             cssStaticDir: config.cssStaticDir || (config.staticDir + '/<%= pkg.name %>/css'),
             assetStaticDir: config.assetStaticDir || (config.staticDir + '/<%= pkg.name %>/pics'),
@@ -28,8 +29,8 @@ module.exports = function(grunt) {
 
         clean: {
             jstpl: ["<%= meta.jstplDir %>/"],
-            jsComponent: ["<%= meta.jsComponentDir %>/"],
-            cssComponent: ["css/*/**", "!css/<%= pkg.name %>/**"],
+            jsVendor: ["<%= meta.jsVendorDir %>/"],
+            cssVendor: ["css/*/**", "!css/<%= pkg.name %>/**"],
             origin: ["<%= meta.originDir %>/"],
             examples_static: ["<%= meta.examplesStaticDir %>"],
             pub_static: {
@@ -58,37 +59,42 @@ module.exports = function(grunt) {
             },
             "ozjs": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": "oz.js"
+                    "<%= meta.jsVendorDir %>/": "oz.js"
                 }
             },
             "mo": {
                 use: {
-                    "<%= meta.jsComponentDir %>/mo/": ["**/*.js", "!**/Gruntfile.js"]
+                    "<%= meta.jsVendorDir %>/mo/": ["**/*.js", "!**/Gruntfile.js"]
                 }
             },
             "eventmaster": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": "eventmaster.js"
+                    "<%= meta.jsVendorDir %>/": "eventmaster.js"
+                }
+            },
+            "nerv": {
+                use: {
+                    "<%= meta.jsVendorDir %>/": "nerv.js"
                 }
             },
             "dollar": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": ["**/*.js", "!**/Gruntfile.js"]
+                    "<%= meta.jsVendorDir %>/": ["**/*.js", "!**/Gruntfile.js"]
                 }
             },
             "soviet": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": "soviet.js"
+                    "<%= meta.jsVendorDir %>/": "soviet.js"
                 }
             },
             "choreo": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": "choreo.js"
+                    "<%= meta.jsVendorDir %>/": "choreo.js"
                 }
             },
             "momo": {
                 use: {
-                    "<%= meta.jsComponentDir %>/": ["**/*.js", "!**/Gruntfile.js"]
+                    "<%= meta.jsVendorDir %>/": ["**/*.js", "!**/Gruntfile.js"]
                 }
             },
             "moui": {
@@ -98,7 +104,7 @@ module.exports = function(grunt) {
                     dest: "css/moui/"
                 }, {
                     src: ["**/*.js", "!**/Gruntfile.js"],
-                    dest: "<%= meta.jsComponentDir %>/moui/"
+                    dest: "<%= meta.jsVendorDir %>/moui/"
                 }]
             }
         },
@@ -111,7 +117,7 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,     // Enable dynamic expansion.
-                    cwd: 'tpl/',
+                    cwd: '<%= meta.tplDir %>/',
                     src: ['**/*.tpl'], // Actual pattern(s) to match.
                     dest: '<%= meta.jstplDir %>/',   // Destination path prefix.
                     ext: '.js'
@@ -124,8 +130,8 @@ module.exports = function(grunt) {
                 saveConfig: false,
                 src: 'js/main.js',
                 config: {
-                    baseUrl: "<%= meta.jsComponentDir %>/",
-                    distUrl: "<%= meta.targetDir %>/<%= meta.jsComponentDir %>/",
+                    baseUrl: "<%= meta.jsVendorDir %>/",
+                    distUrl: "<%= meta.targetDir %>/<%= meta.jsVendorDir %>/",
                     loader: "oz.js",
                     disableAutoSuffix: true
                 }
@@ -133,7 +139,7 @@ module.exports = function(grunt) {
             browsers: {
                 src: 'examples/js/browsers_test.js',
                 config: {
-                    baseUrl: "<%= meta.jsComponentDir %>/",
+                    baseUrl: "<%= meta.jsVendorDir %>/",
                     loader: "oz.js"
                 }
             }
@@ -348,12 +354,12 @@ module.exports = function(grunt) {
                     asi: true 
                 },
                 files: {
-                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsComponentDir %>/**', '!<%= meta.jstplDir %>/**']
+                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsVendorDir %>/**', '!<%= meta.jstplDir %>/**']
                 }
             },
             dist: {
                 files: {
-                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsComponentDir %>/**', '!<%= meta.jstplDir %>/**']
+                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsVendorDir %>/**', '!<%= meta.jstplDir %>/**']
                 }
             }
         },
@@ -380,11 +386,21 @@ module.exports = function(grunt) {
             }
         },
 
+        karma: {
+            main: {
+                configFile: 'karma.conf.js',
+                singleRun: true
+                //autoWatch: false,
+                //background: true,
+            }
+        },
+
         watch: {
             js: {
                 files: [
                     'js/**/*.js', 
                     '!<%= meta.jstplDir %>/**',
+                    'test/**',
                     'examples/js/**/*.js',
                     '!examples/js/**/*_pack.js'
                 ],
@@ -401,7 +417,7 @@ module.exports = function(grunt) {
                 ]
             },
             tpl: {
-                files: ['tpl/**/*.tpl'],
+                files: ['<%= meta.tplDir %>/**/*.tpl'],
                 tasks: [
                     'dev:tpl',
                     'test'
@@ -432,6 +448,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-furnace');
     grunt.loadNpmTasks('grunt-dispatch');
     grunt.loadNpmTasks('grunt-ozjs');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('dev:js', [
         'clean:target_js', 
@@ -474,7 +491,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test', [
         'copy:target_to_examples',
-        'copy:target_to_pub'
+        'copy:target_to_pub',
+        "karma:main"
     ]);
 
     grunt.registerTask('restore', [
@@ -499,8 +517,8 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('update', [
-        'clean:jsComponent',
-        'clean:cssComponent',
+        //'clean:jsVendor',
+        'clean:cssVendor',
         'clean:origin',
         'dispatch',
         'build_components'

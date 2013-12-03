@@ -3,17 +3,13 @@ require.config({
     baseUrl: 'js/component/',
     distUrl: 'static/js/component/',
     aliases: {
-        'cardkit': '../cardkit/'
+        'cardkit': '../cardkit2/'
     }
 });
 
 //define('mo/lang/es5', [], function(){});
 define('mo/easing/functions', [], function(){});
 define('mo/mainloop', [], function(){});
-
-define('cardkit/env', ['mo/browsers'], function(){
-    return {};
-});
 
 define('cardkit/pageready', [
     'finish', 
@@ -27,30 +23,11 @@ define('cardkit/pageready', [
 require([
     'dollar', 
     'cardkit/bus',
-    'cardkit/app',
-    'cardkit/env'
-], function($, bus, app, env){
+    'cardkit/app'
+], function(){
 
-    if (env.enableConsole) {
-        require([
-            'mo/console'
-        ], function(console){
-
-            console.config({
-                record: true
-            }).enable();
-
-            init();
-
-        });
-    } else {
-        init();
-    }
-
-    function init(){
-        app.init({
-            root: $('.ck-root')
-        });
+    if (false) {
+        require(['mo/cookie', 'mo/console'], function(){});
     }
 
 });

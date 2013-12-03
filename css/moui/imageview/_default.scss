@@ -19,7 +19,8 @@
       width:32px;
       z-index:$moui_z_step;
       @include user-select(none);
-      @include transition(right 0.4s, top 0.4s);
+      @include transition-property(right, top);
+      @include transition-duration(0.4s, 0.4s);
 
       h1 {
         display:none;
@@ -36,6 +37,8 @@
         float:none;
         height:32px;
         line-height:32px;
+        filter: alpha(opacity=60)\9;
+        background:#777;
         background:rgba(119, 119, 119, 0.6);
         margin:1px 0;
         font-size:20px;
@@ -44,6 +47,7 @@
         text-align:center;
 
         &:hover {
+          filter: alpha(opacity=100)\9;
           background:rgba(119, 119, 119, 1);
         }
 
@@ -52,6 +56,7 @@
         }
 
         &.disabled {
+          filter: alpha(opacity=30)\9;
           opacity:0.3;
           background:rgba(119, 119, 119, 0.6);
         }
@@ -75,17 +80,28 @@
         font-weight:100;
       }
 
+      .scale-status {
+        font-size:20px;
+        font-weight:bold;
+        color:#fff;
+        position:absolute;
+        left:-60px;
+        top:22px;
+        filter: alpha(opacity=60)\9;
+        color:#777\9;
+        color:rgba(119, 119, 119, 0.6);
+        @include transition-property(opacity);
+        @include transition-duration(0.4s);
+        opacity:0;
+      }
+
     }
 
     & > article {
       position:relative;
       height:100%;
       overflow:hidden;
-
-      .max {
-        position:relative;
-        -webkit-backface-visibility:hidden;
-      }
+      -webkit-backface-visibility:hidden;
 
       img {
         position:absolute;
@@ -94,18 +110,22 @@
         max-width:none;
         opacity:0;
         @include transform(scale(0.7));
-        @include transition(transform 0.3s ceaser($easeOutQuad), 
-          opacity 0.2s);
+        @include transition-property(transform, opacity);
+        @include transition-duration(0.3s, 0.2s);
 
         &.ready {
-          @include transition(transform 0.3s ceaser($easeOutQuad), 
-            opacity 0.2s, 
-            width 0.4s, left 0.4s, top 0.4s);
+          @include transition-property(transform, opacity, width, left, top);
+          @include transition-duration(0.3s, 0.2s, 0.4s, 0.4s, 0.4s);
+        }
+
+        &.disable-effect {
+          @include transition-property(transform, opacity, width);
         }
 
       }
 
       .mask {
+        background:inline-image("blank.gif");
         display:none;
         position:absolute;
         top:0;
@@ -169,6 +189,10 @@
         top:0;
       }
 
+      .scale-status {
+        opacity:1;
+      }
+
     }
 
     .wrapper > article {
@@ -201,7 +225,11 @@
 
       @media screen and (max-width: 600px) {
         right:0;
-        top:-40px;
+        top:-50px;
+      }
+
+      .scale-status {
+        opacity:0;
       }
 
     }
@@ -235,23 +263,11 @@
 
         }
 
-        .smaller,
-        .bigger {
-          display:none;
-        }
-
-        @media screen and (max-width: 600px) {
-
-          .resize {
-            display:none;
-          }
-
-        }
-
       }
 
       & > article {
         overflow:auto;
+        -webkit-overflow-scrolling:touch;
       }
 
     }
@@ -267,23 +283,26 @@
     .wrapper {
 
       & > header {
-        top:-40px;
+        top:-50px;
         right:0;
         left:0;
         width:auto;
-        height:40px;
+        height:50px;
         overflow:hidden;
+        filter: alpha(opacity=80)\9;
+        background:#2d2d2d;
         background:rgba(45, 45, 45, 0.8);
 
         .group {
           margin:0;
         }
 
+        .scale-status,
         .btn {
           float:left;
-          width:40px;
-          height:40px;
-          line-height:40px;
+          width:50px;
+          height:50px;
+          line-height:50px;
           margin:0 1px;
           background:none;
 
@@ -304,11 +323,31 @@
 
         .next,
         .prev {
-          height:40px;
-          line-height:40px;
+          height:50px;
+          line-height:50px;
+        }
+
+        .scale-status {
+          position:static;
+          font-size:14px;
         }
 
       }
+
+    }
+
+  }
+
+  @media screen and (max-width: 380px) {
+
+    .wrapper > header {
+
+        .scale-status,
+        .smaller,
+        .bigger,
+        .resize {
+          display:none;
+        }
 
     }
 

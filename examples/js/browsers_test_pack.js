@@ -2,610 +2,600 @@
 /* @source oz.js */;
 
 /**
- * OzJS: microkernel for modular javascript 
+ * OzJS: microkernel for modular javascript
  * compatible with AMD (Asynchronous Module Definition)
  * see http://ozjs.org for details
  *
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
- */ 
-(function(){
+ */
+(function(window, exports){
 
-var window = this,
-    _toString = Object.prototype.toString,
-    _RE_PLUGIN = /(.*)!(.+)/,
-    _RE_DEPS = /\Wrequire\((['"]).+?\1\)/g,
-    _RE_SUFFIX = /\.(js|json)$/,
-    _RE_RELPATH = /^\.+?\/.+/,
-    _RE_DOT = /(^|\/)\.\//g,
-    _RE_ALIAS_IN_MID = /^([\w\-]+)\//,
-    _builtin_mods = { "require": 1, "exports": 1, "module": 1, "host": 1, "finish": 1 },
+    if (!exports || window.window) {
+        exports = {};
+    }
 
-    _config = {
-        mods: {}
-    },
-    _scripts = {},
-    _delays = {},
-    _refers = {},
-    _waitings = {},
-    _latest_mod,
-    _scope,
-    _resets = {},
+    var _toString = Object.prototype.toString,
+        _RE_PLUGIN = /(.*)!(.+)/,
+        _RE_DEPS = /\Wrequire\((['"]).+?\1\)/g, //'
+        _RE_SUFFIX = /\.(js|json)$/,
+        _RE_RELPATH = /^\.+?\/.+/,
+        _RE_DOT = /(^|\/)\.\//g,
+        _RE_ALIAS_IN_MID = /^([\w\-]+)\//,
+        _builtin_mods = { "require": 1, "exports": 1, "module": 1, 
+            "host": 1, "finish": 1 },
 
-    forEach = Array.prototype.forEach || function(fn, sc){
-        for(var i = 0, l = this.length; i < l; i++){
-            if (i in this)
-                fn.call(sc, this[i], i, this);
-        }
-    };
+        _config = {
+            mods: {}
+        },
+        _scripts = {},
+        _delays = {},
+        _refers = {},
+        _waitings = {},
+        _latest_mod,
+        _scope,
+        _resets = {},
 
-/**
- * @public define / register a module and its meta information
- * @param {string} module name. optional as unique module in a script file
- * @param {string[]} dependencies 
- * @param {function} module code, execute only once on the first call 
- *
- * @note
- *
- * define('', [""], func)
- * define([""], func)
- * define('', func)
- * define(func)
- *
- * define('', "")
- * define('', [""], "")
- * define('', [""])
- *
- */ 
-function define(name, deps, block){
-    var is_remote = typeof block === 'string';
-    if (!block) {
-        if (deps) {
-            if (isArray(deps)) {
-                block = filesuffix(realname(basename(name)));
-            } else {
-                block = deps;
-                deps = null;
+        forEach = Array.prototype.forEach || function(fn, sc){
+            for(var i = 0, l = this.length; i < l; i++){
+                if (i in this)
+                    fn.call(sc, this[i], i, this);
             }
-        } else {
-            block = name;
-            name = "";
-        }
-        if (typeof name !== 'string') {
-            deps = name;
-            name = "";
-        } else {
-            is_remote = typeof block === 'string';
-            if (!is_remote && !deps) {
-                deps = seek(block);
-            }
-        }
-    }
-    name = name && realname(name);
-    var mod = name && _config.mods[name];
-    if (!_config.debug && mod && mod.name 
-            && (is_remote && mod.loaded == 2 || mod.exports)) {
-        return;
-    }
-    if (is_remote && _config.enable_ozma) {
-        deps = null;
-    }
-    var host = isWindow(this) ? this : window;
-    mod = _config.mods[name] = {
-        name: name,
-        url: mod && mod.url,
-        host: host,
-        deps: deps || []
-    };
-    if (name === "") { // capture anonymous module
-        _latest_mod = mod;
-    }
-    if (typeof block !== 'string') {
-        mod.block = block;
-        mod.loaded = 2;
-    } else { // remote module
-        var alias = _config.aliases;
-        if (alias) {
-            block = block.replace(/\{(\w+)\}/g, function(e1, e2){
-                return alias[e2] || "";
-            });
-        }
-        mod.url = block;
-    }
-    if (mod.block && !isFunction(mod.block)) { // json module
-        mod.exports = block;
-    }
-}
+        };
 
-/**
- * @public run a code block its dependencies 
- * @param {string[]} [module name] dependencies
- * @param {function}
- */ 
-function require(deps, block, _self_mod) {
-    if (typeof deps === 'string') {
+    function is_function(obj) {
+        return _toString.call(obj) === "[object Function]";
+    }
+
+    function is_array(obj) {
+        return _toString.call(obj) === "[object Array]";
+    }
+
+    function is_global(obj) {
+        return "setInterval" in obj;
+    }
+
+    function clone(obj) { // be careful of using `delete`
+        function NewObj(){}
+        NewObj.prototype = obj;
+        return new NewObj();
+    }
+
+    /**
+     * @public define / register a module and its meta information
+     * @param {string} module name. optional as unique module in a script file
+     * @param {string[]} dependencies
+     * @param {function} module code, execute only once on the first call
+     *
+     * @note
+     *
+     * define('', [""], func)
+     * define([""], func)
+     * define('', func)
+     * define(func)
+     *
+     * define('', "")
+     * define('', [""], "")
+     * define('', [""])
+     *
+     */
+    exports.define = function(name, deps, block){
+        var is_remote = typeof block === 'string';
         if (!block) {
-            return (_config.mods[realname(basename(deps, _scope))] 
-                || {}).exports;
-        }
-        deps = [deps];
-    } else if (!block) {
-        block = deps;
-        deps = seek(block);
-    }
-    var host = isWindow(this) ? this : window;
-    if (!_self_mod) {
-        _self_mod = { url: _scope && _scope.url };
-    }
-    var m, remotes = 0, // counter for remote scripts
-        list = scan.call(host, deps, _self_mod);  // calculate dependencies, find all required modules
-    for (var i = 0, l = list.length; i < l; i++) {
-        m = list[i];
-        if (m.is_reset) {
-            m = _config.mods[m.name];
-        }
-        if (m.url && m.loaded !== 2) { // remote module
-            remotes++;
-            m.loaded = 1; // status: loading
-            fetch(m, function(){
-                this.loaded = 2; // status: loaded 
-                var lm = _latest_mod;
-                if (lm) { // capture anonymous module
-                    lm.name = this.name;
-                    lm.url = this.url;
-                    _config.mods[this.name] = lm;
-                    _latest_mod = null;
-                }
-                // loaded all modules, calculate dependencies all over again
-                if (--remotes <= 0) {
-                    require.call(host, deps, block, _self_mod);
-                }
-            });
-        }
-    }
-    if (!remotes) {
-        _self_mod.deps = deps;
-        _self_mod.host = host;
-        _self_mod.block = block;
-        setTimeout(function(){
-            tidy(deps, _self_mod);
-            list.push(_self_mod);
-            exec(list.reverse());
-        }, 0);
-    }
-}
-
-/**
- * @private execute modules in a sequence of dependency
- * @param {object[]} [module object]
- */ 
-var exec = function(list){
-    var mod, mid, tid, result, isAsync, deps,
-        depObjs, exportObj, moduleObj, rmod,
-        wt = _waitings;
-    while (mod = list.pop()) {
-        if (mod.is_reset) {
-            rmod = clone(_config.mods[mod.name]);
-            rmod.host = mod.host;
-            rmod.newname = mod.newname;
-            mod = rmod;
-            if (!_resets[mod.newname]) {
-                _resets[mod.newname] = [];
-            }
-            _resets[mod.newname].push(mod);
-            mod.exports = undefined;
-        } else if (mod.name) {
-            mod = _config.mods[mod.name] || mod;
-        }
-        if (!mod.block || !mod.running && mod.exports !== undefined) {
-            continue;
-        }
-        depObjs = [];
-        exportObj = {}; // for "exports" module
-        moduleObj = { id: mod.name, filename: mod.url, exports: exportObj };
-        deps = mod.deps.slice();
-        deps[mod.block.hiddenDeps ? 'unshift' : 'push']("require", "exports", "module");
-        for (var i = 0, l = deps.length; i < l; i++) {
-            mid = deps[i];
-            switch(mid) {
-                case 'require':
-                    depObjs.push(require);
-                    break;
-                case 'exports':
-                    depObjs.push(exportObj);
-                    break;
-                case 'module':
-                    depObjs.push(moduleObj);
-                    break;
-                case 'host': // deprecated
-                    depObjs.push(mod.host);
-                    break;
-                case 'finish':  // execute asynchronously
-                    tid = mod.name;
-                    if (!wt[tid]) // for delay execute
-                        wt[tid] = [list];
-                    else
-                        wt[tid].push(list);
-                    depObjs.push(function(result){
-                        // HACK: no guarantee that this function will be invoked after while() loop termination in Chrome/Safari 
-                        setTimeout(function(){
-                            // 'mod' equal to 'list[list.length-1]'
-                            if (result !== undefined) {
-                                mod.exports = result;
-                            }
-                            if (!wt[tid])
-                                return;
-                            forEach.call(wt[tid], function(list){
-                                this(list);
-                            }, exec);
-                            delete wt[tid];
-                            mod.running = 0;
-                        }, 0);
-                    });
-                    isAsync = 1;
-                    break;
-                default:
-                    depObjs.push((
-                        (_resets[mid] || []).pop() 
-                        || _config.mods[realname(mid)] 
-                        || {}
-                    ).exports);
-                    break;
-            }
-        }
-        if (!mod.running) {
-            // execute module code. arguments: [dep1, dep2, ..., require, exports, module]
-            _scope = mod;
-            result = mod.block.apply(mod.host, depObjs) || null;
-            _scope = false;
-            exportObj = moduleObj.exports;
-            mod.exports = result !== undefined ? result : exportObj; // use empty exportObj for "finish"
-            for (var v in exportObj) {
-                if (v) {
-                    mod.exports = exportObj;
-                }
-                break;
-            }
-        }
-        if (isAsync) { // skip, wait for finish() 
-            mod.running = 1;
-            break;
-        }
-    }
-};
-
-/**
- * @private observer for script loader, prevent duplicate requests
- * @param {object} module object
- * @param {function} callback
- */ 
-var fetch = function(m, cb){
-    var url = m.url,
-        observers = _scripts[url];
-    if (!observers) {
-        var mname = m.name, delays = _delays;
-        if (m.deps && m.deps.length && delays[mname] !== 1) {
-            delays[mname] = [m.deps.length, cb];
-            forEach.call(m.deps, function(dep){
-                var d = _config.mods[realname(dep)];
-                if (this[dep] !== 1 && d.url && d.loaded !== 2) {
-                    if (!this[dep]) {
-                        this[dep] = [];
-                    }
-                    this[dep].push(m);
+            if (deps) {
+                if (is_array(deps)) {
+                    block = exports.filesuffix(
+                        exports.realname(
+                            exports.basename(name)
+                        )
+                    );
                 } else {
-                    delays[mname][0]--;
+                    block = deps;
+                    deps = null;
                 }
-            }, _refers);
-            if (delays[mname][0] > 0) {
-                return;
             } else {
-                delays[mname] = 1;
+                block = name;
+                name = "";
+            }
+            if (typeof name !== 'string') {
+                deps = name;
+                name = "";
+            } else {
+                is_remote = typeof block === 'string';
+                if (!is_remote && !deps) {
+                    deps = exports.seek(block);
+                }
             }
         }
-        observers = _scripts[url] = [[cb, m]];
-        var true_url = /^\w+:\/\//.test(url) ? url 
-            : (_config.enable_ozma && _config.distUrl || _config.baseUrl || '') 
-                + (_config.enableAutoSuffix ? namesuffix(url) : url);
-        getScript.call(m.host || this, true_url, function(){
-            forEach.call(observers, function(args){
-                args[0].call(args[1]);
-            });
-            _scripts[url] = 1;
-            if (_refers[mname] && _refers[mname] !== 1) {
-                forEach.call(_refers[mname], function(dm){
-                    var b = this[dm.name];
-                    if (--b[0] <= 0) {
-                        this[dm.name] = 1;
-                        fetch(dm, b[1]);
-                    }
-                }, delays);
-                _refers[mname] = 1;
+        name = name && exports.realname(name);
+        var mod = name && _config.mods[name];
+        if (!_config.debug && mod && mod.name
+                && (is_remote && mod.loaded == 2 || mod.exports)) {
+            return;
+        }
+        if (is_remote && _config.enable_ozma) {
+            deps = null;
+        }
+        var host = is_global(this) ? this : window;
+        mod = _config.mods[name] = {
+            name: name,
+            url: mod && mod.url,
+            host: host,
+            deps: deps || []
+        };
+        if (name === "") { // capture anonymous module
+            _latest_mod = mod;
+        }
+        if (typeof block !== 'string') {
+            mod.block = block;
+            mod.loaded = 2;
+        } else { // remote module
+            var alias = _config.aliases;
+            if (alias) {
+                block = block.replace(/\{(\w+)\}/g, function(e1, e2){
+                    return alias[e2] || "";
+                });
             }
-        });
-    } else if (observers === 1) {
-        cb.call(m);
-    } else {
-        observers.push([cb, m]);
-    }
-};
+            mod.url = block;
+        }
+        if (mod.block && !is_function(mod.block)) { // json module
+            mod.exports = block;
+        }
+    };
 
-/**
- * @private search and sequence all dependencies, based on DFS
- * @param {string[]} a set of module names
- * @param {object[]} 
- * @param {object[]} a sequence of modules, for recursion
- * @return {object[]} a sequence of modules
- */ 
-function scan(m, file_mod, list){
-    list = list || [];
-    if (!m[0]) {
-        return list;
-    }
-    var deps,
-        history = list.history;
-    if (!history) {
-        history = list.history = {};
-    }
-    if (m[1]) {
-        deps = m;
-        m = false;
-    } else {
-        var truename,
-            _mid = m[0],
-            plugin = _RE_PLUGIN.exec(_mid);
-        if (plugin) {
-            _mid = plugin[2];
-            plugin = plugin[1];
-        }
-        var mid = realname(_mid);
-        if (!_config.mods[mid] && !_builtin_mods[mid]) {
-            var true_mid = realname(basename(_mid, file_mod));
-            if (mid !== true_mid) {
-                _config.mods[file_mod.url + ':' + mid] = true_mid;
-                mid = true_mid;
+    exports.define.amd = {};
+
+    /**
+     * @public run a code block its dependencies
+     * @param {string[]} [module name] dependencies
+     * @param {function}
+     */
+    exports.require = function(deps, block, _self_mod) {
+        if (typeof deps === 'string') {
+            if (!block) {
+                deps = exports.realname(exports.basename(deps, _scope));
+                return (_config.mods[deps] || {}).exports;
             }
-            if (!_config.mods[true_mid]) {
-                define(true_mid, filesuffix(true_mid));
+            deps = [deps];
+        } else if (!block) {
+            block = deps;
+            deps = exports.seek(block);
+        }
+        var host = is_global(this) ? this : window;
+        if (!_self_mod) {
+            _self_mod = { url: _scope && _scope.url };
+        }
+        var m, remotes = 0, // counter for remote scripts
+            // calculate dependencies, find all required modules
+            list = exports.scan.call(host, deps, _self_mod);
+        for (var i = 0, l = list.length; i < l; i++) {
+            m = list[i];
+            if (m.is_reset) {
+                m = _config.mods[m.name];
+            }
+            if (m.url && m.loaded !== 2) { // remote module
+                remotes++;
+                m.loaded = 1; // status: loading
+                exports.fetch(m, function(){
+                    this.loaded = 2; // status: loaded
+                    var lm = _latest_mod;
+                    if (lm) { // capture anonymous module
+                        lm.name = this.name;
+                        lm.url = this.url;
+                        _config.mods[this.name] = lm;
+                        _latest_mod = null;
+                    }
+                    // loaded all modules, calculate dependencies all over again
+                    if (--remotes <= 0) {
+                        exports.require.call(host, deps, block, _self_mod);
+                    }
+                });
             }
         }
-        m = file_mod = _config.mods[mid];
-        if (m) {
-            if (plugin === "new") {
-                m = {
-                    is_reset: true,
-                    deps: m.deps,
-                    name: mid,
-                    newname: plugin + "!" + mid,
-                    host: this
-                };
+        if (!remotes) {
+            _self_mod.deps = deps;
+            _self_mod.host = host;
+            _self_mod.block = block;
+            setTimeout(function(){
+                exports.tidy(deps, _self_mod);
+                list.push(_self_mod);
+                exports.exec(list.reverse());
+            }, 0);
+        }
+    };
+
+    exports.require.config = function(opt){
+        for (var i in opt) {
+            if (i === 'aliases') {
+                if (!_config[i]) {
+                    _config[i] = {};
+                }
+                for (var j in opt[i]) {
+                    _config[i][j] = opt[i][j];
+                }
+                var mods = _config.mods;
+                for (var k in mods) {
+                    mods[k].name = exports.realname(k);
+                    mods[mods[k].name] = mods[k];
+                }
             } else {
-                truename = m.name;
+                _config[i] = opt[i];
             }
-            if (history[truename]) {
-                return list;
+        }
+    };
+
+    /**
+     * @private execute modules in a sequence of dependency
+     * @param {object[]} [module object]
+     */
+    exports.exec = function(list){
+        var mod, mid, tid, result, isAsync, deps,
+            depObjs, exportObj, moduleObj, rmod,
+            wt = _waitings;
+        while (mod = list.pop()) {
+            if (mod.is_reset) {
+                rmod = clone(_config.mods[mod.name]);
+                rmod.host = mod.host;
+                rmod.newname = mod.newname;
+                mod = rmod;
+                if (!_resets[mod.newname]) {
+                    _resets[mod.newname] = [];
+                }
+                _resets[mod.newname].push(mod);
+                mod.exports = undefined;
+            } else if (mod.name) {
+                mod = _config.mods[mod.name] || mod;
             }
+            if (!mod.block || !mod.running && mod.exports !== undefined) {
+                continue;
+            }
+            depObjs = [];
+            exportObj = {}; // for "exports" module
+            moduleObj = { id: mod.name, filename: mod.url, exports: exportObj };
+            deps = mod.deps.slice();
+            deps[
+                mod.block.hiddenDeps ? 'unshift' : 'push'
+            ]("require", "exports", "module");
+            for (var i = 0, l = deps.length; i < l; i++) {
+                mid = deps[i];
+                switch(mid) {
+                    case 'require':
+                        depObjs.push(exports.require);
+                        break;
+                    case 'exports':
+                        depObjs.push(exportObj);
+                        break;
+                    case 'module':
+                        depObjs.push(moduleObj);
+                        break;
+                    case 'host': // deprecated
+                        depObjs.push(mod.host);
+                        break;
+                    case 'finish':  // execute asynchronously
+                        tid = mod.name;
+                        if (!wt[tid]) // for delay execute
+                            wt[tid] = [list];
+                        else
+                            wt[tid].push(list);
+                        depObjs.push(function(result){
+                            // HACK: no guarantee that this function will be invoked 
+                            //       after while() loop termination in Chrome/Safari
+                            setTimeout(function(){
+                                // 'mod' equal to 'list[list.length-1]'
+                                if (result !== undefined) {
+                                    mod.exports = result;
+                                }
+                                if (!wt[tid])
+                                    return;
+                                forEach.call(wt[tid], function(list){
+                                    this(list);
+                                }, exports.exec);
+                                delete wt[tid];
+                                mod.running = 0;
+                            }, 0);
+                        });
+                        isAsync = 1;
+                        break;
+                    default:
+                        depObjs.push((
+                            (_resets[mid] || []).pop()
+                            || _config.mods[exports.realname(mid)]
+                            || {}
+                        ).exports);
+                        break;
+                }
+            }
+            if (!mod.running) {
+                // execute module code. arguments: 
+                // [dep1, dep2, ..., require, exports, module]
+                _scope = mod;
+                result = mod.block.apply(mod.host, depObjs) || null;
+                _scope = false;
+                exportObj = moduleObj.exports;
+                mod.exports = result !== undefined ? result 
+                    : exportObj; // use empty exportObj for "finish"
+                for (var v in exportObj) {
+                    if (v) {
+                        mod.exports = exportObj;
+                    }
+                    break;
+                }
+            }
+            if (isAsync) { // skip, wait for finish()
+                mod.running = 1;
+                return false;
+            }
+        }
+        return true;
+    };
+
+    /**
+     * @private observer for script loader, prevent duplicate requests
+     * @param {object} module object
+     * @param {function} callback
+     */
+    exports.fetch = function(m, cb){
+        var url = m.url,
+            observers = _scripts[url];
+        if (!observers) {
+            var mname = m.name, delays = _delays;
+            if (m.deps && m.deps.length && delays[mname] !== 1) {
+                delays[mname] = [m.deps.length, cb];
+                forEach.call(m.deps, function(dep){
+                    var d = _config.mods[exports.realname(dep)];
+                    if (this[dep] !== 1 && d.url && d.loaded !== 2) {
+                        if (!this[dep]) {
+                            this[dep] = [];
+                        }
+                        this[dep].push(m);
+                    } else {
+                        delays[mname][0]--;
+                    }
+                }, _refers);
+                if (delays[mname][0] > 0) {
+                    return;
+                } else {
+                    delays[mname] = 1;
+                }
+            }
+            observers = _scripts[url] = [[cb, m]];
+            var true_url = /^\w+:\/\//.test(url) ? url
+                : (_config.enable_ozma && _config.distUrl || _config.baseUrl || '')
+                    + (_config.enableAutoSuffix ? exports.namesuffix(url) : url);
+            exports.load.call(m.host || window, true_url, function(){
+                forEach.call(observers, function(args){
+                    args[0].call(args[1]);
+                });
+                _scripts[url] = 1;
+                if (_refers[mname] && _refers[mname] !== 1) {
+                    forEach.call(_refers[mname], function(dm){
+                        var b = this[dm.name];
+                        if (--b[0] <= 0) {
+                            this[dm.name] = 1;
+                            exports.fetch(dm, b[1]);
+                        }
+                    }, delays);
+                    _refers[mname] = 1;
+                }
+            });
+        } else if (observers === 1) {
+            cb.call(m);
         } else {
+            observers.push([cb, m]);
+        }
+    };
+
+    /**
+     * @public non-blocking script loader
+     * @param {string}
+     * @param {object} config
+     */
+    exports.load = function(url, op){
+        var doc = is_global(this) ? this.document : window.document,
+            s = doc.createElement("script");
+        s.type = "text/javascript";
+        s.async = "async"; //for firefox3.6
+        if (!op)
+            op = {};
+        else if (is_function(op))
+            op = { callback: op };
+        if (op.charset)
+            s.charset = op.charset;
+        s.src = url;
+        var h = doc.getElementsByTagName("head")[0];
+        s.onload = s.onreadystatechange = function(__, isAbort){
+            if (isAbort 
+                    || !s.readyState 
+                    || /loaded|complete/.test(s.readyState)) {
+                s.onload = s.onreadystatechange = null;
+                if (h && s.parentNode) {
+                    h.removeChild(s);
+                }
+                s = undefined;
+                if (!isAbort && op.callback) {
+                    op.callback();
+                }
+            }
+        };
+        h.insertBefore(s, h.firstChild);
+    };
+
+    /**
+     * @private search and sequence all dependencies, based on DFS
+     * @param {string[]} a set of module names
+     * @param {object[]}
+     * @param {object[]} a sequence of modules, for recursion
+     * @return {object[]} a sequence of modules
+     */
+    exports.scan = function(m, file_mod, list){
+        list = list || [];
+        if (!m[0]) {
             return list;
         }
-        if (!history[truename]) {
-            deps = m.deps || [];
-            // find require information within the code
-            // for server-side style module
-            //deps = deps.concat(seek(m));
-            if (truename) {
-                history[truename] = true;
-            }
+        var deps,
+            history = list.history;
+        if (!history) {
+            history = list.history = {};
+        }
+        if (m[1]) {
+            deps = m;
+            m = false;
         } else {
-            deps = [];
-        }
-    }
-    for (var i = deps.length - 1; i >= 0; i--) {
-        if (!history[deps[i]]) {
-            scan.call(this, [deps[i]], file_mod, list);
-        }
-    }
-    if (m) {
-        tidy(deps, m);
-        list.push(m);
-    }
-    return list;
-}
-
-/**
- * @experiment 
- * @private analyse module code 
- *          to find out dependencies which have no explicit declaration
- * @param {object} module object
- */ 
-function seek(block){
-    var hdeps = block.hiddenDeps || [];
-    if (!block.hiddenDeps) {
-        var code = block.toString(),
-            h = null;
-        hdeps = block.hiddenDeps = [];
-        while (h = _RE_DEPS.exec(code)) {
-            hdeps.push(h[0].slice(10, -2));
-        }
-    }
-    return hdeps.slice();
-}
-
-function tidy(deps, m){
-    forEach.call(deps.slice(), function(dep, i){
-        var true_mid = this[m.url + ':' + realname(dep)];
-        if (typeof true_mid === 'string') {
-            deps[i] = true_mid;
-        }
-    }, _config.mods);
-}
-
-function config(opt){
-    for (var i in opt) {
-        if (i === 'aliases') {
-            if (!_config[i]) {
-                _config[i] = {};
+            var truename,
+                _mid = m[0],
+                plugin = _RE_PLUGIN.exec(_mid);
+            if (plugin) {
+                _mid = plugin[2];
+                plugin = plugin[1];
             }
-            for (var j in opt[i]) {
-                _config[i][j] = opt[i][j];
+            var mid = exports.realname(_mid);
+            if (!_config.mods[mid] && !_builtin_mods[mid]) {
+                var true_mid = exports.realname(exports.basename(_mid, file_mod));
+                if (mid !== true_mid) {
+                    _config.mods[file_mod.url + ':' + mid] = true_mid;
+                    mid = true_mid;
+                }
+                if (!_config.mods[true_mid]) {
+                    exports.define(true_mid, exports.filesuffix(true_mid));
+                }
             }
-            var mods = _config.mods;
-            for (var k in mods) {
-                mods[k].name = realname(k);
-                mods[mods[k].name] = mods[k];
+            m = file_mod = _config.mods[mid];
+            if (m) {
+                if (plugin === "new") {
+                    m = {
+                        is_reset: true,
+                        deps: m.deps,
+                        name: mid,
+                        newname: plugin + "!" + mid,
+                        host: this
+                    };
+                } else {
+                    truename = m.name;
+                }
+                if (history[truename]) {
+                    return list;
+                }
+            } else {
+                return list;
             }
-        } else {
-            _config[i] = opt[i];
+            if (!history[truename]) {
+                deps = m.deps || [];
+                // find require information within the code
+                // for server-side style module
+                //deps = deps.concat(seek(m));
+                if (truename) {
+                    history[truename] = true;
+                }
+            } else {
+                deps = [];
+            }
         }
-    }
-}
+        for (var i = deps.length - 1; i >= 0; i--) {
+            if (!history[deps[i]]) {
+                exports.scan.call(this, [deps[i]], file_mod, list);
+            }
+        }
+        if (m) {
+            exports.tidy(deps, m);
+            list.push(m);
+        }
+        return list;
+    };
 
-/**
- * @note naming pattern:
- * _g_src.js 
- * _g_combo.js 
- *
- * jquery.js 
- * jquery_pack.js
- * 
- * _yy_src.pack.js 
- * _yy_combo.js
- * 
- * _yy_bak.pack.js 
- * _yy_bak.pack_pack.js
- */
-function namesuffix(file){
-    return file.replace(/(.+?)(_src.*)?(\.\w+)$/, function($0, $1, $2, $3){
-        return $1 + ($2 && '_combo' || '_pack') + $3;
-    });
-}
+    /**
+     * @experiment
+     * @private analyse module code
+     *          to find out dependencies which have no explicit declaration
+     * @param {object} module object
+     */
+    exports.seek = function(block){
+        var hdeps = block.hiddenDeps || [];
+        if (!block.hiddenDeps) {
+            var code = block.toString(),
+                h = null;
+            hdeps = block.hiddenDeps = [];
+            while (h = _RE_DEPS.exec(code)) {
+                hdeps.push(h[0].slice(10, -2));
+            }
+        }
+        return hdeps.slice();
+    };
 
-function filesuffix(mid){
-    return _RE_SUFFIX.test(mid) ? mid : mid + '.js';
-}
+    exports.tidy = function(deps, m){
+        forEach.call(deps.slice(), function(dep, i){
+            var true_mid = this[m.url + ':' + exports.realname(dep)];
+            if (typeof true_mid === 'string') {
+                deps[i] = true_mid;
+            }
+        }, _config.mods);
+    };
 
-function realname(mid){
-    var alias = _config.aliases;
-    if (alias) {
-        mid = mid.replace(_RE_ALIAS_IN_MID, function(e1, e2){
-            return alias[e2] || (e2 + '/');
+    /**
+     * @note naming pattern:
+     * _g_src.js
+     * _g_combo.js
+     *
+     * jquery.js
+     * jquery_pack.js
+     *
+     * _yy_src.pack.js
+     * _yy_combo.js
+     *
+     * _yy_bak.pack.js
+     * _yy_bak.pack_pack.js
+     */
+    exports.namesuffix = function(file){
+        return file.replace(/(.+?)(_src.*)?(\.\w+)$/, function($0, $1, $2, $3){
+            return $1 + ($2 && '_combo' || '_pack') + $3;
         });
-    }
-    return mid;
-}
+    };
 
-function basename(mid, file_mod){
-    var rel_path = _RE_RELPATH.exec(mid);
-    if (rel_path && file_mod) { // resolve relative path in Module ID
-        mid = (file_mod.url || '').replace(/[^\/]+$/, '') + rel_path[0];
-    }
-    return resolvename(mid);
-}
+    exports.filesuffix = function(mid){
+        return _RE_SUFFIX.test(mid) ? mid : mid + '.js';
+    };
 
-function resolvename(url){
-    url = url.replace(_RE_DOT, '$1');
-    var dots, dots_n, url_dup = url, RE_DOTS = /(\.\.\/)+/g;
-    while (dots = (RE_DOTS.exec(url_dup) || [])[0]) {
-        dots_n = dots.match(/\.\.\//g).length;
-        url = url.replace(new RegExp('([^/\\.]+/){' + dots_n + '}' + dots), '');
-    }
-    return url.replace(/\/\//g, '/');
-}
-
-/**
- * @public non-blocking script loader
- * @param {string}
- * @param {object} config
- */ 
-function getScript(url, op){
-    var doc = isWindow(this) ? this.document : document,
-        s = doc.createElement("script");
-    s.type = "text/javascript";
-    s.async = "async"; //for firefox3.6
-    if (!op)
-        op = {};
-    else if (isFunction(op))
-        op = { callback: op };
-    if (op.charset)
-        s.charset = op.charset;
-    s.src = url;
-    var h = doc.getElementsByTagName("head")[0];
-    s.onload = s.onreadystatechange = function(__, isAbort){
-        if ( isAbort || !s.readyState || /loaded|complete/.test(s.readyState) ) {
-            s.onload = s.onreadystatechange = null;
-            if (h && s.parentNode) {
-                h.removeChild(s);
-            }
-            s = undefined;
-            if (!isAbort && op.callback) {
-                op.callback();
-            }
+    exports.realname = function(mid){
+        var alias = _config.aliases;
+        if (alias) {
+            mid = mid.replace(_RE_ALIAS_IN_MID, function(e1, e2){
+                return alias[e2] || (e2 + '/');
+            });
         }
+        return mid;
     };
-    h.insertBefore(s, h.firstChild);
-}
 
-function isFunction(obj) {
-    return _toString.call(obj) === "[object Function]";
-}
+    exports.basename = function(mid, file_mod){
+        var rel_path = _RE_RELPATH.exec(mid);
+        if (rel_path && file_mod) { // resolve relative path in Module ID
+            mid = (file_mod.url || '').replace(/[^\/]+$/, '') + rel_path[0];
+        }
+        return exports.resolvename(mid);
+    };
 
-function isArray(obj) {
-    return _toString.call(obj) === "[object Array]";
-}
+    exports.resolvename = function(url){
+        url = url.replace(_RE_DOT, '$1');
+        var dots, dots_n, url_dup = url, RE_DOTS = /(\.\.\/)+/g;
+        while (dots = (RE_DOTS.exec(url_dup) || [])[0]) {
+            dots_n = dots.match(/\.\.\//g).length;
+            dots = dots.replace(/\./, '\\.');
+            url = url.replace(new RegExp('([^/\\.]+/){' + dots_n + '}' + dots), '');
+        }
+        return url.replace(/\/\//g, '/');
+    };
 
-function isWindow(obj) {
-    return "setInterval" in obj;
-}
-
-function clone(obj) { // be careful of using `delete`
-    function NewObj(){}
-    NewObj.prototype = obj;
-    return new NewObj();
-}
-
-var oz = {
-    VERSION: '2.5.2',
-    define: define,
-    require: require,
-    config: config,
-    seek: seek,
-    fetch: fetch,
-    realname: realname,
-    basename: basename,
-    filesuffix: filesuffix,
-    namesuffix: namesuffix,
-    // non-core
-    _getScript: getScript,
-    _clone: clone,
-    _forEach: forEach,
-    _isFunction: isFunction,
-    _isWindow: isWindow
-};
-
-require.config = config;
-define.amd = { jQuery: true };
-
-if (!window.window) { // for nodejs
-    exports.oz = oz;
-    exports._config = _config;
-     // hook for build tool
-    for (var i in oz) {
-        exports[i] = oz[i];
+    var origin = {};
+    for (var i in exports) {
+        origin[i] = exports[i];
     }
-    var hooking = function(fname){
-        return function(){ return exports[fname].apply(this, arguments); };
-    };
-    exec = hooking('exec');
-    fetch = hooking('fetch');
-    require = hooking('require');
-    require.config = config;
-} else {
-    window.oz = oz;
-    window.define = define;
-    window.require = require;
-}
 
-})();
+    exports.origin = origin;
+    exports.cfg = _config;
+
+    window.oz = exports;
+    window.define = exports.define;
+    window.require = exports.require;
+
+})(this, typeof exports !== 'undefined' && exports);
 
 require.config({ enable_ozma: true });
 
@@ -734,7 +724,7 @@ define("mo/template/string", [], function(require, exports){
  */
 define("mo/browsers", [], function(){
 
-    var match, skin, os, is_mobile, is_webview,
+    var match, skin, os, is_mobile_webkit, is_touch, is_webview,
         ua = this.navigator.userAgent.toLowerCase(),
         rank = { 
             "360ee": 2,
@@ -750,16 +740,19 @@ define("mo/browsers", [], function(){
     try {
         var rwindows = /(windows) nt ([\w.]+)/,
             rmac = /(mac) os \w+ ([\w.]+)/,
-            riphone = /(iphone) os ([\w._]+)/,
-            ripad = /(ipad) os ([\w.]+)/,
+            rwindowsphone = /(windows phone)[\sos]* ([\w.]+)/,
+            riphone = /(iphone).*? os ([\w.]+)/,
+            ripad = /(ipad).*? os ([\w.]+)/,
             randroid = /(android)[ ;]([\w.]*)/,
             rmobilewebkit = /(\w+)[ \/]([\w.]+)[ \/]mobile/,
             rsafari = /(\w+)[ \/]([\w.]+)[ \/]safari/,
             rmobilesafari = /[ \/]mobile.*safari/,
             rwebview = /[ \/]mobile/,
+            rtouch = / touch/,
             rwebkit = /(webkit)[ \/]([\w.]+)/,
             ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
             rmsie = /(msie) ([\w.]+)/,
+            rie11 = /(trident).*? rv:([\w.]+)/,
             rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
 
         var r360se = /(360se)/,
@@ -779,6 +772,7 @@ define("mo/browsers", [], function(){
             || ripad.exec(ua) 
             || randroid.exec(ua) 
             || rmac.exec(ua) 
+            || rwindowsphone.exec(ua) 
             || rwindows.exec(ua) 
             || [];
 
@@ -799,14 +793,21 @@ define("mo/browsers", [], function(){
         match =  rwebkit.exec(ua) 
             || ropera.exec(ua) 
             || rmsie.exec(ua) 
+            || rie11.exec(ua)
             || ua.indexOf("compatible") < 0 && rmozilla.exec(ua) 
             || [];
 
-        is_mobile = rmobilesafari.exec(ua) 
+        is_mobile_webkit = rmobilesafari.exec(ua) 
             || (is_webview = rwebview.exec(ua));
 
+        is_touch = rtouch.exec(ua);
+
+        if (match[1] === 'trident') {
+            match[1] = 'msie';
+        }
+
         if (match[1] === 'webkit') {
-            var vendor = (is_mobile ? rmobilewebkit.exec(ua)
+            var vendor = (is_mobile_webkit ? rmobilewebkit.exec(ua)
                 : rsafari.exec(ua)) || [];
             match[3] = match[1];
             match[4] = match[2];
@@ -836,7 +837,12 @@ define("mo/browsers", [], function(){
         os: os[1],
         osversion: os[2] || "0",
         isMobile: os[1] === 'iphone'
-            || os[1] === 'android' && !!is_mobile,
+            || os[1] === 'windows phone'
+            || os[1] === 'android' && !!is_mobile_webkit,
+        isTouch: os[1] === 'iphone'
+            || os[1] === 'windows phone'
+            || os[1] === 'android'
+            || os[1] === 'windows' && is_touch,
         skin: skin[1] || "",
         ua: ua
     };
@@ -1012,8 +1018,8 @@ define("mo/lang/es5", [], function(){
         trimRight = /[\s\xA0]+$/;
     }
     if (!String.prototype.trim) {
-        String.prototype.trim = function(text) {
-            return text == null ?  "" : text.toString().replace(trimLeft, "").replace(trimRight, "");
+        String.prototype.trim = function() {
+            return this.replace(trimLeft, "").replace(trimRight, "");
         };
     }
 
@@ -1079,7 +1085,7 @@ define("mo/lang/type", [
     };
 
     exports.isWindow = function(obj) {
-        return "setInterval" in obj;
+		return obj && obj === obj.window;
     };
 
 	exports.isEmptyObject = function(obj) {
@@ -1089,6 +1095,17 @@ define("mo/lang/type", [
         }
         return true;
 	};
+
+    exports.isArraylike = function(obj){
+        var l = obj.length;
+        return !exports.isWindow(obj) 
+            && (typeof obj !== 'function' 
+                || obj.constructor !== Function)
+            && (l === 0 
+                || typeof l === "number"
+                && l > 0 
+                && (l - 1) in obj);
+    };
 
 });
 
@@ -1294,6 +1311,26 @@ define("mo/lang/mix", [
         return merge(origin, [], lvl);
     };
 
+    exports.each = function(obj, fn, context){
+        var i = 0, l = obj.length, re;
+        if (_.isArraylike(obj)) {
+            for (; i < l; i++) {
+                re = fn.call(context, obj[i], i);
+                if (re === false) {
+                    break;
+                }
+            }
+        } else {
+            for (i in obj) {
+                re = fn.call(context, obj[i], i);
+                if (re === false) {
+                    break;
+                }
+            }
+        }
+        return obj;
+    };
+
 });
 
 
@@ -1313,44 +1350,68 @@ define("mo/lang/oop", [
 
     var mix = _.mix;
 
-    function _apply(base, self, args){
-        return base.apply(self, args);
-    }
-
     exports.construct = function(base, mixes, factory){
         if (mixes && !Array.isArray(mixes)) {
             factory = mixes;
+            mixes = null;
         }
         if (!factory) {
             factory = function(){
                 this.superConstructor.apply(this, arguments);
             };
         }
+        if (!base.__constructor) {
+            base.__constructor = base;
+            base.__supr = base.prototype;
+        }
         var proto = Object.create(base.prototype),
             supr = Object.create(base.prototype),
-            constructor = function(){
-                var self = this;
-                this.constructor = constructor;
-                this.superConstructor = function(){
-                    _apply.prototype = base.prototype;
-                    var su = new _apply(base, self, arguments);
-                    for (var i in su) {
-                        if (!self[i]) {
-                            self[i] = supr[i] = su[i];
-                        }
-                    }
-                };
-                this.superClass = supr;
-                return factory.apply(this, arguments);
-            };
-        constructor.prototype = proto;
+            current_supr = supr;
+        supr.__super = base.__supr;
+        var sub = function(){
+            this.superMethod = sub.__superMethod;
+            this.superConstructor = su_construct;
+            this.constructor = sub.__constructor;
+            this.superClass = supr; // deprecated!
+            return factory.apply(this, arguments);
+        };
+        sub.__supr = supr;
+        sub.__constructor = sub;
+        sub.__superMethod = function(name, args){
+            var mysupr = current_supr;
+            current_supr = mysupr.__super;
+            var re = mysupr[name].apply(this, args);
+            current_supr = mysupr;
+            return re;
+        };
+        sub.prototype = proto;
         if (mixes) {
             mixes = mix.apply(this, mixes);
             mix(proto, mixes);
             mix(supr, mixes);
         }
-        return constructor;
+        function su_construct(){
+            var cache_constructor = base.__constructor,
+                cache_super_method = base.__superMethod;
+            base.__constructor = sub;
+            base.__superMethod = sub.__superMethod;
+            _apply.prototype = base.prototype;
+            var su = new _apply(base, this, arguments);
+            for (var i in su) {
+                if (!this[i]) {
+                    this[i] = supr[i] = su[i];
+                }
+            }
+            base.__constructor = cache_constructor;
+            base.__superMethod = cache_super_method;
+            this.superConstructor = su_construct;
+        }
+        return sub;
     };
+
+    function _apply(base, self, args){
+        base.apply(self, args);
+    }
 
 });
 
@@ -1645,23 +1706,32 @@ define("dollar/origin", [
         NEXT_SIB = 'nextElementSibling',
         PREV_SIB = 'previousElementSibling',
         FIRST_CHILD = 'firstElementChild',
-        MATCHES_SELECTOR = ['webkitMatchesSelector', 'mozMatchesSelector', 'matchesSelector']
-            .map(function(name){
-                return this[name] && name;
-            }, doc.body).filter(pick)[0],
+        MATCHES_SELECTOR = [
+            'webkitMatchesSelector', 
+            'mozMatchesSelector', 
+            'msMatchesSelector', 
+            'matchesSelector'
+        ].map(function(name){
+            return this[name] && name;
+        }, doc.body).filter(pick)[0],
         MOUSE_EVENTS = { click: 1, mousedown: 1, mouseup: 1, mousemove: 1 },
         TOUCH_EVENTS = { touchstart: 1, touchmove: 1, touchend: 1, touchcancel: 1 },
         SPECIAL_TRIGGERS = { submit: 1, focus: 1, blur: 1 },
-        CSS_NUMBER = { 
-            'column-count': 1, 'columns': 1, 'font-weight': 1, 
-            'line-height': 1, 'opacity': 1, 'z-index': 1, 'zoom': 1 
+        CSS_NUMBER = {
+            'column-count': 1,
+            'columns': 1,
+            'font-weight': 1,
+            'line-height': 1,
+            'opacity': 1,
+            'z-index': 1,
+            'zoom': 1
         },
         RE_HTMLTAG = /^\s*<(\w+|!)[^>]*>/,
-        isFunction = detect.isFunction,
+        is_function = detect.isFunction,
+        is_window = detect.isWindow,
         _array_map = Array.prototype.map,
         _array_push = Array.prototype.push,
         _array_slice = Array.prototype.slice,
-        _getComputedStyle = document.defaultView.getComputedStyle,
         _elm_display = {},
         _html_containers = {};
 
@@ -1672,7 +1742,7 @@ define("dollar/origin", [
                 return selector;
             } else if (typeof selector !== 'string') {
                 var nodes = new $();
-                if (selector.push === _array_push || selector[0]) {
+                if (detect.isArraylike(selector)) {
                     _array_push.apply(nodes, _array_slice.call(selector));
                 } else {
                     _array_push.call(nodes, selector);
@@ -1681,14 +1751,14 @@ define("dollar/origin", [
             } else {
                 selector = selector.trim();
                 if (RE_HTMLTAG.test(selector)) {
-                    return create_nodes(selector);
+                    return $.createNodes(selector);
                 } else if (context) {
                     return $(context).find(selector);
                 } else {
                     return ext.find(selector);
                 }
             }
-        } else if (this === window) {
+        } else if (is_window(this)) {
             return new $();
         }
     }
@@ -1736,14 +1806,14 @@ define("dollar/origin", [
                     nodes.push(elm);
                 }
             } else {
-                var query = /\W/.test(selector) ? 'querySelectorAll' 
-                                                : 'getElementsByTagName';
                 if (contexts[1]) {
                     contexts.forEach(function(context){
-                        this.push.apply(this, _array_slice.call(context[query](selector)));
+                        _array_push.apply(this, 
+                            $._querySelector(context, selector));
                     }, nodes);
                 } else if (contexts[0]) {
-                    nodes.push.apply(nodes, _array_slice.call(contexts[0][query](selector)));
+                    _array_push.apply(nodes, 
+                        $._querySelector(contexts[0], selector));
                 }
             }
             return nodes;
@@ -1757,22 +1827,24 @@ define("dollar/origin", [
         not: function(selector){
             return this.filter(function(node){
                 return node && !this(node, selector);
-            }, matches_selector);
+            }, $.matchesSelector);
         },
 
         has: function(selector){
             return this.filter(function(node){
                 return this(node, selector);
-            }, matches_selector);
+            }, $.matchesSelector);
         },
 
         parent: find_near('parentNode'),
 
         parents: function(selector){
             var ancestors = new $(), p = this,
-                finding = selector ? find_selector(selector, 'parentNode') : function(node){
-                    return this[this.push(node.parentNode) - 1];
-                };
+                finding = selector 
+                    ? find_selector(selector, 'parentNode') 
+                    : function(node){
+                        return this[this.push(node.parentNode) - 1];
+                    };
             while (p.length) {
                 p = p.map(finding, ancestors);
             }
@@ -1822,7 +1894,7 @@ define("dollar/origin", [
 
         is: function(selector){
             return this.some(function(node){
-                return matches_selector(node, selector);
+                return $.matchesSelector(node, selector);
             });
         },
 
@@ -1835,44 +1907,37 @@ define("dollar/origin", [
             return false;
         },
 
-        isEmpty: function(){
-            return this.every(function(elm){
-                if (!elm.innerHTML) {
-                    elm.innerHTML = ' ';
-                    if (!elm.innerHTML) {
-                        return true;
-                    }
-                    elm.innerHTML = '';
-                }
-                return false;
-            });
-        },
-
         // Properties
 
         addClass: function(cname){
-            return each_node(this, cname, 'className', function(node, cname){
-                node.classList.add(cname);
+            return nodes_access.call(this, cname, function(node, value){
+                node.classList.add(value);
+            }, function(node){
+                return node.className;
             });
         },
 
         removeClass: function(cname){
-            return each_node(this, cname, 'className', function(node, cname){
-                node.classList.remove(cname);
+            return nodes_access.call(this, cname, function(node, value){
+                node.classList.remove(value);
+            }, function(node){
+                return node.className;
             });
         },
 
         toggleClass: function(cname, force){
-            return each_node(this, cname, 'className', function(node, cname){
+            return nodes_access.call(this, cname, function(node, value){
                 node.classList[force === undefined && 'toggle'
-                                    || this && 'add' || 'remove'](cname);
+                    || force && 'add' || 'remove'](value);
+            }, function(node){
+                return node.className;
             });
         },
 
         attr: kv_access(function(node, name, value){
             node.setAttribute(name, value);
         }, function(node, name){
-            return node && node.getAttribute(name);
+            return node.getAttribute(name);
         }),
 
         removeAttr: function(name){
@@ -1885,7 +1950,7 @@ define("dollar/origin", [
         prop: kv_access(function(node, name, value){
             node[name] = value;
         }, function(node, name){
-            return (node || {})[name];
+            return node[name];
         }),
 
         removeProp: function(name){
@@ -1898,9 +1963,9 @@ define("dollar/origin", [
         data: kv_access(function(node, name, value){
             node.dataset[css_method(name)] = value;
         }, function(node, name){
-            var data = (node || {}).dataset;
+            var data = node.dataset;
             if (!data) {
-                return null;
+                return;
             }
             return name ? data[css_method(name)] 
                 : _.mix({}, data);
@@ -1913,25 +1978,18 @@ define("dollar/origin", [
             return this;
         },
 
-        val: function(value){
-            var node = this[0];
-            if (value === undefined) {
-                if (node) {
-                    if (node.multiple) {
-                        return $('option', this).filter(function(item){
-                            return item.selected;
-                        }).map(function(item){
-                            return item.value;
-                        });
-                    }
-                    return node.value;
-                }
-            } else {
-                return each_node(this, value, 'value', function(node, value){
-                    node.value = value;
+        val: v_access(function(node, value){
+            node.value = value;
+        }, function(node){
+            if (this.multiple) {
+                return $('option', this).filter(function(item){
+                    return item.selected;
+                }).map(function(item){
+                    return item.value;
                 });
             }
-        },
+            return node.value;
+        }),
 
         empty: function(){
             this.forEach(function(node){
@@ -1940,23 +1998,21 @@ define("dollar/origin", [
             return this;
         },
 
-        html: function(str){
-            return str === undefined ? (this[0] || {}).innerHTML
-                : each_node(this, str, 'innerHTML', function(node, str){
-                    if (RE_HTMLTAG.test(str)) {
-                        this(node).empty().append(str);
-                    } else {
-                        node.innerHTML = str;
-                    }
-                }, $);
-        },
+        html: v_access(function(node, value){
+            if (RE_HTMLTAG.test(value)) {
+                $(node).empty().append(value);
+            } else {
+                node.innerHTML = value;
+            }
+        }, function(node){
+            return node.innerHTML;
+        }),
 
-        text: function(str){
-            return str === undefined ? (this[0] || {}).textContent
-                : each_node(this, str, 'textContent', function(node, str){
-                    node.textContent = str;
-                });
-        },
+        text: v_access(function(node, value){
+            node.textContent = value;
+        }, function(node){
+            return node.textContent;
+        }),
 
         clone: function(){
             return this.map(function(node){
@@ -1972,22 +2028,22 @@ define("dollar/origin", [
                 node.style.cssText += ';' + prop + ":" + css_unit(prop, value);
             }
         }, function(node, name){
-            return node && (node.style[css_method(name)] 
-                || _getComputedStyle(node, '').getPropertyValue(name));
-        }, function(self, dict){
+            return node.style[css_method(name)] 
+                || $.getPropertyValue(node, name);
+        }, function(dict){
             var prop, value, css = '';
             for (var name in dict) {
                 value = dict[name];
                 prop = css_prop(name);
                 if (!value && value !== 0) {
-                    self.forEach(function(node){
+                    this.forEach(function(node){
                         node.style.removeProperty(this);
                     }, prop);
                 } else {
                     css += prop + ":" + css_unit(prop, value) + ';';
                 }
             }
-            self.forEach(function(node){
+            this.forEach(function(node){
                 node.style.cssText += ';' + this;
             }, css);
         }),
@@ -2001,16 +2057,19 @@ define("dollar/origin", [
                 if (node.style.display === "none") {
                     node.style.display = null;
                 }
-                if (this(node, '').getPropertyValue("display") === "none") {
+                if (this(node, "display") === "none") {
                     node.style.display = default_display(node.nodeName);
                 }
-            }, _getComputedStyle);
+            }, $.getPropertyValue);
             return this;
         },
 
         // Dimensions
 
         offset: function(){
+            if (!this[0]) {
+                return;
+            }
             var set = this[0].getBoundingClientRect();
             return {
                 left: set.left + window.pageXOffset,
@@ -2023,6 +2082,10 @@ define("dollar/origin", [
         width: dimension('Width'),
 
         height: dimension('Height'),
+
+        scrollLeft: scroll_offset(),
+
+        scrollTop: scroll_offset(true),
 
         // Manipulation
 
@@ -2054,9 +2117,9 @@ define("dollar/origin", [
         },
 
         wrap: function(boxes){
-            return each_node(this, boxes, false, function(node, boxes){
-                this(boxes).insertBefore(node).append(node);
-            }, $);
+            return nodes_access.call(this, boxes, function(node, value){
+                $(value).insertBefore(node).append(node);
+            });
         },
 
         wrapAll: function(boxes){
@@ -2065,9 +2128,9 @@ define("dollar/origin", [
         },
 
         wrapInner: function(boxes){
-            return each_node(this, boxes, false, function(node, boxes){
-                this(node).contents().wrapAll(boxes);
-            }, $);
+            return nodes_access.call(this, boxes, function(node, value){
+                $(node).contents().wrapAll(value);
+            });
         },
 
         unwrap: function(){
@@ -2123,6 +2186,7 @@ define("dollar/origin", [
 
     ext.bind = ext.on;
     ext.unbind = ext.off;
+    ext.one = ext.once;
 
     // private
 
@@ -2130,16 +2194,12 @@ define("dollar/origin", [
         return v; 
     }
 
-    function matches_selector(elm, selector){
-        return elm && elm.nodeType === 1 && elm[MATCHES_SELECTOR](selector);
-    }
-
     function find_selector(selector, attr){
         return function(node){
             if (attr) {
                 node = node[attr];
             }
-            if (matches_selector(node, selector)) {
+            if ($.matchesSelector(node, selector)) {
                 this.push(node);
             }
             return node;
@@ -2151,7 +2211,7 @@ define("dollar/origin", [
             return $(_.unique([undefined, doc, null].concat(
                 this._map(selector ? function(node){
                     var n = node[prop];
-                    if (n && matches_selector(n, selector)) {
+                    if (n && $.matchesSelector(n, selector)) {
                         return n;
                     }
                 } : function(node){
@@ -2178,7 +2238,7 @@ define("dollar/origin", [
                         break;
                     }
                     if (node !== n && (!selector 
-                        || matches_selector(n, selector))) {
+                        || $.matchesSelector(n, selector))) {
                         this.push(n);
                     }
                 } while (n = n[prop]);
@@ -2187,36 +2247,55 @@ define("dollar/origin", [
         };
     }
 
-    function each_node(nodes, arg, prop, cb, context){
-        var is_fn_arg = isFunction(arg);
-        nodes.forEach(function(node, i){
-            cb.call(context, node, !is_fn_arg ? arg
-                : arg.call(this, i, prop && node[prop]));
-        }, nodes);
-        return nodes;
+    function nodes_access(value, setter, getter, name){
+        if (value === null || value === undefined) {
+            return this;
+        }
+        var is_fn_arg = is_function(value);
+        this.forEach(function(node, i){
+            if (!node) {
+                return;
+            }
+            var v = !is_fn_arg 
+                ? value 
+                : value.call(this, i, 
+                    getter && getter.call(this, node, name));
+            setter.call(this, node, name || v, v);
+        }, this);
+        return this;
+    }
+
+    function v_access(setter, getter){
+        return function(value){
+            if (arguments.length > 0) {
+                return nodes_access.call(this, value, setter, getter);
+            } else {
+                return this[0] ? getter.call(this, this[0]) : undefined;
+            }
+            return this;
+        };
     }
 
     function kv_access(setter, getter, map){
         return function(name, value){
             if (typeof name === 'object') {
                 if (map) {
-                    map(this, name);
+                    map.call(this, name);
                 } else {
                     for (var k in name) {
                         this.forEach(function(node){
-                            setter(node, this, name[this]);
-                        }, k);
+                            if (!node) {
+                                return;
+                            }
+                            setter.call(this, node, k, name[k]);
+                        }, this);
                     }
                 }
             } else {
-                if (value !== undefined) {
-                    var is_fn_arg = isFunction(value);
-                    this.forEach(function(node, i){
-                        setter(node, name, !is_fn_arg ? value 
-                            : value.call(this, i, getter(node, name)));
-                    }, this);
+                if (arguments.length > 1) {
+                    return nodes_access.call(this, value, setter, getter, name);
                 } else {
-                    return getter(this[0], name);
+                    return this[0] ? getter.call(this, this[0], name) : undefined;
                 }
             }
             return this;
@@ -2230,7 +2309,7 @@ define("dollar/origin", [
                     access.call(this, [i, subject[i]]);
                 }
             } else if (cb) {
-                subject = Event.aliases[subject] || subject;
+                subject = $.Event.aliases[subject] || subject;
                 this.forEach(function(node){
                     node[action + 'EventListener'](subject, this, false);
                 }, cb);
@@ -2239,27 +2318,6 @@ define("dollar/origin", [
         }
         return access;
     }
-
-    function Event(type, props) {
-        var bubbles = true,
-            is_touch = TOUCH_EVENTS[type],
-            event = document.createEvent(is_touch && 'TouchEvent' 
-                || MOUSE_EVENTS[type] && 'MouseEvents' 
-                || 'Events');
-        if (props) {
-            if ('bubbles' in props) {
-                bubbles = !!props.bubbles;
-                delete props.bubbles;
-            }
-            _.mix(event, props);
-        }
-        type = Event.aliases[type] || type;
-        event[is_touch && 'initTouchEvent' 
-            || 'initEvent'](type, bubbles, true);
-        return event;
-    }
-
-    Event.aliases = {};
 
     function trigger(me, event, data){
         if (this === $) {
@@ -2270,7 +2328,7 @@ define("dollar/origin", [
             me = this;
         }
         if (typeof event === 'string') {
-            event = Event(event);
+            event = $.Event(event);
         }
         _.mix(event, data);
         me.forEach((SPECIAL_TRIGGERS[event.type]
@@ -2309,7 +2367,7 @@ define("dollar/origin", [
         if (!display) {
             var tmp = document.createElement(tag);
             doc.body.appendChild(tmp);
-            display = _getComputedStyle(tmp, '').getPropertyValue("display");
+            display = $.getPropertyValue(tmp, "display");
             tmp.parentNode.removeChild(tmp);
             if (display === "none") {
                 display = "block";
@@ -2321,36 +2379,28 @@ define("dollar/origin", [
 
     function dimension(method){
         return function(){
-            return this[0] === window 
-                ? window['inner' + method] 
-                : this[0] === doc 
-                    ? doc.documentElement['offset' + method] 
+            var node = this[0];
+            if (!node) {
+                return;
+            }
+            return is_window(node)
+                ? node['inner' + method]
+                : node.nodeType === 9 
+                    ? node.documentElement['offset' + method] 
                     : (this.offset() || {})[method.toLowerCase()];
         };
     }
 
-    function create_nodes(str, attrs){
-        var tag = (RE_HTMLTAG.exec(str) || [])[0] || str;
-        var temp = _html_containers[tag];
-        if (!temp) {
-            temp = _html_containers[tag] = tag === 'tr' && document.createElement('tbody')
-                || (tag === 'tbody' || tag === 'thead' || tag === 'tfoot') 
-                    && document.createElement('table')
-                || (tag === 'td' || tag === 'th') && document.createElement('tr')
-                || document.createElement('div');
-        }
-        temp.innerHTML = str;
-        var nodes = new $();
-        _array_push.apply(nodes, _array_slice.call(temp.childNodes));
-        nodes.forEach(function(node){
-            this.removeChild(node);
-        }, temp);
-        if (attrs) {
-            for (var k in attrs) {
-                nodes.attr(k, attrs[k]);
+    function scroll_offset(is_top){
+        var method = 'scroll' + is_top ? 'Top' : 'Left',
+            prop = 'page' + (is_top ? 'Y' : 'X') + 'Offset';
+        return function(){
+            var node = this[0];
+            if (!node) {
+                return;
             }
-        }
-        return nodes;
+            return is_window(node) ? node[prop] : node[method];
+        };
     }
 
     function insert_node(target, node, action){
@@ -2359,11 +2409,20 @@ define("dollar/origin", [
             window['eval'].call(window, node.innerHTML);
         }
         switch(action) {
-            case 1: target.appendChild(node); break;
-            case 2: target.parentNode.insertBefore(node, target); break;
-            case 3: target.insertBefore(node, target.firstChild); break;
-            case 4: target.parentNode.insertBefore(node, target.nextSibling); break;
-            default: break;
+        case 1:
+            target.appendChild(node);
+            break;
+        case 2: 
+            target.parentNode.insertBefore(node, target);
+            break;
+        case 3:
+            target.insertBefore(node, target.firstChild);
+            break;
+        case 4:
+            target.parentNode.insertBefore(node, target.nextSibling);
+            break;
+        default:
+            break;
         }
     }
 
@@ -2373,10 +2432,14 @@ define("dollar/origin", [
         } : function(content){
             insert_node(this, content, action);
         };
-        return function(elms){
+        return function(selector){
             this.forEach(function(node){
                 this.forEach(fn, node);
-            }, $(elms));
+            }, is_reverse 
+                    || typeof selector !== 'string'
+                    || RE_HTMLTAG.test(selector)
+                ? $(selector)
+                : $.createNodes(selector));
             return this;
         };
     }
@@ -2402,14 +2465,85 @@ define("dollar/origin", [
     // public static API
 
     $.find = $;
-    $.matchesSelector = matches_selector;
-    $.createNodes = create_nodes;
+
+    $._querySelector = function(context, selector){
+        try {
+            return _array_slice.call(context.querySelectorAll(selector));
+        } catch (ex) {
+            return [];
+        }
+    };
+
+    $.matchesSelector = function(elm, selector){
+        return elm && elm.nodeType === 1 && elm[MATCHES_SELECTOR](selector);
+    };
+
+    $.createNodes = function(str, attrs){
+        var tag = (RE_HTMLTAG.exec(str) || [])[0] || str;
+        var temp = _html_containers[tag];
+        if (!temp) {
+            temp = _html_containers[tag] = tag === 'tr' 
+                    && document.createElement('tbody')
+                || (tag === 'tbody' || tag === 'thead' || tag === 'tfoot') 
+                    && document.createElement('table')
+                || (tag === 'td' || tag === 'th') 
+                    && document.createElement('tr')
+                || document.createElement('div');
+        }
+        temp.innerHTML = str;
+        var nodes = new $();
+        _array_push.apply(nodes, _array_slice.call(temp.childNodes));
+        nodes.forEach(function(node){
+            this.removeChild(node);
+        }, temp);
+        if (attrs) {
+            for (var k in attrs) {
+                nodes.attr(k, attrs[k]);
+            }
+        }
+        return nodes;
+    };
+
+    $.getStyles = window.getComputedStyle && function(elm){
+        return window.getComputedStyle(elm, null);
+    } || document.documentElement.currentStyle && function(elm){
+        return elm.currentStyle;
+    };
+
+    $.getPropertyValue = function(elm, name){
+        var styles = $.getStyles(elm);
+        return styles.getPropertyValue 
+            && styles.getPropertyValue(name) || styles[name];
+    };
+
+    $.Event = function(type, props) {
+        var real_type = $.Event.aliases[type] || type;
+        var bubbles = true,
+            is_touch = TOUCH_EVENTS[type],
+            event = document.createEvent(is_touch && 'TouchEvent' 
+                || MOUSE_EVENTS[type] && 'MouseEvents' 
+                || 'Events');
+        if (props) {
+            if ('bubbles' in props) {
+                bubbles = !!props.bubbles;
+                delete props.bubbles;
+            }
+            _.mix(event, props);
+        }
+        event[is_touch && 'initTouchEvent' 
+            || 'initEvent'](real_type, bubbles, true);
+        return event;
+    };
+
+    $.Event.aliases = {};
+
+    $.trigger = trigger;
+
     $.camelize = css_method;
     $.dasherize = css_prop;
-    $.Event = Event;
-    $.trigger = trigger;
+    $._vAccess = v_access;
     $._kvAccess = kv_access;
-    $._eachNode = each_node;
+    $._nodesAccess = nodes_access;
 
     return $;
 
@@ -2435,9 +2569,11 @@ define("dollar/android23", [
   "dollar/origin"
 ], function(es5, _, detect, $){
 
-    var css_method = $.camelize;
+    var ext = $.fn,
+        nodes_access = $._nodesAccess,
+        css_method = $.camelize;
 
-    _.mix($.fn, {
+    _.mix(ext, {
 
         data: $._kvAccess(function(node, name, value){
             node.setAttribute('data-' + prop2data(name), value);
@@ -2451,7 +2587,7 @@ define("dollar/android23", [
                     .split(/\s+/)
                     .forEach(function(html){ 
                         var attr = (/^data-([\w\-]+)/.exec(html) || []); 
-                        if (data[0]) {
+                        if (attr[0]) {
                             this[css_method(attr[1])] = node.getAttribute(attr[0]);
                         }
                     }, data);
@@ -2476,37 +2612,41 @@ define("dollar/android23", [
         },
 
         addClass: function(cname){
-            return $._eachNode(this, cname, 'className', function(node, cname){
+            return nodes_access.call(this, cname, function(node, value){
                 var list = class_list(node);
-                if (list.indexOf(cname) === -1) {
-                    list.push(cname);
+                if (list.indexOf(value) === -1) {
+                    list.push(value);
                     node.className = list.join(' ');
                 }
+            }, function(node){
+                return node.className;
             });
         },
 
         removeClass: function(cname){
-            return $._eachNode(this, cname, 'className', function(node, cname){
+            return nodes_access.call(this, cname, function(node, value){
                 var list = class_list(node),
-                    n = list.indexOf(cname);
+                    n = list.indexOf(value);
                 if (n !== -1) {
                     list.splice(n, 1);
                     node.className = list.join(' ');
                 }
+            }, function(node){
+                return node.className;
             });
         },
 
         toggleClass: function(cname, force){
-            return $._eachNode(this, cname, 'className', function(node, cname){
+            return nodes_access.call(this, cname, function(node, value){
                 var list = class_list(node),
-                    n = list.indexOf(cname),
+                    n = list.indexOf(value),
                     is_add = force;
                 if (is_add === undefined) {
                     is_add = n === -1;
                 }
                 if (is_add) {
                     if (n === -1) {
-                        list.push(cname);
+                        list.push(value);
                     }
                 } else {
                     if (n !== -1) {
@@ -2514,6 +2654,8 @@ define("dollar/android23", [
                     }
                 }
                 node.className = list.join(' ');
+            }, function(node){
+                return node.className;
             });
         }
     
@@ -2846,7 +2988,7 @@ define('momo/base', [
         PRESS: SUPPORT_TOUCH ? 'touchstart' : 'mousedown',
         MOVE: SUPPORT_TOUCH ? 'touchmove' : 'mousemove',
         RELEASE: SUPPORT_TOUCH ? 'touchend' : 'mouseup',
-        //CANCEL: 'touchcancel',
+        CANCEL: 'touchcancel',
 
         EVENTS: [],
         DEFAULT_CONFIG: {
@@ -2868,15 +3010,28 @@ define('momo/base', [
         enable: function(){
             var self = this;
             self.bind(self.PRESS, 
-                    self._press || (self._press = self.press.bind(self)))
-                .bind(self.MOVE, 
-                    self._move || (self._move = self.move.bind(self)))
-                .bind(self.CANCEL, 
-                    self._cancel || (self._cancel = self.cancel.bind(self)))
-                .bind(self.RELEASE, 
-                    self._release || (self._release = self.release.bind(self)));
+                self._press || (self._press = function(e){
+                    return self.press.call(self, e.originalEvent || e);
+                })
+            ).bind(self.MOVE, 
+                self._move || (self._move = function(e){
+                    return self.move.call(self, e.originalEvent || e);
+                })
+            ).bind(self.CANCEL, 
+                self._cancel || (self._cancel = function(e){
+                    return self.cancel.call(self, e.originalEvent || e);
+                })
+            ).bind(self.RELEASE, 
+                self._release || (self._release = function(e){
+                    return self.release.call(self, e.originalEvent || e);
+                })
+            );
             if (self._listener) {
-                self.bind(this.event[this._config.event], self._listener);
+                self.bind(this.event[this._config.event], 
+                    self._handler || (self._handler = function(e){
+                        return self._listener.call(self, e.originalEvent || e);
+                    })
+                );
             }
             return self;
         },
@@ -2887,8 +3042,8 @@ define('momo/base', [
                 .unbind(self.MOVE, self._move)
                 .unbind(self.CANCEL, self._cancel)
                 .unbind(self.RELEASE, self._release);
-            if (self._listener) {
-                self.unbind(this.event[this._config.event], self._listener);
+            if (self._listener && self._handler) {
+                self.unbind(this.event[this._config.event], self._handler);
             }
             return self;
         },
@@ -2896,9 +3051,9 @@ define('momo/base', [
         once: function(ev, handler, node){
             var self = this;
             this.bind(ev, fn, node);
-            function fn(){
+            function fn(e){
                 self.unbind(ev, fn, node);
-                return handler.apply(this, arguments);
+                return handler.call(this, e.originalEvent || e);
             }
         },
 
@@ -3427,6 +3582,7 @@ define('momo', [
             return this;
         },
         trigger: function(e, ev){
+            e = e.originalEvent || e;
             $(e.target).trigger(ev, e);
             return this;
         }
