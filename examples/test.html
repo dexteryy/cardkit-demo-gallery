@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>CardKit Reference</title>
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+
+<link href="static/css/main.css" rel="stylesheet">
+<link href="css/shCoreDefault.css" rel="stylesheet">
+<link href="css/console.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<script src="static/js/main.js"></script>
+</head>
+<body>
+
+<ck-card type="page" firstpage="true" id="newStyleCard">
+
+    <ck-part type="title">New style card</ck-part>
+
+    <ck-part type="actionbar">
+        <button type="button" action-layout="auto">Reload</button>
+        <button type="button" action-layout="overflow" class="switchstyle">切换界面风格</button>
+    </ck-part>
+
+    <ck-part type="navdrawer">
+    </ck-part>
+
+    <p>This is normal text</p>
+
+    <ck-card type="box"
+            subtype=""
+            plain-style="true"
+            plain-hd-style="true">
+        <ck-part type="hd">This is box's head</ck-part>
+        This is box's content
+        <div id="elmInBox" class="elm-in-box"></div>
+        <ck-part type="ft">This is box's foot</ck-part>
+    </ck-card>
+
+    <p>This is normal text</p>
+
+</ck-card>
+
+
+<!--<div class="ck-card" id="oldStyleCard">-->
+
+    <!--<div class="ckcfg-card-title">Old style card</div>-->
+
+    <!--<div class="ckcfg-card-actions">-->
+        <!--<button type="button" class="ckd-overflow-item switchstyle">切换界面风格</button>-->
+    <!--</div>-->
+
+    <!--<div class="ckcfg-navdrawer">-->
+    <!--</div>-->
+
+    <!--<div class="ck-banner-unit">-->
+        <!--<h2>CardKit 2</h2>-->
+    <!--</div>-->
+
+    <!--<div class="ck-list-unit" -->
+            <!--data-style="more" -->
+            <!--data-cfg-paper="true">-->
+        <!--<a class="ckd-item" href="#consoleCard">Console</a>-->
+        <!--<a class="ckd-item" href="#newStyleCard">New style card</a>-->
+    <!--</div>-->
+
+<!--</div>-->
+
+<!--<ck-card type="page" id="consoleCard">-->
+
+    <!--<ck-part type="title">Console card</ck-part>-->
+
+    <!--<ck-card type="box" paper-style="true">-->
+        <!--<ck-part type="hd">Console</ck-part>-->
+        <!--<div id="console"></div>-->
+    <!--</ck-card>-->
+
+    <!--<script type="text/cardscript">-->
+    <!--this.addEventListener('card:ready', function(e){-->
+        <!--require(['mo/console'], function(console){-->
+            <!--console.config({-->
+                <!--record: false,-->
+                <!--output: e.card.find('#console')[0]-->
+            <!--});-->
+        <!--});-->
+    <!--});-->
+    <!--</script>-->
+
+<!--</ck-card>-->
+
+<script src="js/shCore.js"></script>
+<script src="js/shBrushXml.js"></script>
+<script src="js/shBrushJScript.js"></script>
+<script>
+require([
+    'mo/lang',
+    'dollar',
+    'cardkit/app'
+], function(_, $, cardkit){
+
+    cardkit.init({
+        //supportOldVersion: true
+    });
+    cardkit.render('ck-card');
+
+});
+</script>
+<script src="js/common.js"></script>
+</body>
+</html>
