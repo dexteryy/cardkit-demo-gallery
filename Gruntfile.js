@@ -10,8 +10,10 @@ module.exports = function(grunt) {
     }
     config.staticDir = config.staticDir || 'public/static';
 
+    var pkg = grunt.file.readJSON('package.json');
+
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
         meta: {
             targetDir: 'target',
             distDir: '.dist',
@@ -346,7 +348,7 @@ module.exports = function(grunt) {
         },
 
         jshint: {
-            options: grunt.file.readJSON('jshint.json'),
+            options: pkg.jshintConfig,
             dev: {
                 options: {
                     devel: true,

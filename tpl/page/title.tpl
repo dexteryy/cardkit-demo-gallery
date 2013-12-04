@@ -1,2 +1,4 @@
 
-<div class="ck-title"></div>
+<div class="ck-title"
+    id="{%= id %}"
+    autorender="true"></div>
