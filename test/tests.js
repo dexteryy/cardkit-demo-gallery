@@ -103,29 +103,46 @@ describe("the page card", function(){
         it("remove component", function(){
 
             var actions = this.brightRoot.find('.ck-action');
+            var count = actions.length;
 
-            this.darkRoot.find('button[action-layout]').eq(2).remove();
-            expect(actions.length).to.be(2);
+            this.darkRoot.find('button[action-layout]').eq(count - 1).remove();
+            expect(actions).to.length(count);
 
             darkdom.update(this.darkRoot);
             actions = this.brightRoot.find('.ck-action');
-            expect(actions.length).to.be(1);
+            expect(actions).to.length(count - 1);
 
         });
 
         it("add component", function(){
 
-            var buttons = this.darkRoot.find('button[action-layout]');
             var actions = this.brightRoot.find('.ck-action');
+            var count = actions.length;
 
             this.darkRoot.find('ck-part[type="actionbar"]')
-                .append(buttons.eq(0).clone().html('yy'));
-            expect(actions.length).to.be(2);
+                .append('<button type="button" action-layout="auto">yy</button>');
+            expect(actions).to.length(count);
 
             darkdom.update(this.darkRoot);
             actions = this.brightRoot.find('.ck-action');
-            expect(actions.length).to.be(3);
-            expect(actions.eq(2)).to.have.html('yy');
+            expect(actions).to.length(count + 1);
+            expect(actions.eq(actions.length - 1)).to.have.html('yy');
+
+        });
+
+        it("custom updater", function(){
+
+            var button1 = this.darkRoot.find('button[action-layout]').eq(0);
+            var bright_button1 = this.brightRoot.find('.ck-action').eq(0);
+
+            darkdom.observe(button1, 'content', function(changes){
+                $(changes.root).html(changes.newValue);
+                return false;
+            });
+
+            button1.html('aaaa');
+            darkdom.update(this.darkRoot);
+            expect(bright_button1).to.have.html('aaaa');
 
         });
 

@@ -61,19 +61,19 @@ DarkDOM.prototype = {
         return this;
     },
 
-    observe: function(type, handler){
-        this._updaters[type] = handler;
+    observe: function(subject, handler){
+        this._updaters[subject] = handler;
         return this;
     },
 
-    createGuard: function(opt){
-        return new exports.DarkGuard(_.mix(opt || {}, {
+    createGuard: function(){
+        return new exports.DarkGuard({
             attrs: this._attrs,
             components: this._components,
             contents: this._contents,
             updaters: this._updaters,
             options: this._config
-        }));
+        });
     }
 
 };
@@ -82,9 +82,11 @@ function DarkGuard(opt){
     this._attrs = Object.create(opt.attrs);
     this._options = opt.options;
     this._config = _.mix({}, opt);
+    this._updaters = {};
     this._darkRoots = [];
     this._specs = {};
     this._buffer = [];
+    this._componentGuards = {};
     this._sourceData = {};
     this._sourceGuard = null;
     this.template = tpl.convertTpl(this._options.template);
@@ -96,7 +98,7 @@ function DarkGuard(opt){
 DarkGuard.prototype = {
 
     watch: function(targets){
-        targets = $(targets, this._config.contextTarget);
+        targets = $(targets, this._contextTarget);
         if (this._options.unique) {
             targets = targets.eq(0);
         }
@@ -114,6 +116,16 @@ DarkGuard.prototype = {
     delegate: function(name, spec){
         var components = kv_dict(name, spec);
         _.mix(this._specs, components);
+        return this;
+    },
+
+    observe: function(target, subject, handler){
+        var bright_id = $(target).attr(BRIGHT_ID);
+        var updaters = this._updaters[bright_id];
+        if (!updaters) {
+            updaters = this._updaters[bright_id] = {};
+        }
+        updaters[subject] = handler;
         return this;
     },
 
@@ -182,7 +194,7 @@ DarkGuard.prototype = {
         // @note
         var data = {
             id: bright_id,
-            context: this._config.contextData
+            context: this._contextData
         };
         data.attr = {};
         _.each(this._attrs, function(getter, name){
@@ -203,10 +215,13 @@ DarkGuard.prototype = {
     _scanComponents: function(data, target){
         var re = {};
         _.each(this._config.components, function(component, name){
-            var guard = component.createGuard({
-                contextData: data,
-                contextTarget: target
-            });
+            var guard = this._componentGuards[name];
+            if (!guard) {
+                guard = component.createGuard();
+                this._componentGuards[name] = guard;
+            }
+            guard._changeContext(data, target);
+            guard.resetWatch();
             var spec = this._specs[name];
             if (typeof spec === 'string') {
                 guard.watch(spec);
@@ -298,6 +313,18 @@ DarkGuard.prototype = {
         return this;
     },
 
+    resetWatch: function(){
+        this._darkRoots.length = 0;
+    },
+
+    _changeContext: function(data, target){
+        this._contextdata = data;
+        this._contextTarget = target;
+        if (this._sourceGuard) {
+            this._sourceGuard._changeContext(data);
+        }
+    },
+
     createRoot: function(data){
         var bright_root = $(this.template(data));
         bright_root.attr(this._attrs.autorender, 'true');
@@ -305,40 +332,39 @@ DarkGuard.prototype = {
         return bright_root;
     },
 
-    triggerUpdate: function(bright_root, data, changes){
+    triggerUpdate: function(changes){
         var handler;
         var subject = changes.type;
+        var updaters = this._updaters[changes.rootId] 
+            || this._config.updaters;
         if (changes.name) {
             subject += ':' + changes.name;
-            handler = this._config.updaters[subject];
+            handler = updaters[subject];
         }
         if (!handler) {
-            handler = this._config.updaters[changes.type];
+            handler = updaters[changes.type];
         }
         if (!handler) {
             handler = this.defaultUpdater;
         }
-        return handler.call(this, _.mix(changes, {
-            data: data,
-            root: bright_root[0]
-        }));
+        return handler.call(this, changes);
     },
 
     defaultUpdater: function(changes){
+        var abort = changes.type !== 'component';
         if (!changes.data) {
             $(changes.root).remove();
-            return false;
+            return abort;
         }
         if (changes.root) {
             this.createRoot(changes.data).replaceAll(changes.root);
-            return false;
+            return abort;
         }
     },
 
     createSource: function(opt){
         this._sourceGuard = new exports.DarkGuard(_.merge({
             sourceTarget: this,
-            contextTarget: null,
             options: _.merge({
                 enableSource: false 
             }, opt.options)
@@ -372,14 +398,14 @@ DarkGuard.update = function(targets){
     $(targets).forEach(update_target);
 };
 
-//DarkGuard.updateData = function(target, fn){
-    //target = $(target);
-    //var bright_id = target.attr(BRIGHT_ID);
-    //var old_data = _darkdata[bright_id];
-    //fn({
-        
-    //});
-//};
+DarkGuard.observe = function(target, subject, handler){
+    target = $(target);
+    var bright_id = target.attr(BRIGHT_ID);
+    var guard = _guards[bright_id];
+    if (guard) {
+        guard.observe(target, subject, handler);
+    }
+};
 
 function update_target(target){
     target = $(target);
@@ -513,7 +539,11 @@ function trigger_update(bright_id, data, changes){
     var bright_root = $('#' + bright_id);
     var guard = _guards[bright_id];
     if (guard) {
-        return guard.triggerUpdate(bright_root, data, changes);
+        return guard.triggerUpdate(_.mix(changes, {
+            data: data,
+            root: bright_root[0],
+            rootId: bright_id
+        }));
     } else if (!data) {
         bright_root.remove();
         return false;
@@ -574,6 +604,7 @@ function exports(opt){
 exports.DarkDOM = DarkDOM;
 exports.DarkGuard = DarkGuard;
 exports.update = DarkGuard.update;
+exports.observe = DarkGuard.observe;
 
 return exports;
 

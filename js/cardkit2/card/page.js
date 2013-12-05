@@ -20,8 +20,6 @@ var title = darkdom({
 var action = darkdom({
     enableSource: true,
     template: tpl_action.template
-}).observe('content', function(){
-    console.info(arguments)
 });
 
 var actionbar = darkdom({
