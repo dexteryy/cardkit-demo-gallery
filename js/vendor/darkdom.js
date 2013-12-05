@@ -20,6 +20,7 @@ var _defaults = {
     _uuid = 0,
     _array_slice = [].slice,
     _array_push = [].push,
+    _toString = Object.prototype.toString,
     RENDERED_MARK = 'rendered',
     BRIGHT_ID = 'bright-root-id',
     ID_PREFIX = '_brightRoot';
@@ -370,14 +371,11 @@ DarkGuard.prototype = {
         return '<span>' + data.content + '</span>';
     },
 
-    gc: function(){
-        _.each(_guards, check_gc);
-    },
-
     setSource: function(target, fn){
         var selector = read_attr(target, this._attrs.source);
         var dataset = this._sourceDataset[selector];
-        this._sourceDataset[selector] = fn(dataset);
+        this._sourceDataset[selector] = is_function(fn) 
+            ? fn(dataset) : fn;
     },
 
     createSource: function(opt){
@@ -414,6 +412,7 @@ DarkGuard.prototype = {
 
 DarkGuard.update = function(targets){
     $(targets).forEach(update_target);
+    exports.DarkGuard.gc();
 };
 
 DarkGuard.observe = function(target, subject, handler){
@@ -425,13 +424,26 @@ DarkGuard.observe = function(target, subject, handler){
     }
 };
 
-DarkGuard.setSource = function(target, fn){
+DarkGuard.fill = function(target, fn){
     target = $(target);
     var bright_id = target.attr(BRIGHT_ID);
     var guard = _guards[bright_id];
     if (guard) {
         guard.setSource(target, fn);
     }
+};
+
+DarkGuard.gc = function(){
+    var current = {};
+    $('[' + BRIGHT_ID + ']').forEach(function(target){
+        this[$(target).attr(BRIGHT_ID)] = true;
+    }, current);
+    Object.keys(_guards).forEach(function(bright_id){
+        if (!this[bright_id]) {
+            delete _guards[bright_id];
+            delete _darkdata[bright_id];
+        }
+    }, current);
 };
 
 function update_target(target){
@@ -453,7 +465,6 @@ function update_target(target){
     var dataset = guard.releaseData();
     compare_model(origin, 
         Array.isArray(dataset) ? dataset[0] : dataset);
-    guard.gc();
 }
 
 function compare_model(origin, data){
@@ -618,20 +629,6 @@ function fix_source(source_data, context){
     return source_data;
 }
 
-function check_gc(guard, bright_id){
-    var is_exist;
-    _.each(guard._darkRoots, function(target){
-        if ($(target).attr(BRIGHT_ID) === bright_id) {
-            is_exist = true;
-            return false;
-        }
-    });
-    if (!is_exist) {
-        delete _guards[bright_id];
-        delete _darkdata[bright_id];
-    }
-}
-
 function read_attr(target, getter){
     return typeof getter === 'string' 
         ? target.attr(getter) 
@@ -644,6 +641,10 @@ function render_data(data){
         return '';
     }
     return guard.createRoot(data)[0].outerHTML;
+}
+
+function is_function(obj) {
+    return _toString.call(obj) === "[object Function]";
 }
 
 function kv_dict(key, value){
@@ -663,6 +664,7 @@ exports.DarkDOM = DarkDOM;
 exports.DarkGuard = DarkGuard;
 exports.update = DarkGuard.update;
 exports.observe = DarkGuard.observe;
+exports.fill = DarkGuard.fill;
 
 return exports;
 

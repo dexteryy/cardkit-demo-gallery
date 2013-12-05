@@ -1756,32 +1756,32 @@ define("../cardkit2/oldspec", [], function(require){
 
 define("../cardkit2/spec/common/source_scaffold", [], function(){
 
-    return {
-        hd: function(source){
-            source.watch('.ckd-hd');
-            source.bond({
-                url: 'href'
-            });
-        },
-        hdLinkExtern: function(source){
-            source.watch('.ckd-hd-link-extern');
-            source.bond({
-                url: 'href'
-            });
-        },
-        hdLink: function(source){
-            source.watch('.ckd-hd-link');
-            source.bond({
-                url: 'href'
-            });
-        },
-        hdOpt: function(source){
-            source.watch('.ckd-hdopt');
-        },
-        ft: function(source){
-            source.watch('.ckd-ft');
-        }
-    };
+return {
+    hd: function(source){
+        source.watch('.ckd-hd');
+        source.bond({
+            url: 'href'
+        });
+    },
+    hdLinkExtern: function(source){
+        source.watch('.ckd-hd-link-extern');
+        source.bond({
+            url: 'href'
+        });
+    },
+    hdLink: function(source){
+        source.watch('.ckd-hd-link');
+        source.bond({
+            url: 'href'
+        });
+    },
+    hdOpt: function(source){
+        source.watch('.ckd-hdopt');
+    },
+    ft: function(source){
+        source.watch('.ckd-ft');
+    }
+};
 
 });
 
@@ -1791,32 +1791,32 @@ define("../cardkit2/spec/common/source_scaffold", [], function(){
 
 define("../cardkit2/spec/common/scaffold", [], function(){
 
-    return {
-        hd: function(guard){
-            guard.watch('ck-part[type="hd"]');
-            guard.bond({
-                url: 'href'
-            });
-        },
-        hdLinkExtern: function(guard){
-            guard.watch('ck-part[type="hdLinkExtern"]');
-            guard.bond({
-                url: 'href'
-            });
-        },
-        hdLink: function(guard){
-            guard.watch('ck-part[type="hdLink"]');
-            guard.bond({
-                url: 'href'
-            });
-        },
-        hdOpt: function(guard){
-            guard.watch('ck-part[type="hdOpt"]');
-        },
-        ft: function(guard){
-            guard.watch('ck-part[type="ft"]');
-        }
-    };
+return {
+    hd: function(guard){
+        guard.watch('ck-part[type="hd"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    hdLinkExtern: function(guard){
+        guard.watch('ck-part[type="hdLinkExtern"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    hdLink: function(guard){
+        guard.watch('ck-part[type="hdLink"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    hdOpt: function(guard){
+        guard.watch('ck-part[type="hdOpt"]');
+    },
+    ft: function(guard){
+        guard.watch('ck-part[type="ft"]');
+    }
+};
 
 });
 
@@ -1825,7 +1825,21 @@ define("../cardkit2/spec/common/scaffold", [], function(){
 
 define("../cardkit2/tpl/box", [], function(){
 
-    return {"template":"\n\n<div class=\"ck-box-unit\"\n        data-style=\"{%= attr.subtype %}\"\n        data-cfg-paper=\"{%= attr.paperStyle %}\"\n        data-cfg-plain=\"{%= attr.plainStyle %}\"\n        data-cfg-plainhd=\"{%= attr.plainHdStyle %}\"\n        id=\"{%= id %}\"\n        autorender=\"true\">\n    {%= component.hd %}\n    {%= content %}\n    {%= component.ft %}\n</div>\n"}; 
+    return {"template":"\n\n<div class=\"ck-box-unit\"\n        data-style=\"{%= attr.subtype %}\"\n        data-cfg-paper=\"{%= attr.paperStyle %}\"\n        data-cfg-plain=\"{%= attr.plainStyle %}\"\n        data-cfg-plainhd=\"{%= attr.plainHdStyle %}\">\n    {%= component.hd %}\n    {%= content %}\n    {%= component.ft %}\n</div>\n"}; 
+
+});
+/* @source ../cardkit2/card/../tpl/scaffold/ft.js */;
+
+define("../cardkit2/card/../tpl/scaffold/ft", [], function(){
+
+    return {"template":"<span class=\"ck-ft\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/card/../tpl/scaffold/hd.js */;
+
+define("../cardkit2/card/../tpl/scaffold/hd", [], function(){
+
+    return {"template":"{% if (attr.url) { %}\n<a class=\"ck-hd\" \n    href=\"{%= attr.url %}\">{%= content %}</span>\n{% } else { %}\n<span class=\"ck-hd\">{%= content %}</span>\n{% } %}\n"}; 
 
 });
 /* @source mo/template/string.js */;
@@ -2074,339 +2088,6 @@ define("mo/template/micro", [
     exports.reloadTpl = function(str){
         delete exports.tplSettings._cache[str];
     };
-
-});
-
-
-/* @source mo/template.js */;
-
-/**
- * A lightweight and enhanced micro-template implementation, and minimum utilities
- *
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/template", [
-  "mo/lang",
-  "mo/template/string",
-  "mo/template/micro"
-], function(_, stpl, microtpl, require, exports){
-
-    _.mix(exports, stpl, microtpl);
-
-    exports.str2html = function(str){ // @TODO 
-        var temp = document.createElement("div");
-        temp.innerHTML = str;
-        var child = temp.firstChild;
-        if (temp.childNodes.length == 1) {
-            return child;
-        }
-        var fragment = document.createDocumentFragment();
-        do {
-            fragment.appendChild(child);
-        } while (child = temp.firstChild);
-        return fragment;
-    };
-
-});
-
-/* @source nerv.js */;
-
-/**
- * NervJS 
- * A tiny, pure, event-based model wrapper for the MVC or MDV (Model-driven Views) pattern.
- * It is far thinner than Backbone. None of View, Controller or Router is involved.
- * Strict data hiding but straightforward way to use.
- * Provides minimal built-in APIs but supports all external and conventional methods to access the model.
- * Model can be nested and supports bubbling events.
- *
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define('nerv', [
-  "mo/lang",
-  "eventmaster"
-], function(_, event){
-
-    function Model(opt){
-        this.init(opt);
-        if (opt.data) {
-            this.set(opt.data);
-        } else {
-            this.reset();
-        }
-        if (opt.init) {
-            opt.init.call(this);
-        }
-    }
-
-    Model.validate = function(v){
-        if (v && typeof v === 'object') {
-            if (!(v instanceof Model)) {
-                throw('New value is an object but not instance of Model');
-            }
-            v._validate();
-        }
-    };
-
-    Model.prototype = {
-
-        init: function(opt){
-            this._data = this._base();
-            this._defaults = opt.defaults || {};
-            this._setters = {};
-            this.observer = event();
-            return this;
-        },
-
-        each: function(fn, context){
-            var data = this._data;
-            for (var k in data) {
-                if (fn.call(context, data[k], k) === false) {
-                    break;
-                }
-            }
-        },
-
-        get: function(k){
-            return this._data[k];
-        },
-
-        data: function(k){
-            var res;
-            if (k !== undefined) {
-                res = this.get(k);
-                return res instanceof Model ? res.data() : res;
-            }
-            res = this._base();
-            this.each(function(v, k){
-                if (v instanceof Model) {
-                    res[k] = v.data();
-                } else {
-                    res[k] = v;
-                }
-            });
-            return res;
-        },
-
-        set: function(k, fn, context) {
-            if (k === undefined) {
-                return this;
-            }
-            var new_data;
-            if (_.isFunction(k) || typeof k === 'object') {
-                context = fn;
-                fn = k;
-                this._unwatchAll();
-                if (_.isFunction(fn)) {
-                    new_data = fn.call(context, this._data);
-                    this._data = _.copy(this._data);
-                } else {
-                    new_data = fn;
-                }
-                if (typeof new_data === 'object') {
-                    this._setAll(new_data);
-                }
-                this._watchAll();
-                this.observer.fire('change', [{ object: this }]);
-                return this;
-            }
-            var old_data = this.get(k),
-                old_value = this.data(k);
-            this._unwatch(old_data, k);
-            new_data = _.isFunction(fn) 
-                ? fn.call(context, old_data) 
-                : (fn === undefined ? null : fn);
-            if (this._setters[k]) {
-                new_data = this._setters[k].call(this._data, k, new_data);
-            } else if (new_data !== undefined) {
-                this._data[k] = new_data;
-            } else if (old_data && typeof old_data === 'object') {
-                new_data = old_data;
-            }
-            var type = new_data !== undefined 
-                && (old_data === undefined && 'new' || 'update');
-            if (type) {
-                this._watch(new_data, k);
-                var changes = {
-                    object: this,
-                    type: type,
-                    name: k,
-                    oldValue: old_value,
-                    newValue: this.data(k)
-                };
-                this.observer.fire(k + ':' + changes.type, [changes])
-                    .fire('change', [changes]);
-            }
-            return this;
-        },
-
-        remove: function(k){
-            var old_value = this.data(k);
-            this._unwatch(this.get(k), k);
-            this._remove(k);
-            var changes = {
-                object: this,
-                type: 'delete',
-                name: k,
-                oldValue: old_value
-            };
-            this.observer.fire(k + ':' + changes.type, [changes])
-                .fire('change', [changes]);
-            return this;
-        },
-
-        reset: function(){
-            this._unwatchAll();
-            this._setAll();
-            this._watchAll();
-            this.observer.fire('change', [{ object: this }]);
-            return this;
-        },
-
-        find: function(item){
-            var res; 
-            this.each(function(v, k){
-                if (v === item) {
-                    res = k;
-                    return false;
-                }
-            });
-            return res;
-        },
-
-        setter: function(k, fn) {
-            this._setters[k] = fn;
-        },
-
-        _watchAll: function(){
-            this.each(this._watch, this);
-        },
-
-        _unwatchAll: function(){
-            this.each(this._unwatch, this);
-        },
-
-        _watch: function(v, k){
-            if (v && typeof v === 'object') {
-                Model.validate(v);
-                v.observer.bind('change', this.observer.promise(k + ':update').pipe.fire)
-                    .bind('change', this.observer.promise('change').pipe.fire);
-            }
-        },
-
-        _unwatch: function(v, k){
-            if (v && typeof v === 'object') {
-                v.observer.unbind('change', this.observer.promise(k + ':update').pipe.fire)
-                    .unbind('change', this.observer.promise('change').pipe.fire);
-            }
-        },
-
-        _validate: function(){
-            this.each(Model.validate);
-        },
-
-        _base: function(){
-            return {};
-        },
-
-        _remove: function(k){
-            delete this._data[k];
-        },
-
-        _setAll: function(data){
-            this._data = _.mix(_.copy(this._defaults), data);
-        }
-
-    };
-
-    var Collection = _.construct(Model);
-
-    _.mix(Collection.prototype, {
-
-        add: function(v){
-            this.set(this._data.length, v);
-        },
-
-        size: function(){
-            return this._data.length;
-        },
-
-        each: function(fn, context){
-            var data = this._data;
-            for (var i = 0, l = data.length; i < l; i++) {
-                if (fn.call(context, data[i], i) === false) {
-                    break;
-                }
-            }
-        },
-
-        _base: function(){
-            return [];
-        },
-
-        _remove: function(k){
-            this._data.splice(k, 1);
-        },
-
-        _setAll: function(data){
-            this._data.length = 0;
-            _.mix(this._data, data);
-        }
-
-    });
-
-    function exports(data, defaults){
-        if (data instanceof exports.Model) {
-            return data;
-        }
-        var opt = {
-            data: data,
-            defaults: defaults
-        };
-        return Array.isArray(data) 
-            ? new exports.Collection(opt)
-            : new exports.Model(opt);
-    }
-
-    _.mix(exports, {
-
-        Model: Model,
-
-        Collection: Collection,
-
-    });
-
-    exports.model = factory(exports.Model);
-
-    exports.collection = factory(exports.Collection);
-
-    function factory(ModelClass){
-        return function(cfg){
-            var Sub = _.construct(ModelClass);
-            var opt = {
-                init: cfg.init,
-                defaults: cfg.defaults
-            };
-            delete cfg.init;
-            delete cfg.defaults;
-            _.mix(Sub.prototype, cfg);
-            function wrapper(data){
-                opt.data = data;
-                return new Sub(opt);
-            }
-            wrapper.Class = Sub;
-            return wrapper;
-        };
-    }
-
-    return exports;
 
 });
 
@@ -3303,26 +2984,27 @@ define("dollar", [
 define("darkdom", [
   "mo/lang/es5",
   "mo/lang/mix",
-  "dollar",
-  "nerv",
-  "mo/template"
-], function(es5, _, $, nerv, tpl){
+  "dollar"
+], function(es5, _, $){
 
 var _defaults = {
         unique: false,
         enableSource: false,
-        template: '{%= content %}'
+        template: false
     },
     _default_attrs = {
         autorender: 'autorender',
         source: 'source-selector'
     },
     _content_buffer = {},
+    _darkdata = {},
+    _guards = {},
     _uuid = 0,
     _array_slice = [].slice,
     _array_push = [].push,
+    _toString = Object.prototype.toString,
     RENDERED_MARK = 'rendered',
-    BRIGHT_ROOT_ID = 'bright-root-id',
+    BRIGHT_ID = 'bright-root-id',
     ID_PREFIX = '_brightRoot';
 
 function DarkDOM(opt){
@@ -3331,6 +3013,7 @@ function DarkDOM(opt){
     this._attrs = _.mix({}, _default_attrs);
     this._components = {};
     this._contents = {};
+    this._updaters = {};
     this.set(this._config);
 }
 
@@ -3359,33 +3042,38 @@ DarkDOM.prototype = {
         return this;
     },
 
+    observe: function(subject, handler){
+        this._updaters[subject] = handler;
+        return this;
+    },
+
     createGuard: function(){
         return new exports.DarkGuard({
             attrs: this._attrs,
             components: this._components,
             contents: this._contents,
-            config: this._config
+            updaters: this._updaters,
+            options: this._config
         });
     }
 
 };
 
 function DarkGuard(opt){
-    this._modelConfig = opt.config;
-    this._modelAttrs = opt.attrs;
-    this._modelComponents = opt.components;
-    this._modelContents = opt.contents;
+    this._attrs = Object.create(opt.attrs);
+    this._options = opt.options;
+    this._config = _.mix({}, opt);
+    this._updaters = {};
     this._darkRoots = [];
     this._specs = {};
-    this._attrs = _.mix({}, this._modelAttrs);
     this._buffer = [];
-    this._sourceData = {};
+    this._componentGuards = {};
+    this._contextData = null;
     this._contextTarget = null;
-    this._contextAttrs = null;
+    this._sourceData = {};
     this._sourceGuard = null;
-    this._template = tpl.convertTpl(this._modelConfig.template);
-    if (this._modelConfig.enableSource) {
-        this.createSource();
+    if (this._options.enableSource) {
+        this.createSource(opt);
     }
 }
 
@@ -3393,10 +3081,11 @@ DarkGuard.prototype = {
 
     watch: function(targets){
         targets = $(targets, this._contextTarget);
-        if (this._modelConfig.unique) {
+        if (this._options.unique) {
             targets = targets.eq(0);
         }
-        _array_push.apply(this._darkRoots, _array_slice.apply(targets));
+        _array_push.apply(this._darkRoots, 
+            _array_slice.apply(targets));
         return this;
     },
 
@@ -3412,8 +3101,18 @@ DarkGuard.prototype = {
         return this;
     },
 
+    observe: function(target, subject, handler){
+        var bright_id = $(target).attr(BRIGHT_ID);
+        var updaters = this._updaters[bright_id];
+        if (!updaters) {
+            updaters = this._updaters[bright_id] = {};
+        }
+        updaters[subject] = handler;
+        return this;
+    },
+
     source: function(){
-        if (!this._modelConfig.enableSource) {
+        if (!this._options.enableSource) {
             return;
         }
         return this._sourceGuard;
@@ -3433,59 +3132,78 @@ DarkGuard.prototype = {
         return this;
     },
 
+    update: function(){
+        this._darkRoots.forEach(function(target){
+            this.updateRoot($(target));
+        }, this);
+        return this;
+    },
+
     renderRoot: function(target){
         if (target.attr(this._attrs.autorender)
                 || target.attr(RENDERED_MARK)) {
             return;
         }
-        var data = this.scanRoot(target);
-        target.hide().after(this._template(data));
+        var data = this.prepareRoot(target);
+        target.hide().after(this.createRoot(data));
     },
 
     bufferRoot: function(target){
         if (target.attr(this._attrs.autorender)) {
             return;
         }
-        var data = this.scanRoot(target);
+        var data = this.prepareRoot(target);
         this._bufferData(data);
+    },
+
+    updateRoot: function(target){
+        exports.DarkGuard.update(target);
+    },
+
+    prepareRoot: function(target){
+        return this._renderData(this.scanRoot(target));
     },
 
     scanRoot: function(target){
         // @note
-        var bright_root_id = ID_PREFIX + (++_uuid);
+        var bright_id = target.attr(BRIGHT_ID);
+        if (!bright_id) {
+            bright_id = ID_PREFIX + (++_uuid);
+            target.attr(BRIGHT_ID, bright_id);
+        }
         target.attr(RENDERED_MARK, true);
-        target.attr(BRIGHT_ROOT_ID, bright_root_id);
-        // @note
-        var attrs_data = {
-            context: this._contextAttrs
-        };
-        _.each(this._attrs, function(getter, name){
-            attrs_data[name] = typeof getter === 'string' 
-                ? target.attr(getter) 
-                : getter && getter(target);
-        });
-        // @note
-        var components_data = this.componentsData(target, attrs_data);
-        var contents_data = this.contentsData(target);
+        _guards[bright_id] = this;
         // @note
         var data = {
-            id: bright_root_id,
-            attr: attrs_data,
-            content: contents_data.join(''),
-            component: components_data.html,
-            componentData: components_data.data
+            id: bright_id,
         };
-        if (this._sourceGuard && data.attr.source) {
-            this._mergeSource(data, target.attr(data.attr.source));
+        if (!this._config.sourceTarget) {
+            data.context = this._contextData;
+        }
+        data.attr = {};
+        _.each(this._attrs, function(getter, name){
+            this[name] = read_attr(target, getter);
+        }, data.attr);
+        this._scanComponents(data, target);
+        // @note
+        if (!this._config.sourceTarget
+                && this._sourceGuard 
+                && data.attr.source) {
+            this._mergeSource(data, data.attr.source);
         }
         return data;
     },
 
-    componentsData: function(target, attrs_data){
-        var re = { html: {}, data: {} };
-        _.each(this._modelComponents, function(component, name){
-            var guard = component.createGuard();
-            guard.changeContext(target, attrs_data);
+    _scanComponents: function(data, target){
+        var re = {};
+        _.each(this._config.components, function(component, name){
+            var guard = this._componentGuards[name];
+            if (!guard) {
+                guard = component.createGuard();
+                this._componentGuards[name] = guard;
+            }
+            guard._changeContext(data, target);
+            guard.resetWatch();
             var spec = this._specs[name];
             if (typeof spec === 'string') {
                 guard.watch(spec);
@@ -3493,93 +3211,83 @@ DarkGuard.prototype = {
                 spec(guard);
             }
             guard.buffer();
-            if (this._modelContents[name]) {
-                guard.bufferContent();
+            if (this._config.contents[name]) {
+                guard._bufferContent();
             } else {
-                re.html[name] = guard.htmlInBuffer();
-                re.data[name] = guard.dataInBuffer();
+                re[name] = guard.releaseData();
             }
-            guard.resetBuffer();
         }, this);
-        return re;
+        data.componentData = re;
+        data.contentList = this._scanContents(target);
     },
 
-    contentsData: function(target){
+    _scanContents: function(target){
         return [].map.call(target.contents(), function(content){
             content = $(content);
             if (content[0].nodeType === 1) {
                 var mark = content.attr(RENDERED_MARK),
-                    buffer_id = content.attr(BRIGHT_ROOT_ID),
-                    buffer = this.releaseContent(buffer_id);
-                return buffer || !mark && content[0].outerHTML || '';
+                    buffer_id = content.attr(BRIGHT_ID),
+                    buffer = this._releaseContent(buffer_id);
+                return buffer 
+                    || !mark && content[0].outerHTML 
+                    || false;
             } else if (content[0].nodeType === 3) {
-                return content.text();
-            }
-            return '';
-        }, this);
-    },
-
-    changeContext: function(target, attrs){
-        this._contextTarget = target;
-        this._contextAttrs = attrs;
-    },
-
-    createSource: function(){
-        this._sourceGuard = new exports.DarkGuard({
-            attrs: this._modelAttrs,
-            components: this._modelComponents,
-            contents: this._modelContents,
-            config: _.merge({
-                enableSource: false
-            }, this._modelConfig)
-        });
-        return this._sourceGuard;
-    },
-
-    loadSource: function(selector){
-        if (!selector) {
-            return;
-        }
-        var guard = this._sourceGuard;
-        guard.watch(selector);
-        guard.buffer();
-        var data = this._sourceData[selector] = guard.dataInBuffer();
-        guard.resetBuffer();
-        return data;
-    },
-
-    _mergeSource: function(data, source_selector){
-        var source_data = this._sourceData[source_selector];
-        if (!source_data) {
-            source_data = this.loadSource(source_selector);
-        }
-        _.merge(data.attr, source_data.attr);
-        var merged_source_data = source_data.length 
-            && source_data.reduce(function(re, data){
-                if (data) {
-                    re.content += data.content;
+                content = content.text();
+                if (/\S/.test(content)) {
+                    return content;
                 }
-                return re;
-            });
-        if (merged_source_data) {
-            data.content += merged_source_data.content;
-        }
-        _.mix(data._components, source_data.components);
+            }
+            return false;
+        }, this).filter(function(content){
+            return content;
+        });
+    },
+
+    _renderData: function(data){
+        data.component = {};
+        _.each(data.componentData, function(dataset, name){
+            if (Array.isArray(dataset)) {
+                this[name] = dataset.map(function(data){
+                    return render_data(data);
+                });
+            } else {
+                this[name] = render_data(dataset);
+            }
+        }, data.component);
+        data.content = data.contentList.map(function(data){
+            if (typeof data === 'string') {
+                return data;
+            }
+            return render_data(data);
+        }).join('');
+        _darkdata[data.id] = data;
         return data;
     },
 
-    dataInBuffer: function(){
-        return this._buffer;
+    _bufferData: function(data){
+        this._buffer.push(data);
     },
 
-    htmlInBuffer: function(){
-        var re = this._buffer.map(function(data){
-            return this._template(data);
-        }, this);
-        if (this._modelConfig.unique) {
-            re = re[0];
+    releaseData: function(){
+        var re = this._buffer.slice();
+        if (this._options.unique) {
+            re = re[0] || {};
         }
+        this.resetBuffer();
         return re;
+    },
+
+    _bufferContent: function(){
+        this._buffer.forEach(function(data){
+            _content_buffer[data.id] = data;
+        }, this);
+        this.resetBuffer();
+    },
+
+    _releaseContent: function(buffer_id){
+        var buffer = _content_buffer[buffer_id];
+        delete _content_buffer[buffer_id];
+        return buffer;
     },
 
     resetBuffer: function(){
@@ -3587,23 +3295,339 @@ DarkGuard.prototype = {
         return this;
     },
 
-    _bufferData: function(data){
-        this._buffer.push(data);
+    resetWatch: function(){
+        this._darkRoots.length = 0;
     },
 
-    bufferContent: function(){
-        this._buffer.forEach(function(data){
-            _content_buffer[data.id] = this._template(data);
-        }, this);
+    _changeContext: function(data, target){
+        this._contextData = data;
+        this._contextTarget = target;
+        if (this._sourceGuard) {
+            this._sourceGuard._changeContext(data);
+        }
     },
 
-    releaseContent: function(buffer_id){
-        var buffer = _content_buffer[buffer_id];
-        delete _content_buffer[buffer_id];
-        return buffer;
+    createRoot: function(data){
+        var bright_root = $(this.template(data));
+        bright_root.attr(this._attrs.autorender, 'true');
+        bright_root.attr('id', data.id);
+        return bright_root;
+    },
+
+    triggerUpdate: function(changes){
+        var handler;
+        var subject = changes.type;
+        var updaters = this._updaters[changes.rootId] 
+            || this._config.updaters;
+        if (changes.name) {
+            subject += ':' + changes.name;
+            handler = updaters[subject];
+        }
+        if (!handler) {
+            handler = updaters[changes.type];
+        }
+        if (!handler) {
+            handler = this.defaultUpdater;
+        }
+        return handler.call(this, changes);
+    },
+
+    defaultUpdater: function(changes){
+        var abort = changes.type !== 'component';
+        if (!changes.data) {
+            $(changes.root).remove();
+            return abort;
+        }
+        if (changes.root) {
+            this.createRoot(changes.data).replaceAll(changes.root);
+            return abort;
+        }
+    },
+
+    template: function(data){
+        return (this._options.template
+            || this.defaultTemplate)(data);
+    },
+
+    defaultTemplate: function(data){
+        return '<span>' + data.content + '</span>';
+    },
+
+    setSource: function(target, fn){
+        var selector = read_attr(target, this._attrs.source);
+        var dataset = this._sourceDataset[selector];
+        this._sourceDataset[selector] = is_function(fn) 
+            ? fn(dataset) : fn;
+    },
+
+    createSource: function(opt){
+        this._sourceGuard = new exports.DarkGuard(_.merge({
+            sourceTarget: this,
+            options: _.merge({
+                enableSource: false 
+            }, opt.options)
+        }, opt));
+        return this._sourceGuard;
+    },
+
+    scanSource: function(selector){
+        if (!selector) {
+            return;
+        }
+        var guard = this._sourceGuard;
+        guard.watch(selector);
+        guard.buffer();
+        var dataset = guard.releaseData();
+        this._sourceDataset[selector] = dataset;
+        return dataset;
+    },
+
+    _mergeSource: function(data, source_selector){
+        var source_dataset = this._sourceDataset[source_selector];
+        if (source_dataset === undefined) {
+            source_dataset = this.scanSource(source_selector);
+        }
+        return merge_source(data, source_dataset);
     }
 
 };
+
+DarkGuard.update = function(targets){
+    $(targets).forEach(update_target);
+    exports.DarkGuard.gc();
+};
+
+DarkGuard.observe = function(target, subject, handler){
+    target = $(target);
+    var bright_id = target.attr(BRIGHT_ID);
+    var guard = _guards[bright_id];
+    if (guard) {
+        guard.observe(target, subject, handler);
+    }
+};
+
+DarkGuard.fill = function(target, fn){
+    target = $(target);
+    var bright_id = target.attr(BRIGHT_ID);
+    var guard = _guards[bright_id];
+    if (guard) {
+        guard.setSource(target, fn);
+    }
+};
+
+DarkGuard.gc = function(){
+    var current = {};
+    $('[' + BRIGHT_ID + ']').forEach(function(target){
+        this[$(target).attr(BRIGHT_ID)] = true;
+    }, current);
+    Object.keys(_guards).forEach(function(bright_id){
+        if (!this[bright_id]) {
+            delete _guards[bright_id];
+            delete _darkdata[bright_id];
+        }
+    }, current);
+};
+
+function update_target(target){
+    target = $(target);
+    var bright_id = target.attr(BRIGHT_ID);
+    if (!target.parent()[0]) {
+        return trigger_update(bright_id, null, {
+            type: 'remove'
+        });
+    }
+    var guard = _guards[bright_id];
+    var origin = _darkdata[bright_id];
+    if (!guard || !origin) {
+        delete _guards[bright_id];
+        delete _darkdata[bright_id];
+        return;
+    }
+    guard.bufferRoot(target);
+    var dataset = guard.releaseData();
+    compare_model(origin, 
+        Array.isArray(dataset) ? dataset[0] : dataset);
+}
+
+function compare_model(origin, data){
+    if (!data || !data.id) {
+        return trigger_update(origin.id, null, {
+            type: 'remove'
+        });
+    }
+    var abort;
+    _.each(data.attr, function(value, name){
+        if (this[name] != value) {
+            abort = trigger_update(data.id, data, {
+                type: 'attr',
+                name: name,
+                oldValue: this[name],
+                newValue: value
+            });
+            if (abort === false) {
+                return false;
+            }
+        }
+    }, origin.attr || (origin.attr = {}));
+    if (abort === false) {
+        return;
+    }
+    if (compare_model_contents(
+        origin.contentList || (origin.contentList = []), 
+        data.contentList
+    )) {
+        abort = trigger_update(data.id, data, {
+            type: 'content',
+            oldValue: origin.contentList,
+            newValue: data.contentList
+        });
+        if (abort === false) {
+            return;
+        }
+    }
+    _.each(data.componentData, function(dataset, name){
+        var changed = compare_model_components.apply(this, arguments);
+        if (changed) {
+            abort = trigger_update(data.id, data, {
+                type: 'component',
+                name: name,
+                oldValue: this[name],
+                newValue: dataset
+            });
+            if (abort === false) {
+                return false;
+            }
+        }
+    }, origin.componentData || (origin.componentData = {}));
+}
+
+function compare_model_contents(origin, data){
+    if (origin.length !== data.length) {
+        return true;
+    }
+    var changed = false;
+    _.each(data, function(content, i){
+        if (typeof content === 'string') {
+            if (this[i] !== content) {
+                changed = true;
+                return false;
+            }
+        } else {
+            if (typeof this[i] === 'string'
+                   || !content.id
+                   || this[i].id !== content.id) {
+                changed = true;
+                return false;
+            }
+            compare_model(this[i], content);
+        }
+    }, origin);
+    return changed;
+}
+
+function compare_model_components(dataset, name){
+    if (!Array.isArray(dataset)) {
+        compare_model(this[name] || (this[name] = {}), 
+            dataset);
+        return;
+    }
+    var changed;
+    var originset = this[name] || (this[name] = []);
+    var larger = originset.length < dataset.length 
+        ? dataset
+        : originset;
+    for (var i = 0, l = larger.length; i < l; i++) {
+        if (!originset[i]) {
+            changed = true;
+            break;
+        }
+        if (!dataset[i] 
+                || originset[i].id === dataset[i].id) {
+            compare_model(originset[i], dataset[i]);
+        } else {
+            changed = true;
+            break;
+        }
+    }
+    return changed;
+}
+
+function trigger_update(bright_id, data, changes){
+    if (!bright_id) {
+        return;
+    }
+    var bright_root = $('#' + bright_id);
+    var guard = _guards[bright_id];
+    if (guard) {
+        return guard.triggerUpdate(_.mix(changes, {
+            data: data,
+            root: bright_root[0],
+            rootId: bright_id
+        }));
+    } else if (!data) {
+        bright_root.remove();
+        return false;
+    }
+}
+
+function merge_source(data, source_data){
+    if (Array.isArray(source_data)) {
+        source_data.forEach(function(source_data){
+            merge_source(this, source_data);
+        }, data);
+        return data;
+    }
+    _.merge(data.attr || (data.attr = {}), 
+        source_data.attr || {});
+    (source_data.contentList || []).forEach(function(source_data){
+        if (typeof source_data !== 'string') {
+            fix_source(source_data, data);
+        }
+        this.push(source_data);
+    }, data.contentList || (data.contentList = []));
+    _.each(source_data.componentData || [],
+        merge_source_components, data);
+    return data;
+}
+
+function merge_source_components(dataset, name){
+    var origin = this.componentData || (this.componentData = {});
+    if (Array.isArray(dataset)) {
+        var context = this;
+        dataset.forEach(function(source_data){
+            this.push(fix_source(source_data, context));
+        }, origin[name] || (origin[name] = []));
+    } else {
+        merge_source(origin[name] || (origin[name] = {}),
+            dataset);
+    }
+}
+
+function fix_source(source_data, context){
+    if (!source_data.id) {
+        source_data.id = ID_PREFIX + (++_uuid);
+    }
+    source_data.context = context; 
+    return source_data;
+}
+
+function read_attr(target, getter){
+    return typeof getter === 'string' 
+        ? target.attr(getter) 
+        : getter && getter(target);
+}
+
+function render_data(data){
+    var guard = _guards[data.id];
+    if (!guard) {
+        return '';
+    }
+    return guard.createRoot(data)[0].outerHTML;
+}
+
+function is_function(obj) {
+    return _toString.call(obj) === "[object Function]";
+}
 
 function kv_dict(key, value){
     var dict = key;
@@ -3620,6 +3644,9 @@ function exports(opt){
 
 exports.DarkDOM = DarkDOM;
 exports.DarkGuard = DarkGuard;
+exports.update = DarkGuard.update;
+exports.observe = DarkGuard.observe;
+exports.fill = DarkGuard.fill;
 
 return exports;
 
@@ -3629,45 +3656,49 @@ return exports;
 
 
 define("../cardkit2/card/common/scaffold", [
-  "darkdom"
-], function(darkdom){
+  "darkdom",
+  "mo/template/micro",
+  "../cardkit2/card/../tpl/scaffold/hd",
+  "../cardkit2/card/../tpl/scaffold/ft"
+], function(darkdom, tpl,
+    tpl_hd, tpl_ft){
 
-    var hd = darkdom({
-        unique: true,
-        enableSource: true,
-        //template: ''
-    });
+var hd = darkdom({
+    unique: true,
+    enableSource: true,
+    template: tpl.convertTpl(tpl_hd.template)
+});
 
-    var hd_link = darkdom({
-        unique: true,
-        enableSource: true,
-        //template: ''
-    });
+var hd_link = darkdom({
+    unique: true,
+    enableSource: true,
+    //template: ''
+});
 
-    var hd_link_extern = darkdom({
-        unique: true,
-        enableSource: true,
-        //template: ''
-    });
+var hd_link_extern = darkdom({
+    unique: true,
+    enableSource: true,
+    //template: ''
+});
 
-    var hd_opt = darkdom({
-        enableSource: true,
-        //template: ''
-    });
+var hd_opt = darkdom({
+    enableSource: true,
+    //template: ''
+});
 
-    var ft = darkdom({
-        unique: true,
-        enableSource: true,
-        //template: ''
-    });
+var ft = darkdom({
+    unique: true,
+    enableSource: true,
+    template: tpl.convertTpl(tpl_ft.template)
+});
 
-    return function(root){
-        root.contain('hd', hd);
-        root.contain('hdLink', hd_link);
-        root.contain('hdLinkExtern', hd_link_extern);
-        root.contain('hdOpt', hd_opt);
-        root.contain('ft', ft);
-    };
+return function(root){
+    root.contain('hd', hd);
+    root.contain('hdLink', hd_link);
+    root.contain('hdLinkExtern', hd_link_extern);
+    root.contain('hdOpt', hd_opt);
+    root.contain('ft', ft);
+};
 
 });
 
@@ -3679,23 +3710,24 @@ define("../cardkit2/card/box", [
   "mo/lang",
   "dollar",
   "darkdom",
+  "mo/template/micro",
   "../cardkit2/card/common/scaffold",
   "../cardkit2/tpl/box"
-], function(_, $, darkdom, scaffold_components, tpl_box){
+], function(_, $, darkdom, tpl, scaffold_components, tpl_box){
 
-    var content = darkdom({
-        enableSource: true,
-        template: ''
-    });
+var content = darkdom({
+    enableSource: true,
+    template: ''
+});
 
-    var box = darkdom({
-        enableSource: true,
-        template: tpl_box.template
-    });
-    scaffold_components(box);
-    box.contain('content', content);
+var box = darkdom({
+    enableSource: true,
+    template: tpl.convertTpl(tpl_box.template)
+});
+scaffold_components(box);
+box.contain('content', content);
 
-    return box;
+return box;
 
 });
 
@@ -3712,29 +3744,29 @@ define("../cardkit2/spec/box", [
 ], function(_, $, box_card, 
         scaffold_specs, source_scaffold_specs){
 
-    var selector = 'ck-card[type="box"]';
+var selector = 'ck-card[type="box"]';
 
-    return function(guard, parent){
-        guard.watch(parent && $(selector, parent) || selector);
-        guard.bond({
-            subtype: 'subtype',
-            paperStyle: 'paper-style',
-            plainStyle: 'plain-style',
-            plainHdStyle: 'plain-hd-style'
-        });
-        guard.delegate('content', function(guard){
-            guard.watch('ck-part[type="content"]');
-        });
-        _.each(scaffold_specs, function(spec, name){
-            guard.delegate(name, spec);
-        });
-        guard.source().delegate('content', function(source){
-            source.watch('.ckd-content');
-        });
-        _.each(source_scaffold_specs, function(spec, name){
-            this.delegate(name, spec);
-        }, guard.source());
-    };
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'subtype',
+        paperStyle: 'paper-style',
+        plainStyle: 'plain-style',
+        plainHdStyle: 'plain-hd-style'
+    });
+    guard.delegate('content', function(guard){
+        guard.watch('ck-part[type="content"]');
+    });
+    _.each(scaffold_specs, function(spec, name){
+        guard.delegate(name, spec);
+    });
+    guard.source().delegate('content', function(source){
+        source.watch('.ckd-content');
+    });
+    _.each(source_scaffold_specs, function(spec, name){
+        this.delegate(name, spec);
+    }, guard.source());
+};
 
 });
 
@@ -3748,47 +3780,47 @@ define("../cardkit2/spec/page", [
   "../cardkit2/spec/box"
 ], function(_, $, box_spec){
 
-    return function(guard, source, parent){
-        guard.watch($('ck-card[type="page"]', parent));
-        guard.bond({
-            isFirst: 'firstpage',
-            cardId: 'id'
-        });
-        guard.delegate('title', 'ck-part[type="title"]');
-        guard.delegate('actionbar', actionbar_spec);
-        guard.delegate('navdrawer', navdrawer_spec);
-        guard.delegate('box', box_spec);
-    };
+return function(guard, source, parent){
+    guard.watch($('ck-card[type="page"]', parent));
+    guard.bond({
+        isFirst: 'firstpage',
+        cardId: 'id'
+    });
+    guard.delegate('title', 'ck-part[type="title"]');
+    guard.delegate('actionbar', actionbar_spec);
+    guard.delegate('navdrawer', navdrawer_spec);
+    guard.delegate('box', box_spec);
+};
 
-    function navdrawer_spec(guard){
-        guard.watch('ck-part[type="navdrawer"]');
-    }
+function navdrawer_spec(guard){
+    guard.watch('ck-part[type="navdrawer"]');
+}
 
-    function actionbar_spec(guard){
-        guard.watch('ck-part[type="actionbar"]');
-        guard.delegate('action', action_spec);
-        guard.source().delegate('action', source_action_spec);
-    }
+function actionbar_spec(guard){
+    guard.watch('ck-part[type="actionbar"]');
+    guard.delegate('action', action_spec);
+    guard.source().delegate('action', source_action_spec);
+}
 
-    function action_spec(guard){
-        guard.watch('[action-layout]');
-        guard.bond('forceOverflow', function(node){
-            return 'overflow' === 
-                node.attr('action-layout');
-        });
-        source_action_attr(guard.source());
-    }
+function action_spec(guard){
+    guard.watch('[action-layout]');
+    guard.bond('forceOverflow', function(node){
+        return 'overflow' === 
+            node.attr('action-layout');
+    });
+    source_action_attr(guard.source());
+}
 
-    function source_action_spec(source){
-        source.watch('.ckd-item, .ckd-overflow-item');
-        source_action_attr(source);
-    }
+function source_action_spec(source){
+    source.watch('.ckd-item, .ckd-overflow-item');
+    source_action_attr(source);
+}
 
-    function source_action_attr(source){
-        source.bond('forceOverflow', function(node){
-            return node.hasClass('ckd-overflow-item');
-        });
-    }
+function source_action_attr(source){
+    source.bond('forceOverflow', function(node){
+        return node.hasClass('ckd-overflow-item');
+    });
+}
 
 });
 
@@ -3824,7 +3856,7 @@ define("../cardkit2/tpl/page/title", [], function(){
 
 define("../cardkit2/tpl/page", [], function(){
 
-    return {"template":"\n<div class=\"ck-card\" \n        id=\"{%= id %}\"\n        autorender=\"true\"\n        card-id=\"{%= attr.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
+    return {"template":"\n<div class=\"ck-card\" \n        card-id=\"{%= attr.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
 
 });
 /* @source ../cardkit2/card/page.js */;
@@ -3834,50 +3866,51 @@ define("../cardkit2/card/page", [
   "mo/lang",
   "dollar",
   "darkdom",
+  "mo/template/micro",
   "../cardkit2/card/box",
   "../cardkit2/tpl/page",
   "../cardkit2/tpl/page/title",
   "../cardkit2/tpl/page/actionbar",
   "../cardkit2/tpl/page/actionbar/action",
   "../cardkit2/tpl/page/navdrawer"
-], function(_, $, darkdom, box,
-        tpl_page, tpl_title, tpl_actionbar, tpl_action, tpl_navdrawer){
+], function(_, $, darkdom, tpl, box,
+    tpl_page, tpl_title, tpl_actionbar, tpl_action, tpl_navdrawer){
 
-    var title = darkdom({
-        unique: true,
-        template: tpl_title.template
-    });
+var title = darkdom({
+    unique: true,
+    template: tpl.convertTpl(tpl_title.template)
+});
 
-    var action = darkdom({
-        enableSource: true,
-        template: tpl_action.template
-    });
+var action = darkdom({
+    enableSource: true,
+    template: tpl.convertTpl(tpl_action.template)
+});
 
-    var actionbar = darkdom({
-        unique: true,
-        enableSource: true,
-        template: tpl_actionbar.template
-    }).contain('action', action);
+var actionbar = darkdom({
+    unique: true,
+    enableSource: true,
+    template: tpl.convertTpl(tpl_actionbar.template)
+}).contain('action', action);
 
-    var navdrawer = darkdom({
-        unique: true,
-        template: tpl_navdrawer.template
-    });
+var navdrawer = darkdom({
+    unique: true,
+    template: tpl.convertTpl(tpl_navdrawer.template)
+});
 
-    var page = darkdom({
-        template: tpl_page.template
-    });
-    page.bond({
-        cardId: 'id'
-    });
-    page.contain('title', title);
-    page.contain('actionbar', actionbar);
-    page.contain('navdrawer', navdrawer);
-    page.contain('box', box, {
-        content: true
-    });
+var page = darkdom({
+    template: tpl.convertTpl(tpl_page.template)
+});
+page.bond({
+    cardId: 'id'
+});
+page.contain('title', title);
+page.contain('actionbar', actionbar);
+page.contain('navdrawer', navdrawer);
+page.contain('box', box, {
+    content: true
+});
 
-    return page;
+return page;
 
 });
 
@@ -3912,68 +3945,68 @@ define("../cardkit2/app", [
   "../cardkit2/bus",
   "mo/domready"
 ], function(_, $, darkdom, 
-        specs, oldspecs, supports, bus){
+    specs, oldspecs, supports, bus){
 
-    var _components = {},
-        _specs = {},
-        _defaults = {
-            components: ['page', 'box', 'list', 'mini', 'form', 'banner'],
-            supportOldVersion: false
-        };
+var _components = {},
+    _specs = {},
+    _defaults = {
+        components: ['page', 'box', 'list', 'mini', 'form', 'banner'],
+        supportOldVersion: false
+    };
 
-    var exports = {
+var exports = {
 
-        init: function(opt){
-            var cfg = this._config = _.config({}, opt, _defaults);
+    init: function(opt){
+        var cfg = this._config = _.config({}, opt, _defaults);
+        cfg.components.forEach(function(name){
+            var data = specs[name];
+            if (data) {
+                this.setComponent(name, data[0]);
+                this.setSpec(name, data[1]);
+            }
+        }, this);
+        if (cfg.supportOldVersion) {
             cfg.components.forEach(function(name){
-                var data = specs[name];
+                var data = oldspecs[name];
                 if (data) {
                     this.setComponent(name, data[0]);
                     this.setSpec(name, data[1]);
                 }
             }, this);
-            if (cfg.supportOldVersion) {
-                cfg.components.forEach(function(name){
-                    var data = oldspecs[name];
-                    if (data) {
-                        this.setComponent(name, data[0]);
-                        this.setSpec(name, data[1]);
-                    }
-                }, this);
-            }
-        },
+        }
+    },
 
-        setComponent: function(name, component){
-            _components[name] = component;
-        },
+    setComponent: function(name, component){
+        _components[name] = component;
+    },
 
-        setSpec: function(name, spec){
-            _specs[name] = spec;
-        },
+    setSpec: function(name, spec){
+        _specs[name] = spec;
+    },
 
-        applySpec: function(name, parent){
-            var component = _components[name],
-                spec = _specs[name];
-            if (!component || !spec) {
-                return false;
-            }
-            var guard = component.createGuard();
-            spec(guard, parent);
-            guard.render();
-            return true;
-        },
+    applySpec: function(name, parent){
+        var component = _components[name],
+            spec = _specs[name];
+        if (!component || !spec) {
+            return false;
+        }
+        var guard = component.createGuard();
+        spec(guard, parent);
+        guard.render();
+        return true;
+    },
 
-        render: function(parent){
-            _.each(_components, function(component, name){
-                this.applySpec(name, parent);
-            }, this);
-        },
+    render: function(parent){
+        _.each(_components, function(component, name){
+            this.applySpec(name, parent);
+        }, this);
+    },
 
-        event: bus
+    event: bus
 
-    };
+};
 
-    return exports;
+return exports;
 
 });
 
@@ -3981,8 +4014,8 @@ define("../cardkit2/app", [
 
 
 require.config({
-    baseUrl: 'js/component/',
-    distUrl: 'static/js/component/',
+    baseUrl: 'js/vendor/',
+    distUrl: 'static/js/vendor/',
     aliases: {
         'cardkit': '../cardkit2/'
     }

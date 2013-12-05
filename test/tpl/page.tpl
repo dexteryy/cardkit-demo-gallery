@@ -13,13 +13,13 @@
     <p>This is normal text</p>
 
     <ck-card type="box"
+            source=".ckd-source.box1"
             subtype=""
             plain-style="true"
             plain-hd-style="true">
         <ck-part type="hd">This is box's head</ck-part>
         This is box's content
         <div id="elmInBox" class="elm-in-box"></div>
-        <ck-part type="ft">This is box's foot</ck-part>
     </ck-card>
 
     <p>This is normal text</p>
