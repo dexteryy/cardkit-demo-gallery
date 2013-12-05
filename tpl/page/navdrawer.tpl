@@ -1,4 +1,2 @@
 
-<div class="ck-navdrawer"
-    id="{%= id %}"
-    autorender="true"></div>
+<div class="ck-navdrawer"></div>

@@ -1,7 +1,5 @@
 
-<div class="ck-actionbar"
-    id="{%= id %}"
-    autorender="true">
+<div class="ck-actionbar">
 {% component.action.forEach(function(action){ %}
     {%= action %}
 {% }); %}

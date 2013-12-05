@@ -1,3 +1,1 @@
-<span class="ck-ft"
-    id="{%= id %}"
-    autorender="true">{%= content %}</span>
+<span class="ck-ft">{%= content %}</span>

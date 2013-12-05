@@ -1,5 +1,5 @@
 define([], function(){
 
-    return {"template":"<span class=\"ck-ft\"\n    id=\"{%= id %}\"\n    autorender=\"true\">{%= content %}</span>\n"}; 
+    return {"template":"<span class=\"ck-ft\">{%= content %}</span>\n"}; 
 
 });

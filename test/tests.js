@@ -70,14 +70,14 @@ describe("the page card", function(){
 
     });
 
-    describe('update', function(){
+    describe("update dark root", function(){
 
         before(function(){
             this.brightBox = this.brightRoot.find('.ck-box-unit');
             this.darkBox = this.darkRoot.find('ck-card[type="box"]');
         });
     
-        it('', function(){
+        it("change component's content", function(){
 
             var title_1 = 'title 11111';
             var title_2 = 'title 22222';
@@ -100,6 +100,35 @@ describe("the page card", function(){
 
         });
     
+        it("remove component", function(){
+
+            var actions = this.brightRoot.find('.ck-action');
+
+            this.darkRoot.find('button[action-layout]').eq(2).remove();
+            expect(actions.length).to.be(2);
+
+            darkdom.update(this.darkRoot);
+            actions = this.brightRoot.find('.ck-action');
+            expect(actions.length).to.be(1);
+
+        });
+
+        it("add component", function(){
+
+            var buttons = this.darkRoot.find('button[action-layout]');
+            var actions = this.brightRoot.find('.ck-action');
+
+            this.darkRoot.find('ck-part[type="actionbar"]')
+                .append(buttons.eq(0).clone().html('yy'));
+            expect(actions.length).to.be(2);
+
+            darkdom.update(this.darkRoot);
+            actions = this.brightRoot.find('.ck-action');
+            expect(actions.length).to.be(3);
+            expect(actions.eq(2)).to.have.html('yy');
+
+        });
+
     });
 
     after(function(){
