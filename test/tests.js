@@ -4,8 +4,10 @@ require([
     'mo/template',
     'darkdom',
     'test/tpl/page',
+    'test/tpl/page_source',
     'cardkit/app'
-], function(_, tpl, darkdom, tpl_page, app){
+], function(_, tpl, darkdom, 
+    tpl_page, tpl_page_source, app){
 
 var $ = window.jQuery;
 
@@ -13,10 +15,12 @@ app.init();
 
 describe("the page card", function(){
 
-    var page, dark_root, bright_root;
+    var page, page_source, dark_root, bright_root;
 
     beforeEach(function(){
         page = $(tpl.convertTpl(tpl_page.template, {
+        })).appendTo('body');
+        page_source = $(tpl.convertTpl(tpl_page_source.template, {
         })).appendTo('body');
         app.render(page);
         dark_root = $('ck-card');
@@ -80,7 +84,7 @@ describe("the page card", function(){
 
         beforeEach(function(){
             bright_box = bright_root.find('.ck-box-unit');
-            dark_box = dark_root.find('ck-card[type="box"]');
+            dark_box = dark_root.find('ck-card[type="box"]').eq(0);
         });
     
         it("change component's content", function(){
@@ -156,9 +160,45 @@ describe("the page card", function(){
 
     describe("source", function(){
     
+        var box1, box2, dark_box2;
+
+        beforeEach(function(){
+            box1 = bright_root.find('.ck-box-unit').eq(0);
+            box2 = bright_root.find('.ck-box-unit').eq(1);
+            dark_box2 = dark_root.find('ck-card[type="box"]').eq(1);
+        });
+
+        it("add content", function(){
+            expect(box1.find('p')).to.length(1);
+        });
+
+        it("add component", function(){
+            expect(box1.find('.ck-ft')).to.exist;
+        });
+
+        it("merge component", function(){
+            expect(box1.find('.ck-hd')).to.not.html("This is source's head");
+        });
+
+        it("component's source", function(){
+            var actions = bright_root.find('.ck-action');
+            expect(actions).to.length(3);
+            expect(box2.find('.ck-content')).to.length(3);
+        });
+
+        it("set source", function(){
+            var content3 = dark_box2.find('[type="content"]').eq(2);
+            darkdom.fill(content3, {
+                contentList: ['yy']
+            });
+            darkdom.update(dark_root);
+            expect(box2.find('.ck-content').eq(2)).to.html('yy');
+        });
+
     });
 
     afterEach(function(){
+        page_source.remove();
         darkdom.update(page.remove());
     });
 

@@ -1,5 +1,3 @@
-
-
 <div class="ck-box-unit"
         data-style="{%= attr.subtype %}"
         data-cfg-paper="{%= attr.paperStyle %}"

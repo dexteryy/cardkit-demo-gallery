@@ -1821,11 +1821,18 @@ return {
 });
 
 
+/* @source ../cardkit2/tpl/box/content.js */;
+
+define("../cardkit2/tpl/box/content", [], function(){
+
+    return {"template":"<div class=\"ck-content\">{%= content %}</div>\n"}; 
+
+});
 /* @source ../cardkit2/tpl/box.js */;
 
 define("../cardkit2/tpl/box", [], function(){
 
-    return {"template":"\n\n<div class=\"ck-box-unit\"\n        data-style=\"{%= attr.subtype %}\"\n        data-cfg-paper=\"{%= attr.paperStyle %}\"\n        data-cfg-plain=\"{%= attr.plainStyle %}\"\n        data-cfg-plainhd=\"{%= attr.plainHdStyle %}\">\n    {%= component.hd %}\n    {%= content %}\n    {%= component.ft %}\n</div>\n"}; 
+    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= attr.subtype %}\"\n        data-cfg-paper=\"{%= attr.paperStyle %}\"\n        data-cfg-plain=\"{%= attr.plainStyle %}\"\n        data-cfg-plainhd=\"{%= attr.plainHdStyle %}\">\n    {%= component.hd %}\n    {%= content %}\n    {%= component.ft %}\n</div>\n"}; 
 
 });
 /* @source ../cardkit2/card/../tpl/scaffold/ft.js */;
@@ -3047,14 +3054,14 @@ DarkDOM.prototype = {
         return this;
     },
 
-    createGuard: function(){
-        return new exports.DarkGuard({
+    createGuard: function(opt){
+        return new exports.DarkGuard(_.mix({
             attrs: this._attrs,
             components: this._components,
             contents: this._contents,
             updaters: this._updaters,
             options: this._config
-        });
+        }, opt));
     }
 
 };
@@ -3070,7 +3077,7 @@ function DarkGuard(opt){
     this._componentGuards = {};
     this._contextData = null;
     this._contextTarget = null;
-    this._sourceData = {};
+    this._sourceDataset = {};
     this._sourceGuard = null;
     if (this._options.enableSource) {
         this.createSource(opt);
@@ -3142,42 +3149,42 @@ DarkGuard.prototype = {
     renderRoot: function(target){
         if (target.attr(this._attrs.autorender)
                 || target.attr(RENDERED_MARK)) {
-            return;
+            return this;
         }
-        var data = this.prepareRoot(target);
+        var data = render_root(this.scanRoot(target));
         target.hide().after(this.createRoot(data));
+        return this;
     },
 
     bufferRoot: function(target){
         if (target.attr(this._attrs.autorender)) {
-            return;
+            return this;
         }
-        var data = this.prepareRoot(target);
+        var data = this.scanRoot(target); 
         this._bufferData(data);
+        return this;
     },
 
     updateRoot: function(target){
         exports.DarkGuard.update(target);
-    },
-
-    prepareRoot: function(target){
-        return this._renderData(this.scanRoot(target));
+        return this;
     },
 
     scanRoot: function(target){
-        // @note
+        var is_source = this._config.isSource;
         var bright_id = target.attr(BRIGHT_ID);
         if (!bright_id) {
             bright_id = ID_PREFIX + (++_uuid);
-            target.attr(BRIGHT_ID, bright_id);
+            if (!is_source) {
+                target.attr(BRIGHT_ID, bright_id);
+            }
         }
         target.attr(RENDERED_MARK, true);
         _guards[bright_id] = this;
-        // @note
         var data = {
             id: bright_id,
         };
-        if (!this._config.sourceTarget) {
+        if (!is_source) {
             data.context = this._contextData;
         }
         data.attr = {};
@@ -3185,11 +3192,9 @@ DarkGuard.prototype = {
             this[name] = read_attr(target, getter);
         }, data.attr);
         this._scanComponents(data, target);
-        // @note
-        if (!this._config.sourceTarget
-                && this._sourceGuard 
-                && data.attr.source) {
-            this._mergeSource(data, data.attr.source);
+        if (!is_source
+                && this._sourceGuard) {
+            this._mergeSource(data);
         }
         return data;
     },
@@ -3199,7 +3204,9 @@ DarkGuard.prototype = {
         _.each(this._config.components, function(component, name){
             var guard = this._componentGuards[name];
             if (!guard) {
-                guard = component.createGuard();
+                guard = component.createGuard({
+                    isSource: this._config.isSource
+                });
                 this._componentGuards[name] = guard;
             }
             guard._changeContext(data, target);
@@ -3243,25 +3250,11 @@ DarkGuard.prototype = {
         });
     },
 
-    _renderData: function(data){
-        data.component = {};
-        _.each(data.componentData, function(dataset, name){
-            if (Array.isArray(dataset)) {
-                this[name] = dataset.map(function(data){
-                    return render_data(data);
-                });
-            } else {
-                this[name] = render_data(dataset);
-            }
-        }, data.component);
-        data.content = data.contentList.map(function(data){
-            if (typeof data === 'string') {
-                return data;
-            }
-            return render_data(data);
-        }).join('');
-        _darkdata[data.id] = data;
-        return data;
+    renderBuffer: function(){
+        this._buffer.forEach(function(data){
+            render_root(data);
+        });
+        return this;
     },
 
     _bufferData: function(data){
@@ -3333,7 +3326,7 @@ DarkGuard.prototype = {
     },
 
     defaultUpdater: function(changes){
-        var abort = changes.type !== 'component';
+        var abort = changes.type === 'component';
         if (!changes.data) {
             $(changes.root).remove();
             return abort;
@@ -3354,15 +3347,15 @@ DarkGuard.prototype = {
     },
 
     setSource: function(target, fn){
-        var selector = read_attr(target, this._attrs.source);
-        var dataset = this._sourceDataset[selector];
-        this._sourceDataset[selector] = is_function(fn) 
+        var bright_id = target.attr(BRIGHT_ID);
+        var dataset = this._sourceDataset[bright_id];
+        this._sourceDataset[bright_id] = is_function(fn) 
             ? fn(dataset) : fn;
     },
 
     createSource: function(opt){
         this._sourceGuard = new exports.DarkGuard(_.merge({
-            sourceTarget: this,
+            isSource: true,
             options: _.merge({
                 enableSource: false 
             }, opt.options)
@@ -3370,7 +3363,7 @@ DarkGuard.prototype = {
         return this._sourceGuard;
     },
 
-    scanSource: function(selector){
+    scanSource: function(bright_id, selector){
         if (!selector) {
             return;
         }
@@ -3378,16 +3371,19 @@ DarkGuard.prototype = {
         guard.watch(selector);
         guard.buffer();
         var dataset = guard.releaseData();
-        this._sourceDataset[selector] = dataset;
+        this._sourceDataset[bright_id] = dataset;
         return dataset;
     },
 
-    _mergeSource: function(data, source_selector){
-        var source_dataset = this._sourceDataset[source_selector];
-        if (source_dataset === undefined) {
-            source_dataset = this.scanSource(source_selector);
+    _mergeSource: function(data){
+        var source_dataset = this._sourceDataset[data.id];
+        if (!source_dataset) {
+            source_dataset = this.scanSource(data.id, 
+                data.attr.source);
         }
-        return merge_source(data, source_dataset);
+        if (source_dataset) {
+            merge_source(data, source_dataset);
+        }
     }
 
 };
@@ -3443,8 +3439,9 @@ function update_target(target){
         delete _darkdata[bright_id];
         return;
     }
-    guard.bufferRoot(target);
-    var dataset = guard.releaseData();
+    var dataset = guard.bufferRoot(target)
+        .renderBuffer()
+        .releaseData();
     compare_model(origin, 
         Array.isArray(dataset) ? dataset[0] : dataset);
 }
@@ -3577,21 +3574,34 @@ function merge_source(data, source_data){
         }, data);
         return data;
     }
+    if (!data.id) {
+        data.id = source_data.id;
+    }
     _.merge(data.attr || (data.attr = {}), 
         source_data.attr || {});
-    (source_data.contentList || []).forEach(function(source_data){
-        if (typeof source_data !== 'string') {
-            fix_source(source_data, data);
-        }
-        this.push(source_data);
-    }, data.contentList || (data.contentList = []));
+    // @note
+    var content_list = data.contentList || [];
+    if (!content_list.length) {
+        content_list = (source_data.contentList || [])
+            .map(function(source_data){
+                if (typeof source_data !== 'string') {
+                    fix_source(source_data, data);
+                }
+                return source_data;
+            });
+    }
+    data.contentList = content_list;
+    // @note
+    if (!data.componentData) {
+        data.componentData = {};
+    }
     _.each(source_data.componentData || [],
         merge_source_components, data);
     return data;
 }
 
 function merge_source_components(dataset, name){
-    var origin = this.componentData || (this.componentData = {});
+    var origin = this.componentData;
     if (Array.isArray(dataset)) {
         var context = this;
         dataset.forEach(function(source_data){
@@ -3611,10 +3621,24 @@ function fix_source(source_data, context){
     return source_data;
 }
 
-function read_attr(target, getter){
-    return typeof getter === 'string' 
-        ? target.attr(getter) 
-        : getter && getter(target);
+function render_root(data){
+    _.each(data.componentData, function(dataset, name){
+        if (Array.isArray(dataset)) {
+            this[name] = dataset.map(function(data){
+                return render_data(data);
+            });
+        } else {
+            this[name] = render_data(dataset);
+        }
+    }, data.component || (data.component = {}));
+    data.content = data.contentList.map(function(data){
+        if (typeof data === 'string') {
+            return data;
+        }
+        return render_data(data);
+    }).join('');
+    _darkdata[data.id] = data;
+    return data;
 }
 
 function render_data(data){
@@ -3622,7 +3646,16 @@ function render_data(data){
     if (!guard) {
         return '';
     }
+    if (!data.component) {
+        data = render_root(data);
+    }
     return guard.createRoot(data)[0].outerHTML;
+}
+
+function read_attr(target, getter){
+    return typeof getter === 'string' 
+        ? target.attr(getter) 
+        : getter && getter(target);
 }
 
 function is_function(obj) {
@@ -3712,12 +3745,14 @@ define("../cardkit2/card/box", [
   "darkdom",
   "mo/template/micro",
   "../cardkit2/card/common/scaffold",
-  "../cardkit2/tpl/box"
-], function(_, $, darkdom, tpl, scaffold_components, tpl_box){
+  "../cardkit2/tpl/box",
+  "../cardkit2/tpl/box/content"
+], function(_, $, darkdom, tpl, 
+    scaffold_components, tpl_box, tpl_box_content){
 
 var content = darkdom({
     enableSource: true,
-    template: ''
+    template: tpl.convertTpl(tpl_box_content.template)
 });
 
 var box = darkdom({
@@ -3725,7 +3760,9 @@ var box = darkdom({
     template: tpl.convertTpl(tpl_box.template)
 });
 scaffold_components(box);
-box.contain('content', content);
+box.contain('content', content, {
+    content: true
+});
 
 return box;
 

@@ -23,6 +23,8 @@
     <ck-part type="actionbar">
         <button type="button" action-layout="auto">Reload</button>
         <button type="button" action-layout="overflow" class="switchstyle">切换界面风格</button>
+        <button type="button" action-layout
+            source-selector=".ckd-source.btn1"></button>
     </ck-part>
 
     <ck-part type="navdrawer">
@@ -31,19 +33,29 @@
     <p>This is normal text</p>
 
     <ck-card type="box"
+            source-selector=".ckd-source.box1"
             subtype=""
             plain-style="true"
             plain-hd-style="true">
         <ck-part type="hd">This is box's head</ck-part>
         This is box's content
+        <p>This is box's content</p>
         <div id="elmInBox" class="elm-in-box"></div>
-        <ck-part type="ft">This is box's foot</ck-part>
     </ck-card>
 
     <p>This is normal text</p>
 
-</ck-card>
+    <ck-card type="box"
+            subtype="">
+        <ck-part type="content" 
+            source-selector=".ckd-source.content1"></ck-part>
+        This is box's content
+        <ck-part type="content" 
+            source-selector=".ckd-source.content1"></ck-part>
+        <ck-part type="content"></ck-part>
+    </ck-card>
 
+</ck-card>
 
 <!--<div class="ck-card" id="oldStyleCard">-->
 
@@ -91,6 +103,19 @@
 
 <!--</ck-card>-->
 
+<div style="display:none">
+
+    <div class="ckd-source box1">
+        <div class="ckd-hd">This is source's head</div>
+        This is source's content
+        <p class="ckd-source content1">This is source's content</p>
+        <div class="ckd-ft">This is source's foot</div>
+    </div>
+
+    <button class="ckd-source btn1">button in source</div>
+
+</div>
+
 <script src="js/shCore.js"></script>
 <script src="js/shBrushXml.js"></script>
 <script src="js/shBrushJScript.js"></script>
@@ -98,14 +123,35 @@
 require([
     'mo/lang',
     'dollar',
+    'darkdom',
     'cardkit/app'
-], function(_, $, cardkit){
+], function(_, $, darkdom, cardkit){
 
-    cardkit.init({
-        //supportOldVersion: true
-    });
-    cardkit.render('ck-card');
+cardkit.init();
+cardkit.render('ck-card');
 
+dark_root = $('ck-card');
+bright_root = $('.ck-card');
+bright_box = bright_root.find('.ck-box-unit');
+dark_box = dark_root.find('ck-card[type="box"]').eq(0);
+
+var title_1 = 'title 11111';
+var title_2 = 'title 22222';
+var bright_hd = bright_box.find('.ck-hd');
+var dark_hd = dark_box.find('ck-part[type="hd"]');
+
+dark_hd.html(title_1);
+darkdom.update(dark_hd);
+bright_hd = bright_box.find('.ck-hd');
+console.info(bright_hd.html())
+
+var title = dark_root.find('[type="title"]');
+darkdom.fill(title, {
+    contentList: ['yy']
+});
+darkdom.update(dark_root);
+console.info(title[0])
+    
 });
 </script>
 <script src="js/common.js"></script>
