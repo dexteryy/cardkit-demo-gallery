@@ -32,6 +32,7 @@ function DarkDOM(opt){
     this._attrs = _.mix({}, _default_attrs);
     this._components = {};
     this._contents = {};
+    this._updaters = {};
     this.set(this._config);
 }
 
@@ -60,33 +61,34 @@ DarkDOM.prototype = {
         return this;
     },
 
+    observe: function(type, handler){
+        this._updaters[type] = handler;
+        return this;
+    },
+
     createGuard: function(opt){
         return new exports.DarkGuard(_.mix(opt || {}, {
             attrs: this._attrs,
             components: this._components,
             contents: this._contents,
-            config: this._config
+            updaters: this._updaters,
+            options: this._config
         }));
     }
 
 };
 
 function DarkGuard(opt){
-    this._modelConfig = opt.config;
-    this._modelAttrs = opt.attrs;
-    this._modelComponents = opt.components;
-    this._modelContents = opt.contents;
-    this._sourceTarget = opt.sourceTarget;
-    this._contextTarget = opt.contextTarget;
-    this._contextData = opt.contextData;
+    this._attrs = Object.create(opt.attrs);
+    this._options = opt.options;
+    this._config = _.mix({}, opt);
     this._darkRoots = [];
     this._specs = {};
-    this._attrs = _.mix({}, this._modelAttrs);
     this._buffer = [];
     this._sourceData = {};
     this._sourceGuard = null;
-    this.template = tpl.convertTpl(this._modelConfig.template);
-    if (this._modelConfig.enableSource) {
+    this.template = tpl.convertTpl(this._options.template);
+    if (this._options.enableSource) {
         this.createSource(opt);
     }
 }
@@ -94,8 +96,8 @@ function DarkGuard(opt){
 DarkGuard.prototype = {
 
     watch: function(targets){
-        targets = $(targets, this._contextTarget);
-        if (this._modelConfig.unique) {
+        targets = $(targets, this._config.contextTarget);
+        if (this._options.unique) {
             targets = targets.eq(0);
         }
         _array_push.apply(this._darkRoots, 
@@ -116,7 +118,7 @@ DarkGuard.prototype = {
     },
 
     source: function(){
-        if (!this._modelConfig.enableSource) {
+        if (!this._options.enableSource) {
             return;
         }
         return this._sourceGuard;
@@ -180,7 +182,7 @@ DarkGuard.prototype = {
         // @note
         var data = {
             id: bright_id,
-            context: this._contextData
+            context: this._config.contextData
         };
         data.attr = {};
         _.each(this._attrs, function(getter, name){
@@ -190,7 +192,7 @@ DarkGuard.prototype = {
         }, data.attr);
         this._scanComponents(data, target);
         // @note
-        if (!this._sourceTarget
+        if (!this._config.sourceTarget
                 && this._sourceGuard 
                 && data.attr.source) {
             this._mergeSource(data, target.attr(data.attr.source));
@@ -200,7 +202,7 @@ DarkGuard.prototype = {
 
     _scanComponents: function(data, target){
         var re = {};
-        _.each(this._modelComponents, function(component, name){
+        _.each(this._config.components, function(component, name){
             var guard = component.createGuard({
                 contextData: data,
                 contextTarget: target
@@ -212,7 +214,7 @@ DarkGuard.prototype = {
                 spec(guard);
             }
             guard.buffer();
-            if (this._modelContents[name]) {
+            if (this._config.contents[name]) {
                 guard._bufferContent();
             } else {
                 re[name] = guard.releaseData();
@@ -271,7 +273,7 @@ DarkGuard.prototype = {
 
     releaseData: function(){
         var re = this._buffer.slice();
-        if (this._modelConfig.unique) {
+        if (this._options.unique) {
             re = re[0] || {};
         }
         this.resetBuffer();
@@ -303,13 +305,43 @@ DarkGuard.prototype = {
         return bright_root;
     },
 
+    triggerUpdate: function(bright_root, data, changes){
+        var handler;
+        var subject = changes.type;
+        if (changes.name) {
+            subject += ':' + changes.name;
+            handler = this._config.updaters[subject];
+        }
+        if (!handler) {
+            handler = this._config.updaters[changes.type];
+        }
+        if (!handler) {
+            handler = this.defaultUpdater;
+        }
+        return handler.call(this, _.mix(changes, {
+            data: data,
+            root: bright_root[0]
+        }));
+    },
+
+    defaultUpdater: function(changes){
+        if (!changes.data) {
+            $(changes.root).remove();
+            return false;
+        }
+        if (changes.root) {
+            this.createRoot(changes.data).replaceAll(changes.root);
+            return false;
+        }
+    },
+
     createSource: function(opt){
         this._sourceGuard = new exports.DarkGuard(_.merge({
             sourceTarget: this,
             contextTarget: null,
-            config: _.merge({
+            options: _.merge({
                 enableSource: false 
-            }, opt.config)
+            }, opt.options)
         }, opt));
         return this._sourceGuard;
     },
@@ -352,6 +384,11 @@ DarkGuard.update = function(targets){
 function update_target(target){
     target = $(target);
     var bright_id = target.attr(BRIGHT_ID);
+    if (!target.parent()[0]) {
+        return trigger_update(bright_id, null, {
+            type: 'remove'
+        });
+    }
     var guard = _guards[bright_id];
     if (!guard) {
         return;
@@ -362,42 +399,55 @@ function update_target(target){
     }
     guard.bufferRoot(target);
     var dataset = guard.releaseData();
-    merge_model(origin, 
+    compare_model(origin, 
         Array.isArray(dataset) ? dataset[0] : dataset);
 }
 
-function merge_model(origin, data){
+function compare_model(origin, data){
     if (!data || !data.id) {
-        run_updater(origin.id);
-        return false;
+        return trigger_update(origin.id, null, {
+            type: 'remove'
+        });
     }
     var abort;
     _.each(data.attr, function(value, name){
         if (this[name] != value) {
-            this[name] = value;
-            abort = run_updater(origin.id, data);
+            abort = trigger_update(data.id, data, {
+                type: 'attr',
+                name: name,
+                oldValue: this[name],
+                newValue: value
+            });
             if (abort === false) {
                 return false;
             }
         }
     }, origin.attr || (origin.attr = {}));
     if (abort === false) {
-        return false;
+        return;
     }
     if (compare_model_contents(
         origin.contentData || (origin.contentData = []), 
         data.contentData
     )) {
-        origin.contentData = data.contentData;
-        abort = run_updater(origin.id, data);
+        abort = trigger_update(data.id, data, {
+            type: 'content',
+            oldValue: origin.contentData,
+            newValue: data.contentData
+        });
         if (abort === false) {
-            return false;
+            return;
         }
     }
-    _.each(data.componentData, function(){
-        var changed = merge_model_components.apply(this, arguments);
+    _.each(data.componentData, function(dataset, name){
+        var changed = compare_model_components.apply(this, arguments);
         if (changed) {
-            abort = run_updater(origin.id, data);
+            abort = trigger_update(data.id, data, {
+                type: 'component',
+                name: name,
+                oldValue: this[name],
+                newValue: dataset
+            });
             if (abort === false) {
                 return false;
             }
@@ -418,19 +468,20 @@ function compare_model_contents(origin, data){
             }
         } else {
             if (typeof this[i] === 'string'
+                   || !content.id
                    || this[i].id !== content.id) {
                 changed = true;
                 return false;
             }
-            merge_model(this[i], content);
+            compare_model(this[i], content);
         }
     }, origin);
     return changed;
 }
 
-function merge_model_components(dataset, name){
+function compare_model_components(dataset, name){
     if (!Array.isArray(dataset)) {
-        merge_model(this[name] || (this[name] = {}), 
+        compare_model(this[name] || (this[name] = {}), 
             dataset);
         return;
     }
@@ -446,7 +497,7 @@ function merge_model_components(dataset, name){
         }
         if (!dataset[i] 
                 || originset[i].id === dataset[i].id) {
-            merge_model(originset[i], dataset[i]);
+            compare_model(originset[i], dataset[i]);
         } else {
             changed = true;
             break;
@@ -455,15 +506,16 @@ function merge_model_components(dataset, name){
     return changed;
 }
 
-function run_updater(bright_id, data){
-    var old_root = $('#' + bright_id);
-    if (!data) {
-        old_root.remove();
-        return false;
+function trigger_update(bright_id, data, changes){
+    if (!bright_id) {
+        return;
     }
+    var bright_root = $('#' + bright_id);
     var guard = _guards[bright_id];
-    if (guard && old_root[0]) {
-        guard.createRoot(data).replaceAll(old_root);
+    if (guard) {
+        return guard.triggerUpdate(bright_root, data, changes);
+    } else if (!data) {
+        bright_root.remove();
         return false;
     }
 }
