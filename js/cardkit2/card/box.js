@@ -3,9 +3,10 @@ define([
     'mo/lang',
     'dollar',
     'darkdom',
+    'mo/template/micro',
     './common/scaffold',
     '../tpl/box'
-], function(_, $, darkdom, scaffold_components, tpl_box){
+], function(_, $, darkdom, tpl, scaffold_components, tpl_box){
 
 var content = darkdom({
     enableSource: true,
@@ -14,7 +15,7 @@ var content = darkdom({
 
 var box = darkdom({
     enableSource: true,
-    template: tpl_box.template
+    template: tpl.convertTpl(tpl_box.template)
 });
 scaffold_components(box);
 box.contain('content', content);

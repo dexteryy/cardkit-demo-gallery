@@ -3,38 +3,39 @@ define([
     'mo/lang',
     'dollar',
     'darkdom',
+    'mo/template/micro',
     './box',
     '../tpl/page',
     '../tpl/page/title',
     '../tpl/page/actionbar',
     '../tpl/page/actionbar/action',
     '../tpl/page/navdrawer'
-], function(_, $, darkdom, box,
+], function(_, $, darkdom, tpl, box,
     tpl_page, tpl_title, tpl_actionbar, tpl_action, tpl_navdrawer){
 
 var title = darkdom({
     unique: true,
-    template: tpl_title.template
+    template: tpl.convertTpl(tpl_title.template)
 });
 
 var action = darkdom({
     enableSource: true,
-    template: tpl_action.template
+    template: tpl.convertTpl(tpl_action.template)
 });
 
 var actionbar = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl_actionbar.template
+    template: tpl.convertTpl(tpl_actionbar.template)
 }).contain('action', action);
 
 var navdrawer = darkdom({
     unique: true,
-    template: tpl_navdrawer.template
+    template: tpl.convertTpl(tpl_navdrawer.template)
 });
 
 var page = darkdom({
-    template: tpl_page.template
+    template: tpl.convertTpl(tpl_page.template)
 });
 page.bond({
     cardId: 'id'

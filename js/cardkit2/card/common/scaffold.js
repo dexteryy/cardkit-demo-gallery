@@ -1,15 +1,16 @@
 
 define([
     'darkdom',
+    'mo/template/micro',
     '../../tpl/scaffold/hd',
     '../../tpl/scaffold/ft'
-], function(darkdom,
+], function(darkdom, tpl,
     tpl_hd, tpl_ft){
 
 var hd = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl_hd.template
+    template: tpl.convertTpl(tpl_hd.template)
 });
 
 var hd_link = darkdom({
@@ -32,7 +33,7 @@ var hd_opt = darkdom({
 var ft = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl_ft.template
+    template: tpl.convertTpl(tpl_ft.template)
 });
 
 return function(root){

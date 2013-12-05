@@ -2,15 +2,13 @@
 define([
     'mo/lang/es5',
     'mo/lang/mix',
-    'dollar',
-    'eventmaster',
-    'mo/template'
-], function(es5, _, $, event, tpl){
+    'dollar'
+], function(es5, _, $){
 
 var _defaults = {
         unique: false,
         enableSource: false,
-        template: '{%= content %}'
+        template: false
     },
     _default_attrs = {
         autorender: 'autorender',
@@ -87,9 +85,10 @@ function DarkGuard(opt){
     this._specs = {};
     this._buffer = [];
     this._componentGuards = {};
+    this._contextData = null;
+    this._contextTarget = null;
     this._sourceData = {};
     this._sourceGuard = null;
-    this.template = tpl.convertTpl(this._options.template);
     if (this._options.enableSource) {
         this.createSource(opt);
     }
@@ -194,20 +193,20 @@ DarkGuard.prototype = {
         // @note
         var data = {
             id: bright_id,
-            context: this._contextData
         };
+        if (!this._config.sourceTarget) {
+            data.context = this._contextData;
+        }
         data.attr = {};
         _.each(this._attrs, function(getter, name){
-            this[name] = typeof getter === 'string' 
-                ? target.attr(getter) 
-                : getter && getter(target);
+            this[name] = read_attr(target, getter);
         }, data.attr);
         this._scanComponents(data, target);
         // @note
         if (!this._config.sourceTarget
                 && this._sourceGuard 
                 && data.attr.source) {
-            this._mergeSource(data, target.attr(data.attr.source));
+            this._mergeSource(data, data.attr.source);
         }
         return data;
     },
@@ -236,7 +235,7 @@ DarkGuard.prototype = {
             }
         }, this);
         data.componentData = re;
-        data.contentData = this._scanContents(target);
+        data.contentList = this._scanContents(target);
     },
 
     _scanContents: function(target){
@@ -272,7 +271,7 @@ DarkGuard.prototype = {
                 this[name] = render_data(dataset);
             }
         }, data.component);
-        data.content = data.contentData.map(function(data){
+        data.content = data.contentList.map(function(data){
             if (typeof data === 'string') {
                 return data;
             }
@@ -318,7 +317,7 @@ DarkGuard.prototype = {
     },
 
     _changeContext: function(data, target){
-        this._contextdata = data;
+        this._contextData = data;
         this._contextTarget = target;
         if (this._sourceGuard) {
             this._sourceGuard._changeContext(data);
@@ -360,6 +359,25 @@ DarkGuard.prototype = {
             this.createRoot(changes.data).replaceAll(changes.root);
             return abort;
         }
+    },
+
+    template: function(data){
+        return (this._options.template
+            || this.defaultTemplate)(data);
+    },
+
+    defaultTemplate: function(data){
+        return '<span>' + data.content + '</span>';
+    },
+
+    gc: function(){
+        _.each(_guards, check_gc);
+    },
+
+    setSource: function(target, fn){
+        var selector = read_attr(target, this._attrs.source);
+        var dataset = this._sourceDataset[selector];
+        this._sourceDataset[selector] = fn(dataset);
     },
 
     createSource: function(opt){
@@ -407,6 +425,15 @@ DarkGuard.observe = function(target, subject, handler){
     }
 };
 
+DarkGuard.setSource = function(target, fn){
+    target = $(target);
+    var bright_id = target.attr(BRIGHT_ID);
+    var guard = _guards[bright_id];
+    if (guard) {
+        guard.setSource(target, fn);
+    }
+};
+
 function update_target(target){
     target = $(target);
     var bright_id = target.attr(BRIGHT_ID);
@@ -416,17 +443,17 @@ function update_target(target){
         });
     }
     var guard = _guards[bright_id];
-    if (!guard) {
-        return;
-    }
     var origin = _darkdata[bright_id];
-    if (!origin) {
+    if (!guard || !origin) {
+        delete _guards[bright_id];
+        delete _darkdata[bright_id];
         return;
     }
     guard.bufferRoot(target);
     var dataset = guard.releaseData();
     compare_model(origin, 
         Array.isArray(dataset) ? dataset[0] : dataset);
+    guard.gc();
 }
 
 function compare_model(origin, data){
@@ -453,13 +480,13 @@ function compare_model(origin, data){
         return;
     }
     if (compare_model_contents(
-        origin.contentData || (origin.contentData = []), 
-        data.contentData
+        origin.contentList || (origin.contentList = []), 
+        data.contentList
     )) {
         abort = trigger_update(data.id, data, {
             type: 'content',
-            oldValue: origin.contentData,
-            newValue: data.contentData
+            oldValue: origin.contentList,
+            newValue: data.contentList
         });
         if (abort === false) {
             return;
@@ -557,34 +584,65 @@ function merge_source(data, source_data){
         }, data);
         return data;
     }
-    if (!source_data.attr) {
-        return data;
-    }
     _.merge(data.attr || (data.attr = {}), 
-        source_data.attr);
-    _array_push.apply(data.contentData || (data.contentData = []), 
-        source_data.contentData);
-    _.each(source_data.componentData,
-        merge_source_components, 
-        data.componentData || (data.componentData = {}));
+        source_data.attr || {});
+    (source_data.contentList || []).forEach(function(source_data){
+        if (typeof source_data !== 'string') {
+            fix_source(source_data, data);
+        }
+        this.push(source_data);
+    }, data.contentList || (data.contentList = []));
+    _.each(source_data.componentData || [],
+        merge_source_components, data);
     return data;
 }
 
 function merge_source_components(dataset, name){
+    var origin = this.componentData || (this.componentData = {});
     if (Array.isArray(dataset)) {
-        _array_push.apply(this[name] || (this[name] = []), 
-            dataset);
+        var context = this;
+        dataset.forEach(function(source_data){
+            this.push(fix_source(source_data, context));
+        }, origin[name] || (origin[name] = []));
     } else {
-        merge_source(this[name] || (this[name] = {}),
+        merge_source(origin[name] || (origin[name] = {}),
             dataset);
     }
 }
 
+function fix_source(source_data, context){
+    if (!source_data.id) {
+        source_data.id = ID_PREFIX + (++_uuid);
+    }
+    source_data.context = context; 
+    return source_data;
+}
+
+function check_gc(guard, bright_id){
+    var is_exist;
+    _.each(guard._darkRoots, function(target){
+        if ($(target).attr(BRIGHT_ID) === bright_id) {
+            is_exist = true;
+            return false;
+        }
+    });
+    if (!is_exist) {
+        delete _guards[bright_id];
+        delete _darkdata[bright_id];
+    }
+}
+
+function read_attr(target, getter){
+    return typeof getter === 'string' 
+        ? target.attr(getter) 
+        : getter && getter(target);
+}
+
 function render_data(data){
-    if (!data.id) {
+    var guard = _guards[data.id];
+    if (!guard) {
         return '';
     }
-    var guard = _guards[data.id];
     return guard.createRoot(data)[0].outerHTML;
 }
 
