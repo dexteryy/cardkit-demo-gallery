@@ -3004,6 +3004,7 @@ var _defaults = {
         source: 'source-selector'
     },
     _content_buffer = {},
+    _sourceDataset = {},
     _darkdata = {},
     _guards = {},
     _uuid = 0,
@@ -3077,7 +3078,6 @@ function DarkGuard(opt){
     this._componentGuards = {};
     this._contextData = null;
     this._contextTarget = null;
-    this._sourceDataset = {};
     this._sourceGuard = null;
     if (this._options.enableSource) {
         this.createSource(opt);
@@ -3091,6 +3091,9 @@ DarkGuard.prototype = {
         if (this._options.unique) {
             targets = targets.eq(0);
         }
+        targets.forEach(function(target){
+            this.registerRoot($(target));
+        }, this);
         _array_push.apply(this._darkRoots, 
             _array_slice.apply(targets));
         return this;
@@ -3170,17 +3173,22 @@ DarkGuard.prototype = {
         return this;
     },
 
-    scanRoot: function(target){
-        var is_source = this._config.isSource;
+    registerRoot: function(target){
         var bright_id = target.attr(BRIGHT_ID);
         if (!bright_id) {
             bright_id = ID_PREFIX + (++_uuid);
-            if (!is_source) {
+            if (!this._config.isSource) {
                 target.attr(BRIGHT_ID, bright_id);
             }
         }
-        target.attr(RENDERED_MARK, true);
         _guards[bright_id] = this;
+        return bright_id;
+    },
+
+    scanRoot: function(target){
+        var is_source = this._config.isSource;
+        var bright_id = this.registerRoot(target);
+        target.attr(RENDERED_MARK, true);
         var data = {
             id: bright_id,
         };
@@ -3326,7 +3334,8 @@ DarkGuard.prototype = {
     },
 
     defaultUpdater: function(changes){
-        var abort = changes.type === 'component';
+        var abort = changes.name 
+                && changes.type === 'component';
         if (!changes.data) {
             $(changes.root).remove();
             return abort;
@@ -3344,13 +3353,6 @@ DarkGuard.prototype = {
 
     defaultTemplate: function(data){
         return '<span>' + data.content + '</span>';
-    },
-
-    setSource: function(target, fn){
-        var bright_id = target.attr(BRIGHT_ID);
-        var dataset = this._sourceDataset[bright_id];
-        this._sourceDataset[bright_id] = is_function(fn) 
-            ? fn(dataset) : fn;
     },
 
     createSource: function(opt){
@@ -3371,18 +3373,18 @@ DarkGuard.prototype = {
         guard.watch(selector);
         guard.buffer();
         var dataset = guard.releaseData();
-        this._sourceDataset[bright_id] = dataset;
+        _sourceDataset[bright_id] = dataset;
         return dataset;
     },
 
     _mergeSource: function(data){
-        var source_dataset = this._sourceDataset[data.id];
+        var source_dataset = _sourceDataset[data.id];
         if (!source_dataset) {
             source_dataset = this.scanSource(data.id, 
                 data.attr.source);
         }
         if (source_dataset) {
-            merge_source(data, source_dataset);
+            merge_source(data, source_dataset, data.context);
         }
     }
 
@@ -3404,11 +3406,14 @@ DarkGuard.observe = function(target, subject, handler){
 
 DarkGuard.fill = function(target, fn){
     target = $(target);
-    var bright_id = target.attr(BRIGHT_ID);
-    var guard = _guards[bright_id];
+    var bright_id = target.attr(BRIGHT_ID),
+        dataset = _sourceDataset[bright_id],
+        guard = _guards[bright_id],
+        user_data = is_function(fn) ? fn(dataset) : fn;
     if (guard) {
-        guard.setSource(target, fn);
+        fix_userdata(user_data, guard);
     }
+    _sourceDataset[bright_id] = user_data;
 };
 
 DarkGuard.gc = function(){
@@ -3420,6 +3425,7 @@ DarkGuard.gc = function(){
         if (!this[bright_id]) {
             delete _guards[bright_id];
             delete _darkdata[bright_id];
+            delete _sourceDataset[bright_id];
         }
     }, current);
 };
@@ -3435,8 +3441,6 @@ function update_target(target){
     var guard = _guards[bright_id];
     var origin = _darkdata[bright_id];
     if (!guard || !origin) {
-        delete _guards[bright_id];
-        delete _darkdata[bright_id];
         return;
     }
     var dataset = guard.bufferRoot(target)
@@ -3450,6 +3454,12 @@ function compare_model(origin, data){
     if (!data || !data.id) {
         return trigger_update(origin.id, null, {
             type: 'remove'
+        });
+    }
+    if (!origin.id) {
+        data = data.context;
+        return trigger_update(data.id, data, {
+            type: 'component'
         });
     }
     var abort;
@@ -3469,7 +3479,7 @@ function compare_model(origin, data){
     if (abort === false) {
         return;
     }
-    if (compare_model_contents(
+    if (compare_contents(
         origin.contentList || (origin.contentList = []), 
         data.contentList
     )) {
@@ -3483,7 +3493,7 @@ function compare_model(origin, data){
         }
     }
     _.each(data.componentData, function(dataset, name){
-        var changed = compare_model_components.apply(this, arguments);
+        var changed = compare_components.apply(this, arguments);
         if (changed) {
             abort = trigger_update(data.id, data, {
                 type: 'component',
@@ -3498,7 +3508,7 @@ function compare_model(origin, data){
     }, origin.componentData || (origin.componentData = {}));
 }
 
-function compare_model_contents(origin, data){
+function compare_contents(origin, data){
     if (origin.length !== data.length) {
         return true;
     }
@@ -3522,7 +3532,7 @@ function compare_model_contents(origin, data){
     return changed;
 }
 
-function compare_model_components(dataset, name){
+function compare_components(dataset, name){
     if (!Array.isArray(dataset)) {
         compare_model(this[name] || (this[name] = {}), 
             dataset);
@@ -3567,28 +3577,26 @@ function trigger_update(bright_id, data, changes){
     }
 }
 
-function merge_source(data, source_data){
+function merge_source(data, source_data, context){
     if (Array.isArray(source_data)) {
         source_data.forEach(function(source_data){
-            merge_source(this, source_data);
+            merge_source(this, source_data, context);
         }, data);
         return data;
     }
     if (!data.id) {
         data.id = source_data.id;
     }
-    _.merge(data.attr || (data.attr = {}), 
-        source_data.attr || {});
+    data.context = context;
+    _.each(source_data.attr || {}, function(value, name){
+        if (this[name] === undefined) {
+            this[name] = value;
+        }
+    }, data.attr || (data.attr = {}));
     // @note
     var content_list = data.contentList || [];
     if (!content_list.length) {
-        content_list = (source_data.contentList || [])
-            .map(function(source_data){
-                if (typeof source_data !== 'string') {
-                    fix_source(source_data, data);
-                }
-                return source_data;
-            });
+        content_list = (source_data.contentList || []).slice();
     }
     data.contentList = content_list;
     // @note
@@ -3603,22 +3611,40 @@ function merge_source(data, source_data){
 function merge_source_components(dataset, name){
     var origin = this.componentData;
     if (Array.isArray(dataset)) {
-        var context = this;
         dataset.forEach(function(source_data){
-            this.push(fix_source(source_data, context));
+            this.push(source_data);
         }, origin[name] || (origin[name] = []));
     } else {
         merge_source(origin[name] || (origin[name] = {}),
-            dataset);
+            dataset, this);
     }
 }
 
-function fix_source(source_data, context){
-    if (!source_data.id) {
-        source_data.id = ID_PREFIX + (++_uuid);
+function fix_userdata(data, guard){
+    if (!data.id) {
+        data.id = ID_PREFIX + (++_uuid);
+        _guards[data.id] = guard;
     }
-    source_data.context = context; 
-    return source_data;
+    if (data.componentData) {
+        _.each(guard._config.components, 
+            fix_userdata_component, 
+            data.componentData);
+    }
+}
+
+function fix_userdata_component(component, name){
+    var dataset = this[name];
+    if (!dataset) {
+        return;
+    }
+    if (!Array.isArray(dataset)) {
+        dataset = [dataset];
+    }
+    dataset.forEach(function(data){
+        fix_userdata(data, this.createGuard({
+            isSource: true
+        }));
+    }, component);
 }
 
 function render_root(data){
@@ -3653,9 +3679,9 @@ function render_data(data){
 }
 
 function read_attr(target, getter){
-    return typeof getter === 'string' 
+    return (typeof getter === 'string' 
         ? target.attr(getter) 
-        : getter && getter(target);
+        : getter && getter(target)) || undefined;
 }
 
 function is_function(obj) {

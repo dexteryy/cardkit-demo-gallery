@@ -186,13 +186,33 @@ describe("the page card", function(){
             expect(box2.find('.ck-content')).to.length(3);
         });
 
-        it("set source", function(){
+        it("set source: content", function(){
             var content3 = dark_box2.find('[type="content"]').eq(2);
             darkdom.fill(content3, {
-                contentList: ['yy']
+                contentList: ['xx', 'yy']
             });
             darkdom.update(dark_root);
-            expect(box2.find('.ck-content').eq(2)).to.html('yy');
+            expect(box2.find('.ck-content').eq(2)).to.html('xxyy');
+        });
+
+        it("set source: components", function(){
+            var hd_text = '12345';
+            var ft_text = '54321';
+            darkdom.fill(dark_box2, {
+                componentData: {
+                    hd: {
+                        contentList: [hd_text],
+                    },
+                    ft: {
+                        contentList: [ft_text]
+                    }
+                }
+            });
+            darkdom.update(dark_root);
+            box2 = bright_root.find('.ck-box-unit').eq(1);
+            //console.info(box2.html())
+            expect(box2.find('.ck-hd')).to.html(hd_text);
+            expect(box2.find('.ck-ft')).to.html(ft_text);
         });
 
     });

@@ -1,4 +1,4 @@
-<ck-card type="page" firstpage="true" id="newStyleCard">
+<ck-card type="page" firstpage="true">
 
     <ck-part type="title">New style card</ck-part>
 
