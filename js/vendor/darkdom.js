@@ -348,7 +348,7 @@ DarkGuard.prototype = {
 
     template: function(data){
         return (this._options.template
-            || '<span>' + data.content + '</span>')(data);
+            || default_template)(data);
     },
 
     triggerUpdate: function(changes){
@@ -697,6 +697,10 @@ function read_attr(target, getter){
     return (typeof getter === 'string' 
         ? target.attr(getter) 
         : getter && getter(target)) || undefined;
+}
+
+function default_template(data){
+    return '<span>' + data.content + '</span>';
 }
 
 function is_function(obj) {
