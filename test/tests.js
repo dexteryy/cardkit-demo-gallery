@@ -10,6 +10,7 @@ require([
     tpl_page, tpl_page_source, app){
 
 var $ = window.jQuery;
+darkdom.initPlugins($);
 
 app.init();
 
@@ -97,14 +98,14 @@ describe("the page card", function(){
             dark_hd.html(title_1);
             expect(bright_hd).to.not.have.html(title_1);
 
-            darkdom.update(dark_box);
+            dark_box.updateDarkDOM();
             bright_hd = bright_box.find('.ck-hd');
             expect(bright_hd).to.have.html(title_1);
 
             dark_hd.html(title_2);
             expect(bright_hd).to.have.html(title_1);
 
-            darkdom.update(dark_hd);
+            dark_hd.updateDarkDOM();
             bright_hd = bright_box.find('.ck-hd');
             expect(bright_hd).to.have.html(title_2);
 
@@ -118,7 +119,7 @@ describe("the page card", function(){
             dark_root.find('button[action-layout]').eq(count - 1).remove();
             expect(actions).to.length(count);
 
-            darkdom.update(dark_root);
+            dark_root.updateDarkDOM();
             actions = bright_root.find('.ck-action');
             expect(actions).to.length(count - 1);
 
@@ -133,7 +134,7 @@ describe("the page card", function(){
                 .append('<button type="button" action-layout="auto">yy</button>');
             expect(actions).to.length(count);
 
-            darkdom.update(dark_root);
+            dark_root.updateDarkDOM();
             actions = bright_root.find('.ck-action');
             expect(actions).to.length(count + 1);
             expect(actions.eq(actions.length - 1)).to.have.html('yy');
@@ -145,13 +146,13 @@ describe("the page card", function(){
             var button1 = dark_root.find('button[action-layout]').eq(0);
             var bright_button1 = bright_root.find('.ck-action').eq(0);
 
-            darkdom.observe(button1, 'content', function(changes){
+            button1.observeDarkDOM('content', function(changes){
                 $(changes.root).html(changes.newValue);
                 return false;
             });
 
             button1.html('aaaa');
-            darkdom.update(dark_root);
+            dark_root.updateDarkDOM();
             expect(bright_button1).to.have.html('aaaa');
 
         });
@@ -188,17 +189,17 @@ describe("the page card", function(){
 
         it("set source: content", function(){
             var content3 = dark_box2.find('[type="content"]').eq(2);
-            darkdom.fill(content3, {
+            content3.feedDarkDOM({
                 contentList: ['xx', 'yy']
             });
-            darkdom.update(dark_root);
+            dark_root.updateDarkDOM();
             expect(box2.find('.ck-content').eq(2)).to.html('xxyy');
         });
 
         it("set source: components", function(){
             var hd_text = '12345';
             var ft_text = '54321';
-            darkdom.fill(dark_box2, {
+            dark_box2.feedDarkDOM({
                 componentData: {
                     hd: {
                         contentList: [hd_text],
@@ -208,9 +209,8 @@ describe("the page card", function(){
                     }
                 }
             });
-            darkdom.update(dark_root);
+            dark_root.updateDarkDOM();
             box2 = bright_root.find('.ck-box-unit').eq(1);
-            //console.info(box2.html())
             expect(box2.find('.ck-hd')).to.html(hd_text);
             expect(box2.find('.ck-ft')).to.html(ft_text);
         });
@@ -219,7 +219,7 @@ describe("the page card", function(){
 
     afterEach(function(){
         page_source.remove();
-        darkdom.update(page.remove());
+        page.remove().updateDarkDOM();
     });
 
 });
