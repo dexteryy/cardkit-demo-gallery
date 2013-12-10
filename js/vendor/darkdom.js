@@ -2,9 +2,8 @@
 define([
     'mo/lang/es5',
     'mo/lang/mix',
-    'dollar',
-    'soviet'
-], function(es5, _, $, soviet){
+    'dollar'
+], function(es5, _, $){
 
 var _defaults = {
         unique: false,
@@ -23,6 +22,7 @@ var _defaults = {
     _uuid = 0,
     _map = Array.prototype.map,
     _to_string = Object.prototype.toString,
+    _matches_selector = $.find.matchesSelector,
     RE_EVENT_SEL = /(\S+)\s*(.*)/,
     RENDERED_MARK = 'enabled-darkdom',
     BRIGHT_ID = 'bright-root-id',
@@ -405,18 +405,17 @@ DarkGuard.prototype = {
 
     registerEvents: function(bright_root){
         var self = this;
-        var proxy = soviet(bright_root, {
-            matchesSelector: true
-        });
         var dark_root = $('[' + BRIGHT_ID + '="' 
             + bright_root.attr('id') + '"]');
         _.each(this._config.events, function(subject, bright_sel){
             bright_sel = RE_EVENT_SEL.exec(bright_sel);
-            this.on(bright_sel[1], bright_sel[2], function(e){
-                self.triggerEvent(dark_root, subject, e);
+            this.on(bright_sel[1], function(e){
+                if (_matches_selector(e.target, bright_sel[2])) {
+                    self.triggerEvent(dark_root, subject, e);
+                }
                 return false;
             });
-        }, proxy);
+        }, bright_root);
     },
 
     triggerEvent: function(target, subject, e){
