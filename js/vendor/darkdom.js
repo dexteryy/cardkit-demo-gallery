@@ -23,12 +23,16 @@ var _defaults = {
     _uuid = 0,
     _map = Array.prototype.map,
     _to_string = Object.prototype.toString,
-    RE_EVENT_SEL = /(\S+)(.*)/,
-    RENDERED_MARK = 'rendered',
+    RE_EVENT_SEL = /(\S+)\s*(.*)/,
+    RENDERED_MARK = 'enabled-darkdom',
     BRIGHT_ID = 'bright-root-id',
     ID_PREFIX = '_brightRoot';
 
 var dom_ext = {
+
+    isEnabledDarkDOM: function(){
+        return !!$(this).attr(RENDERED_MARK);
+    },
 
     updateDarkDOM: function(){
         update_target(this);
@@ -140,7 +144,7 @@ DarkGuard.prototype = {
         return this;
     },
 
-    delegate: function(name, spec){
+    component: function(name, spec){
         _.mix(this._specs, kv_dict(name, spec));
         return this;
     },
@@ -212,8 +216,8 @@ DarkGuard.prototype = {
         }
         var data = render_root(this.scanRoot(target));
         target.hide().before(this.createRoot(data));
-        target.trigger('darkdom:inserted')
-            .trigger('darkdom:rendered');
+        target.trigger('darkdom:rendered')
+            .trigger('darkdom:enabled');
         return this;
     },
 
@@ -289,9 +293,11 @@ DarkGuard.prototype = {
                 var mark = content.attr(RENDERED_MARK),
                     buffer_id = content.attr(BRIGHT_ID),
                     buffer = this._releaseContent(buffer_id);
-                return buffer 
-                    || !mark && content[0].outerHTML 
-                    || false;
+                if (buffer) {
+                    return buffer;
+                } else if (!mark) {
+                    return content[0].outerHTML || false;
+                }
             } else if (content[0].nodeType === 3) {
                 content = content.text();
                 if (/\S/.test(content)) {
@@ -386,28 +392,28 @@ DarkGuard.prototype = {
     },
 
     defaultUpdater: function(changes){
-        var abort = changes.name 
-                && changes.type === 'component';
+        var re = false;
         if (!changes.data) {
-            $(changes.root).remove();
-            return abort;
+            changes.root.remove();
+            return re;
         }
         if (changes.root) {
             this.createRoot(changes.data).replaceAll(changes.root);
-            return abort;
+            return re;
         }
     },
 
-    registerEvents: function(target){
+    registerEvents: function(bright_root){
         var self = this;
-        var bright_id = target.attr(BRIGHT_ID);
-        var proxy = soviet('#' + bright_id, {
+        var proxy = soviet(bright_root, {
             matchesSelector: true
         });
+        var dark_root = $('[' + BRIGHT_ID + '="' 
+            + bright_root.attr('id') + '"]');
         _.each(this._config.events, function(subject, bright_sel){
             bright_sel = RE_EVENT_SEL.exec(bright_sel);
             this.on(bright_sel[1], bright_sel[2], function(e){
-                self.triggerEvent(target, subject, e);
+                self.triggerEvent(dark_root, subject, e);
                 return false;
             });
         }, proxy);
@@ -417,6 +423,9 @@ DarkGuard.prototype = {
         var dark_sel = this._events[subject];
         if (!dark_sel) {
             return;
+        }
+        if (typeof dark_sel !== 'string') {
+            return dark_sel(e, target);
         }
         dark_sel = RE_EVENT_SEL.exec(dark_sel);
         if (dark_sel[2]) {
@@ -629,7 +638,7 @@ function trigger_update(bright_id, data, changes){
     if (guard) {
         re = guard.triggerUpdate(_.mix(changes, {
             data: data,
-            root: bright_root[0],
+            root: bright_root[0] && bright_root,
             rootId: bright_id
         }));
     } else if (!data) {

@@ -1,46 +1,38 @@
 
 define([], function(){
 
-    return {
-        hd: function(component){
-            component.register('.ckd-hd', {
-                configures: {
-                    raw: 'data-source',
-                    url: 'href'
-                }
-            });
-        },
-        hdLinkExtern: function(component){
-            component.register('.ckd-hd-link-extern', {
-                configures: {
-                    raw: 'data-source',
-                    url: 'href'
-                }
-            });
-        },
-        hdLink: function(component){
-            component.register('.ckd-hd-link', {
-                configures: {
-                    raw: 'data-source',
-                    url: 'href'
-                }
-            });
-        },
-        hdOpt: function(component){
-            component.register('.ckd-hdopt', {
-                configures: {
-                    raw: 'data-source'
-                }
-            });
-        },
-        ft: function(component){
-            component.register('.ckd-ft', {
-                configures: {
-                    raw: 'data-source'
-                }
-            });
-        }
-    };
+return {
+    hd: function(guard){
+        guard.watch('.ckd-hd');
+        guard.bond({
+            source: 'data-source',
+            url: 'href'
+        });
+    },
+    hdLinkExtern: function(guard){
+        guard.watch('.ckd-hd-link-extern');
+        guard.bond({
+            source: 'data-source',
+            url: 'href'
+        });
+    },
+    hdLink: function(guard){
+        guard.watch('.ckd-hd-link');
+        guard.bond({
+            source: 'data-source',
+            url: 'href'
+        });
+    },
+    hdOpt: function(guard){
+        guard.watch('.ckd-hdopt');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    ft: function(guard){
+        guard.watch('.ckd-ft');
+    }
+};
 
 });
 

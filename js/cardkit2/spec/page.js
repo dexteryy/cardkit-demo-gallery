@@ -11,10 +11,12 @@ return function(guard, source, parent){
         isFirst: 'firstpage',
         cardId: 'id'
     });
-    guard.delegate('title', 'ck-part[type="title"]');
-    guard.delegate('actionbar', actionbar_spec);
-    guard.delegate('navdrawer', navdrawer_spec);
-    guard.delegate('box', box_spec);
+    guard.component({
+        title: 'ck-part[type="title"]',
+        actionbar: actionbar_spec,
+        navdrawer: navdrawer_spec,
+        box: box_spec
+    });
 };
 
 function navdrawer_spec(guard){
@@ -23,8 +25,8 @@ function navdrawer_spec(guard){
 
 function actionbar_spec(guard){
     guard.watch('ck-part[type="actionbar"]');
-    guard.delegate('action', action_spec);
-    guard.source().delegate('action', source_action_spec);
+    guard.component('action', action_spec);
+    guard.source().component('action', source_action_spec);
 }
 
 function action_spec(guard){

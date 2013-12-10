@@ -4,29 +4,31 @@ define([
     'dollar',
     '../card/box',
     './common/scaffold'
-], function(_, $, component, scaffold_components){
+], function(_, $, box_card, 
+        scaffold_specs){
 
-    return function(){
+var selector = '.ck-box-unit';
 
-        return component.register($('.ck-box-unit'), {
-            configures: {
-                subtype: 'data-style',
-                paperStyle: 'data-cfg-paper',
-                plainStyle: 'data-cfg-plain',
-                plainHdStyle: 'data-cfg-plainhd'
-            },
-            components: _.mix({
-                content: function(component){
-                    component.register('.ckd-content', {
-                        configures: {
-                            raw: 'data-source'
-                        }
-                    });
-                }
-            }, scaffold_components)
-        });
-
-    };
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'data-style',
+        paperStyle: 'data-cfg-paper',
+        plainStyle: 'data-cfg-plain',
+        plainHdStyle: 'data-cfg-plainhd'
+    });
+    guard.component('content', function(guard){
+        guard.watch('.ckd-content');
+    });
+    _.each(scaffold_specs, function(spec, name){
+        guard.component(name, spec);
+    });
+    guard.source().component('content', function(source){
+        source.watch('.ckd-content');
+    });
+    _.each(scaffold_specs, function(spec, name){
+        this.component(name, spec);
+    }, guard.source());
+};
 
 });
-

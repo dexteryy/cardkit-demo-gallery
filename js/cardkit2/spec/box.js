@@ -18,17 +18,17 @@ return function(guard, parent){
         plainStyle: 'plain-style',
         plainHdStyle: 'plain-hd-style'
     });
-    guard.delegate('content', function(guard){
+    guard.component('content', function(guard){
         guard.watch('ck-part[type="content"]');
     });
     _.each(scaffold_specs, function(spec, name){
-        guard.delegate(name, spec);
+        guard.component(name, spec);
     });
-    guard.source().delegate('content', function(source){
+    guard.source().component('content', function(source){
         source.watch('.ckd-content');
     });
     _.each(source_scaffold_specs, function(spec, name){
-        this.delegate(name, spec);
+        this.component(name, spec);
     }, guard.source());
 };
 
