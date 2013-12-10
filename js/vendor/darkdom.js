@@ -2,8 +2,9 @@
 define([
     'mo/lang/es5',
     'mo/lang/mix',
-    'dollar'
-], function(es5, _, $){
+    'dollar',
+    'soviet'
+], function(es5, _, $, soviet){
 
 var _defaults = {
         unique: false,
@@ -20,7 +21,9 @@ var _defaults = {
     _guards = {},
     _updaters = {},
     _uuid = 0,
+    _map = Array.prototype.map,
     _to_string = Object.prototype.toString,
+    RE_EVENT_SEL = /(\S+)(.*)/,
     RENDERED_MARK = 'rendered',
     BRIGHT_ID = 'bright-root-id',
     ID_PREFIX = '_brightRoot';
@@ -62,6 +65,7 @@ function DarkDOM(opt){
     this._components = {};
     this._contents = {};
     this._updaters = {};
+    this._events = {};
     this.set(this._config);
 }
 
@@ -76,8 +80,7 @@ DarkDOM.prototype = {
     },
 
     bond: function(attr, elem_attr){
-        var attrs = kv_dict(attr, elem_attr);
-        _.mix(this._attrs, attrs);
+        _.mix(this._attrs, kv_dict(attr, elem_attr));
         return this;
     },
 
@@ -87,6 +90,11 @@ DarkDOM.prototype = {
             this._contents[name] = true;
         }
         this._components[name] = component; 
+        return this;
+    },
+
+    forward: function(selector, subject){
+        _.mix(this._events, kv_dict(selector, subject));
         return this;
     },
 
@@ -101,6 +109,7 @@ DarkDOM.prototype = {
             components: this._components,
             contents: this._contents,
             updaters: this._updaters,
+            events: this._events,
             options: this._config
         }, opt));
     }
@@ -115,6 +124,7 @@ function DarkGuard(opt){
     this._specs = {};
     this._buffer = [];
     this._componentGuards = {};
+    this._events = {};
     this._contextData = null;
     this._contextTarget = null;
     this._sourceGuard = null;
@@ -126,14 +136,17 @@ function DarkGuard(opt){
 DarkGuard.prototype = {
 
     bond: function(attr, elem_attr){
-        var attrs = kv_dict(attr, elem_attr);
-        _.mix(this._attrs, attrs);
+        _.mix(this._attrs, kv_dict(attr, elem_attr));
         return this;
     },
 
     delegate: function(name, spec){
-        var components = kv_dict(name, spec);
-        _.mix(this._specs, components);
+        _.mix(this._specs, kv_dict(name, spec));
+        return this;
+    },
+
+    forward: function(subject, selector){
+        _.mix(this._events, kv_dict(subject, selector));
         return this;
     },
 
@@ -268,7 +281,7 @@ DarkGuard.prototype = {
     },
 
     _scanContents: function(target){
-        return [].map.call(target.contents(), function(content){
+        return _map.call(target.contents(), function(content){
             content = $(content);
             if (content[0].nodeType === 1) {
                 var mark = content.attr(RENDERED_MARK),
@@ -343,6 +356,7 @@ DarkGuard.prototype = {
         var bright_root = $(this.template(data));
         bright_root.attr(this._attrs.autorender, 'true');
         bright_root.attr('id', data.id);
+        this.registerEvents(bright_root);
         return bright_root;
     },
 
@@ -380,6 +394,35 @@ DarkGuard.prototype = {
             this.createRoot(changes.data).replaceAll(changes.root);
             return abort;
         }
+    },
+
+    registerEvents: function(target){
+        var self = this;
+        var bright_id = target.attr(BRIGHT_ID);
+        var proxy = soviet('#' + bright_id, {
+            matchesSelector: true
+        });
+        _.each(this._config.events, function(subject, bright_sel){
+            bright_sel = RE_EVENT_SEL.exec(bright_sel);
+            this.on(bright_sel[1], bright_sel[2], function(e){
+                self.triggerEvent(target, subject, e);
+                return false;
+            });
+        }, proxy);
+    },
+
+    triggerEvent: function(target, subject, e){
+        var dark_sel = this._events[subject];
+        if (!dark_sel) {
+            return;
+        }
+        dark_sel = RE_EVENT_SEL.exec(dark_sel);
+        if (dark_sel[2]) {
+            target = target.find(dark_sel[2]);
+        }
+        target.trigger(dark_sel[1], {
+            sourceEvent: e
+        });
     },
 
     createSource: function(opt){
