@@ -211,7 +211,9 @@ DarkGuard.prototype = {
             return this;
         }
         var data = render_root(this.scanRoot(target));
-        target.hide().after(this.createRoot(data));
+        target.hide().before(this.createRoot(data));
+        target.trigger('darkdom:inserted')
+            .trigger('darkdom:rendered');
         return this;
     },
 
@@ -621,18 +623,26 @@ function trigger_update(bright_id, data, changes){
     if (!bright_id) {
         return;
     }
+    var re;
     var bright_root = $('#' + bright_id);
     var guard = _guards[bright_id];
     if (guard) {
-        return guard.triggerUpdate(_.mix(changes, {
+        re = guard.triggerUpdate(_.mix(changes, {
             data: data,
             root: bright_root[0],
             rootId: bright_id
         }));
     } else if (!data) {
         bright_root.remove();
-        return false;
+        re = false;
     }
+    var dark_root = $('[' + BRIGHT_ID + '="' + bright_id + '"]');
+    if (!data || changes.type === "remove") {
+        dark_root.trigger('darkdom:removed');
+    } else if (re === false) {
+        dark_root.trigger('darkdom:rendered');
+    }
+    return re;
 }
 
 function merge_source(data, source_data, context){
