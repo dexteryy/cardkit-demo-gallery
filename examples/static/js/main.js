@@ -3013,15 +3013,10 @@ var _defaults = {
     _to_string = Object.prototype.toString,
     _matches_selector = $.find.matchesSelector,
     RE_EVENT_SEL = /(\S+)\s*(.*)/,
-    RENDERED_MARK = 'enabled-darkdom',
     BRIGHT_ID = 'bright-root-id',
     ID_PREFIX = '_brightRoot';
 
 var dom_ext = {
-
-    isEnabledDarkDOM: function(){
-        return !!$(this).attr(RENDERED_MARK);
-    },
 
     updateDarkDOM: function(){
         update_target(this);
@@ -3200,7 +3195,7 @@ DarkGuard.prototype = {
 
     renderRoot: function(target){
         if (target.attr(this._attrs.autorender)
-                || target.attr(RENDERED_MARK)) {
+                || target[0].isRenderedDarkDOM) {
             return this;
         }
         var data = render_root(this.scanRoot(target));
@@ -3227,7 +3222,7 @@ DarkGuard.prototype = {
     scanRoot: function(target){
         var is_source = this._config.isSource;
         var bright_id = this.registerRoot(target);
-        target.attr(RENDERED_MARK, true);
+        target[0].isRenderedDarkDOM = true;
         var data = {
             id: bright_id,
         };
@@ -3279,7 +3274,7 @@ DarkGuard.prototype = {
         return _map.call(target.contents(), function(content){
             content = $(content);
             if (content[0].nodeType === 1) {
-                var mark = content.attr(RENDERED_MARK),
+                var mark = content[0].isRenderedDarkDOM,
                     buffer_id = content.attr(BRIGHT_ID),
                     buffer = this._releaseContent(buffer_id);
                 if (buffer) {
