@@ -1,4 +1,16 @@
-
+/**
+ * DarkDOM 
+ * Design your markup language on a higher level of abstraction than HTML
+ * Build responsive cross-screen UI components
+ * Better separation of concerns
+ * Separate the presentation layer and business layer from the traditional content layer
+ *
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2013-2014, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
 define([
     'mo/lang/es5',
     'mo/lang/mix',

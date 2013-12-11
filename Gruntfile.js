@@ -69,6 +69,11 @@ module.exports = function(grunt) {
                     "<%= meta.jsVendorDir %>/mo/": ["**/*.js", "!**/Gruntfile.js"]
                 }
             },
+            "darkdom": {
+                use: {
+                    "<%= meta.jsVendorDir %>/": "darkdom.js"
+                }
+            },
             "eventmaster": {
                 use: {
                     "<%= meta.jsVendorDir %>/": "eventmaster.js"
