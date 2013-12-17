@@ -1,10 +1,12 @@
 
 define([
-    'mo/lang',
     'dollar',
     './common/scaffold',
-    './common/source_scaffold'
-], function(_, $, scaffold_specs, source_scaffold_specs){
+    './common/source_scaffold',
+    './common/item',
+    './common/source_item'
+], function($, 
+    scaffold_specs, source_scaffold_specs, item_specs, source_item_specs){ 
 
 var selector = 'ck-card[type="list"]';
 
@@ -19,13 +21,16 @@ return function(guard, parent){
         plainStyle: 'plain-style',
         plainHdStyle: 'plain-hd-style'
     });
-    scaffold_specs(guard);
-    source_scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(source_scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('ck-part[type="item"]');
+        guard.component(item_specs);
+        guard.source().component(source_item_specs);
     });
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        source.component(source_item_specs);
     });
 };
 

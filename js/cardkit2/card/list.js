@@ -2,15 +2,25 @@
 define(function(require){ 
 
 var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl,
-    scaffold_components = require('./common/scaffold');
+    convert = require('mo/template/micro').convertTpl;
+
+var scaffold_components = require('./common/scaffold');
+
+var item = require('./item');
+
+var render_list = convert(require('../tpl/list').template);
 
 var list = darkdom({
     enableSource: true,
-    render: convert(require('../tpl/list').template)
+    render: function(data){
+        data.hasSplitHd = data.state.plain 
+            || data.state.plainhd 
+            || data.state.subtype === 'split';
+        return render_list(data);
+    }
 });
-scaffold_components(list);
-list.contain('item', require('./item'));
+list.contain(scaffold_components);
+list.contain('item', item);
 
 return list;
 

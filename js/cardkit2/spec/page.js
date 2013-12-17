@@ -1,22 +1,13 @@
 
-define([
-    'mo/lang',
-    'dollar',
-    './box',
-], function(_, $, box_spec){
+define(function(require){ 
 
-return function(guard, source, parent){
-    guard.watch($('ck-card[type="page"]', parent));
-    guard.bond({
-        isFirst: 'firstpage',
-        cardId: 'id'
-    });
-    guard.component({
-        title: 'ck-part[type="title"]',
-        actionbar: actionbar_spec,
-        navdrawer: navdrawer_spec,
-        box: box_spec
-    });
+var $ = require('dollar');
+var specs = {
+    title: 'ck-part[type="title"]',
+    actionbar: actionbar_spec,
+    navdrawer: navdrawer_spec,
+    box: require('./box'),
+    list: require('./list')
 };
 
 function navdrawer_spec(guard){
@@ -48,5 +39,14 @@ function source_action_attr(source){
         return node.hasClass('ckd-overflow-item');
     });
 }
+
+return function(guard, source, parent){
+    guard.watch($('ck-card[type="page"]', parent));
+    guard.bond({
+        isFirst: 'firstpage',
+        cardId: 'id'
+    });
+    guard.component(specs);
+};
 
 });

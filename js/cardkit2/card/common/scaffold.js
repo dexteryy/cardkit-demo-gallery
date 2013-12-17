@@ -38,14 +38,12 @@ var ft = darkdom({
     render: convert(require('../../tpl/scaffold/ft').template)
 });
 
-return function(card){
-    card.contain({
-        hd: hd,
-        hdLink: hd_link,
-        hdLinkExtern: hd_link_extern,
-        hdOpt: hd_opt,
-        ft: ft
-    });
+return {
+    hd: hd,
+    hdLink: hd_link,
+    hdLinkExtern: hd_link_extern,
+    hdOpt: hd_opt,
+    ft: ft
 };
 
 });

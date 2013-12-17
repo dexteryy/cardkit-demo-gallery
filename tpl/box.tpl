@@ -4,15 +4,13 @@
         data-cfg-plain="{%= state.plainStyle %}"
         data-cfg-plainhd="{%= state.plainHdStyle %}">
 
-    {% var has_split_hd = state.plain || state.plainhd; %}
-
-    {% if (has_split_hd) { %}
+    {% if (hasSplitHd) { %}
         {%= hd_wrap(component) %}
     {% } %}
 
     <article class="ck-unit-wrap">
 
-        {% if (!has_split_hd) { %}
+        {% if (!hasSplitHd) { %}
             {%= hd_wrap(component) %}
         {% } %}
 

@@ -1738,47 +1738,204 @@ define("../cardkit2/supports", [
 });
 
 
+/* @source ../cardkit2/oldspec/common/item.js */;
+
+
+define("../cardkit2/oldspec/common/item", [], function(){
+
+return {
+    title: function(guard){
+        guard.watch('.ckd-title');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    titleLink: function(guard){
+        guard.watch('.ckd-title-link');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    titleLinkAlone: function(guard){
+        guard.watch('.ckd-title-link-alone');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    titleLinkExtern: function(guard){
+        guard.watch('.ckd-title-link-extern');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    titlePrefix: function(guard){
+        guard.watch('.ckd-title-prefix');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    titleSuffix: function(guard){
+        guard.watch('.ckd-title-suffix');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    titleTag: function(guard){
+        guard.watch('.ckd-title-tag');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    icon: function(guard){
+        guard.watch('.ckd-icon');
+        guard.bond({
+            imgUrl: 'src',
+            source: 'data-source'
+        });
+    },
+    info: function(guard){
+        guard.watch('.ckd-info');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    opt: function(guard){
+        guard.watch('.ckd-opt');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    desc: function(guard){
+        guard.watch('.ckd-desc, .ckd-subtitle');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    content: function(guard){
+        guard.watch('.ckd-content');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    meta: function(guard){
+        guard.watch('.ckd-meta');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    author: function(guard){
+        guard.watch('.ckd-author');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    authorLink: function(guard){
+        guard.watch('.ckd-author-link');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    authorLinkAlone: function(guard){
+        guard.watch('.ckd-author-link-alone');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    authorLinkExtern: function(guard){
+        guard.watch('.ckd-author-link-extern');
+        guard.bond({
+            url: 'href',
+            source: 'data-source'
+        });
+    },
+    authorPrefix: function(guard){
+        guard.watch('.ckd-author-prefix');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    authorSuffix: function(guard){
+        guard.watch('.ckd-author-suffix');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    avatar: function(guard){
+        guard.watch('.ckd-avatar');
+        guard.bond({
+            imgUrl: 'src',
+            source: 'data-source'
+        });
+    },
+    authorInfo: function(guard){
+        guard.watch('.ckd-author-info');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    authorDesc: function(guard){
+        guard.watch('.ckd-author-desc');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    authorMeta: function(guard){
+        guard.watch('.ckd-author-meta');
+        guard.bond({
+            source: 'data-source'
+        });
+    }
+};
+
+});
+
+
 /* @source ../cardkit2/oldspec/common/scaffold.js */;
 
 
 define("../cardkit2/oldspec/common/scaffold", [], function(){
 
-return function(guard){
-    guard.component({
-        hd: function(guard){
-            guard.watch('.ckd-hd');
-            guard.bond({
-                source: 'data-source',
-                url: 'href',
-                isExternUrl: function(node){
-                    return node.hasClass('ckd-hd-link-extern');
-                }
-            });
-        },
-        hdLink: function(guard){
-            guard.watch('.ckd-hd-link:not(.ckd-hd)');
-            guard.bond({
-                source: 'data-source',
-                url: 'href'
-            });
-        },
-        hdLinkExtern: function(guard){
-            guard.watch('.ckd-hd-link-extern:not(.ckd-hd)');
-            guard.bond({
-                source: 'data-source',
-                url: 'href'
-            });
-        },
-        hdOpt: function(guard){
-            guard.watch('.ckd-hdopt');
-            guard.bond({
-                source: 'data-source'
-            });
-        },
-        ft: function(guard){
-            guard.watch('.ckd-ft');
-        }
-    });
+return {
+    hd: function(guard){
+        guard.watch('.ckd-hd');
+        guard.bond({
+            source: 'data-source',
+            url: 'href',
+            isExternUrl: function(node){
+                return node.hasClass('ckd-hd-link-extern');
+            }
+        });
+    },
+    hdLink: function(guard){
+        guard.watch('.ckd-hd-link:not(.ckd-hd)');
+        guard.bond({
+            source: 'data-source',
+            url: 'href'
+        });
+    },
+    hdLinkExtern: function(guard){
+        guard.watch('.ckd-hd-link-extern:not(.ckd-hd)');
+        guard.bond({
+            source: 'data-source',
+            url: 'href'
+        });
+    },
+    hdOpt: function(guard){
+        guard.watch('.ckd-hdopt');
+        guard.bond({
+            source: 'data-source'
+        });
+    },
+    ft: function(guard){
+        guard.watch('.ckd-ft');
+    }
 };
 
 });
@@ -2670,136 +2827,14 @@ define("dollar", [
     return $;
 });
 
-/* @source mo/lang/oop.js */;
-
-/**
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/lang/oop", [
-  "mo/lang/es5",
-  "mo/lang/mix"
-], function(es5, _, require, exports){
-
-    var mix = _.mix;
-
-    exports.construct = function(base, mixes, factory){
-        if (mixes && !Array.isArray(mixes)) {
-            factory = mixes;
-            mixes = null;
-        }
-        if (!factory) {
-            factory = function(){
-                this.superConstructor.apply(this, arguments);
-            };
-        }
-        if (!base.__constructor) {
-            base.__constructor = base;
-            base.__supr = base.prototype;
-        }
-        var proto = Object.create(base.prototype),
-            supr = Object.create(base.prototype),
-            current_supr = supr;
-        supr.__super = base.__supr;
-        var sub = function(){
-            this.superMethod = sub.__superMethod;
-            this.superConstructor = su_construct;
-            this.constructor = sub.__constructor;
-            this.superClass = supr; // deprecated!
-            return factory.apply(this, arguments);
-        };
-        sub.__supr = supr;
-        sub.__constructor = sub;
-        sub.__superMethod = function(name, args){
-            var mysupr = current_supr;
-            current_supr = mysupr.__super;
-            var re = mysupr[name].apply(this, args);
-            current_supr = mysupr;
-            return re;
-        };
-        sub.prototype = proto;
-        if (mixes) {
-            mixes = mix.apply(this, mixes);
-            mix(proto, mixes);
-            mix(supr, mixes);
-        }
-        function su_construct(){
-            var cache_constructor = base.__constructor,
-                cache_super_method = base.__superMethod;
-            base.__constructor = sub;
-            base.__superMethod = sub.__superMethod;
-            _apply.prototype = base.prototype;
-            var su = new _apply(base, this, arguments);
-            for (var i in su) {
-                if (!this[i]) {
-                    this[i] = supr[i] = su[i];
-                }
-            }
-            base.__constructor = cache_constructor;
-            base.__superMethod = cache_super_method;
-            this.superConstructor = su_construct;
-        }
-        return sub;
-    };
-
-    function _apply(base, self, args){
-        base.apply(self, args);
-    }
-
-});
-
-/* @source mo/lang.js */;
-
-/**
- * ES5/6 shim and minimum utilities for language enhancement
- *
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/lang", [
-  "mo/lang/es5",
-  "mo/lang/type",
-  "mo/lang/mix",
-  "mo/lang/struct",
-  "mo/lang/oop"
-], function(es5, detect, _, struct, oo, require, exports){
-
-    var host = this,
-        window = host.window;
-
-    _.mix(exports, detect, _, struct, oo);
-
-    exports.ns = function(namespace, v, parent){
-        var i, p = parent || window, n = namespace.split(".").reverse();
-        while ((i = n.pop()) && n.length > 0) {
-            if (typeof p[i] === 'undefined') {
-                p[i] = {};
-            } else if (typeof p[i] !== "object") {
-                return false;
-            }
-            p = p[i];
-        }
-        if (typeof v !== 'undefined')
-            p[i] = v;
-        return p[i];
-    };
-
-});
-
 /* @source ../cardkit2/oldspec/list.js */;
 
 
 define("../cardkit2/oldspec/list", [
-  "mo/lang",
   "dollar",
-  "../cardkit2/oldspec/common/scaffold"
-], function(_, $, scaffold_specs){
+  "../cardkit2/oldspec/common/scaffold",
+  "../cardkit2/oldspec/common/item"
+], function($, scaffold_specs, item_specs){ 
 
 var selector = '.ck-list-unit';
 
@@ -2814,19 +2849,29 @@ return function(guard, parent){
         plainStyle: 'data-cfg-plain',
         plainHdStyle: 'data-cfg-plainhd'
     });
-    scaffold_specs(guard);
-    scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('.ckd-item');
+        guard.component(item_specs);
+        guard.source().component(item_specs);
     });
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        guard.component(item_specs);
     });
 };
 
 });
 
 
+/* @source ../cardkit2/tpl/list.js */;
+
+define("../cardkit2/tpl/list", [], function(){
+
+    return {"template":"<div class=\"ck-list-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-blank=\"{%= state.blankContent %}\"\n        data-cfg-limit=\"{%= state.limit %}\"\n        data-cfg-col=\"{%= state.col %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n        \n        <div class=\"ck-list-wrap\">\n\n            {% if (component.item.length) { %}\n\n                <div class=\"ck-list\">\n                {% component.item.forEach(function(item, i){ %}\n\n                    {% if (i && (i % state.col === 0)) { %}\n                    </div><div class=\"ck-list\">\n                    {% } %}\n\n                    {%= item %}\n\n                {% }); %}\n                </div>\n\n            {% } else { %}\n\n                <div class=\"ck-list\">\n                    <div class=\"ck-item blank\">\n                        <div class=\"ck-initem\">{%=(state.blank || '目前还没有内容')%}</div>\n                    </div>\n                </div>\n\n            {% } %}\n\n        </div>\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n\n"}; 
+
+});
 /* @source ../cardkit2/tpl/item.js */;
 
 define("../cardkit2/tpl/item", [], function(){
@@ -3000,6 +3045,128 @@ define("mo/template/string", [], function(require, exports){
 
 });
 
+
+/* @source mo/lang/oop.js */;
+
+/**
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/lang/oop", [
+  "mo/lang/es5",
+  "mo/lang/mix"
+], function(es5, _, require, exports){
+
+    var mix = _.mix;
+
+    exports.construct = function(base, mixes, factory){
+        if (mixes && !Array.isArray(mixes)) {
+            factory = mixes;
+            mixes = null;
+        }
+        if (!factory) {
+            factory = function(){
+                this.superConstructor.apply(this, arguments);
+            };
+        }
+        if (!base.__constructor) {
+            base.__constructor = base;
+            base.__supr = base.prototype;
+        }
+        var proto = Object.create(base.prototype),
+            supr = Object.create(base.prototype),
+            current_supr = supr;
+        supr.__super = base.__supr;
+        var sub = function(){
+            this.superMethod = sub.__superMethod;
+            this.superConstructor = su_construct;
+            this.constructor = sub.__constructor;
+            this.superClass = supr; // deprecated!
+            return factory.apply(this, arguments);
+        };
+        sub.__supr = supr;
+        sub.__constructor = sub;
+        sub.__superMethod = function(name, args){
+            var mysupr = current_supr;
+            current_supr = mysupr.__super;
+            var re = mysupr[name].apply(this, args);
+            current_supr = mysupr;
+            return re;
+        };
+        sub.prototype = proto;
+        if (mixes) {
+            mixes = mix.apply(this, mixes);
+            mix(proto, mixes);
+            mix(supr, mixes);
+        }
+        function su_construct(){
+            var cache_constructor = base.__constructor,
+                cache_super_method = base.__superMethod;
+            base.__constructor = sub;
+            base.__superMethod = sub.__superMethod;
+            _apply.prototype = base.prototype;
+            var su = new _apply(base, this, arguments);
+            for (var i in su) {
+                if (!this[i]) {
+                    this[i] = supr[i] = su[i];
+                }
+            }
+            base.__constructor = cache_constructor;
+            base.__superMethod = cache_super_method;
+            this.superConstructor = su_construct;
+        }
+        return sub;
+    };
+
+    function _apply(base, self, args){
+        base.apply(self, args);
+    }
+
+});
+
+/* @source mo/lang.js */;
+
+/**
+ * ES5/6 shim and minimum utilities for language enhancement
+ *
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/lang", [
+  "mo/lang/es5",
+  "mo/lang/type",
+  "mo/lang/mix",
+  "mo/lang/struct",
+  "mo/lang/oop"
+], function(es5, detect, _, struct, oo, require, exports){
+
+    var host = this,
+        window = host.window;
+
+    _.mix(exports, detect, _, struct, oo);
+
+    exports.ns = function(namespace, v, parent){
+        var i, p = parent || window, n = namespace.split(".").reverse();
+        while ((i = n.pop()) && n.length > 0) {
+            if (typeof p[i] === 'undefined') {
+                p[i] = {};
+            } else if (typeof p[i] !== "object") {
+                return false;
+            }
+            p = p[i];
+        }
+        if (typeof v !== 'undefined')
+            p[i] = v;
+        return p[i];
+    };
+
+});
 
 /* @source mo/template/micro.js */;
 
@@ -4135,6 +4302,7 @@ var item = darkdom({
             || com.authorLink
             || ((data.componentData.author 
                  || {}).state || {}).url;
+        console.info(data)
         return render_item(data);
     }
 });
@@ -4167,13 +4335,6 @@ return item;
 
 });
 
-/* @source ../cardkit2/tpl/list.js */;
-
-define("../cardkit2/tpl/list", [], function(){
-
-    return {"template":"<div class=\"ck-list-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-blank=\"{%= state.blankContent %}\"\n        data-cfg-limit=\"{%= state.limit %}\"\n        data-cfg-col=\"{%= state.col %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% var has_split_hd = state.plain || state.plainhd || state.subtype === 'split'; %}\n\n    {% if (has_split_hd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!has_split_hd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n        \n        <div class=\"ck-list-wrap\">\n\n            {% if (component.item.length) { %}\n                <div class=\"ck-list\">\n                    <div class=\"ck-item blank\">\n                        <div class=\"ck-initem\">{%=(state.blank || '目前还没有内容')%}</div>\n                    </div>\n                </div>\n                {% return; %}\n            {% } %}\n\n            <div class=\"ck-list\">\n            {% component.item.forEach(function(item, i){ %}\n\n                {% if (i && (i % state.col === 0)) { %}\n                </div><div class=\"ck-list\">\n                {% } %}\n\n                {%= item %}\n\n            {% }); %}\n            </div>\n\n        </div>\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n\n"}; 
-
-});
 /* @source ../cardkit2/tpl/scaffold/ft.js */;
 
 define("../cardkit2/tpl/scaffold/ft", [], function(){
@@ -4243,14 +4404,12 @@ var ft = darkdom({
     render: convert(require("../cardkit2/tpl/scaffold/ft").template)
 });
 
-return function(card){
-    card.contain({
-        hd: hd,
-        hdLink: hd_link,
-        hdLinkExtern: hd_link_extern,
-        hdOpt: hd_opt,
-        ft: ft
-    });
+return {
+    hd: hd,
+    hdLink: hd_link,
+    hdLinkExtern: hd_link_extern,
+    hdOpt: hd_opt,
+    ft: ft
 };
 
 });
@@ -4263,20 +4422,30 @@ define("../cardkit2/card/list", [
   "darkdom",
   "mo/template/micro",
   "../cardkit2/card/common/scaffold",
-  "../cardkit2/tpl/list",
-  "../cardkit2/card/item"
+  "../cardkit2/card/item",
+  "../cardkit2/tpl/list"
 ], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
 
 var darkdom = require("darkdom"),
-    convert = require("mo/template/micro").convertTpl,
-    scaffold_components = require("../cardkit2/card/common/scaffold");
+    convert = require("mo/template/micro").convertTpl;
+
+var scaffold_components = require("../cardkit2/card/common/scaffold");
+
+var item = require("../cardkit2/card/item");
+
+var render_list = convert(require("../cardkit2/tpl/list").template);
 
 var list = darkdom({
     enableSource: true,
-    render: convert(require("../cardkit2/tpl/list").template)
+    render: function(data){
+        data.hasSplitHd = data.state.plain 
+            || data.state.plainhd 
+            || data.state.subtype === 'split';
+        return render_list(data);
+    }
 });
-scaffold_components(list);
-list.contain('item', require("../cardkit2/card/item"));
+list.contain(scaffold_components);
+list.contain('item', item);
 
 return list;
 
@@ -4287,12 +4456,13 @@ return list;
 
 
 define("../cardkit2/oldspec/box", [
-  "mo/lang",
   "dollar",
   "../cardkit2/oldspec/common/scaffold"
-], function(_, $, scaffold_specs){
+], function(__oz0, __oz1, require){ 
 
-var selector = '.ck-box-unit';
+var $ = require("dollar"),
+    scaffold_specs = require("../cardkit2/oldspec/common/scaffold"),
+    selector = '.ck-box-unit';
 
 return function(guard, parent){
     guard.watch(parent && $(selector, parent) || selector);
@@ -4302,8 +4472,8 @@ return function(guard, parent){
         plainStyle: 'data-cfg-plain',
         plainHdStyle: 'data-cfg-plainhd'
     });
-    scaffold_specs(guard);
-    scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(scaffold_specs);
     guard.component('content', function(guard){
         guard.watch('.ckd-content');
     });
@@ -4318,7 +4488,7 @@ return function(guard, parent){
 
 define("../cardkit2/tpl/box", [], function(){
 
-    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% var has_split_hd = state.plain || state.plainhd; %}\n\n    {% if (has_split_hd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!has_split_hd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n\n        {% if (content && new RegExp('\\S', 'm').test(content)) { %}\n            <section>\n                {%= content %}\n            </section>\n        {% } %}\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n"}; 
+    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n\n        {% if (content && new RegExp('\\S', 'm').test(content)) { %}\n            <section>\n                {%= content %}\n            </section>\n        {% } %}\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n"}; 
 
 });
 /* @source ../cardkit2/tpl/box/content.js */;
@@ -4340,8 +4510,9 @@ define("../cardkit2/card/box", [
 ], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
 
 var darkdom = require("darkdom"),
-    convert = require("mo/template/micro").convertTpl,
-    scaffold_components = require("../cardkit2/card/common/scaffold");
+    convert = require("mo/template/micro").convertTpl;
+
+var scaffold_components = require("../cardkit2/card/common/scaffold");
 
 var content = darkdom({
     enableSource: true,
@@ -4349,11 +4520,17 @@ var content = darkdom({
     render: convert(require("../cardkit2/tpl/box/content").template)
 });
 
+var render_box = convert(require("../cardkit2/tpl/box").template);
+
 var box = darkdom({
     enableSource: true,
-    render: convert(require("../cardkit2/tpl/box").template)
+    render: function(data){
+        data.hasSplitHd = data.state.plain 
+            || data.state.plainhd;
+        return render_box(data);
+    }
 });
-scaffold_components(box);
+box.contain(scaffold_components);
 box.contain('content', content, {
     content: true
 });
@@ -4367,25 +4544,18 @@ return box;
 
 
 define("../cardkit2/oldspec/page", [
-  "mo/lang",
   "dollar",
-  "../cardkit2/oldspec/box"
-], function(_, $, box_spec){
+  "../cardkit2/oldspec/box",
+  "../cardkit2/oldspec/list"
+], function(__oz0, __oz1, __oz2, require){ 
 
-return function(guard, source, parent){
-    guard.watch($('.ck-card', parent));
-    guard.bond({
-        isFirst: function(node){
-            return node.attr('id') === 'ckDefault';
-        },
-        cardId: 'id'
-    });
-    guard.component({
-        title: '.ckcfg-card-title',
-        actionbar: actionbar_spec,
-        navdrawer: navdrawer_spec,
-        box: box_spec
-    });
+var $ = require("dollar");
+var specs = {
+    title: '.ckcfg-card-title',
+    actionbar: actionbar_spec,
+    navdrawer: navdrawer_spec,
+    box: require("../cardkit2/oldspec/box"),
+    list: require("../cardkit2/oldspec/list")
 };
 
 function navdrawer_spec(guard){
@@ -4414,6 +4584,17 @@ function action_attr(guard){
         return node.hasClass('ckd-overflow-item');
     });
 }
+
+return function(guard, source, parent){
+    guard.watch($('.ck-card', parent));
+    guard.bond({
+        isFirst: function(node){
+            return node.attr('id') === 'ckDefault';
+        },
+        cardId: 'id'
+    });
+    guard.component(specs);
+};
 
 });
 
@@ -4533,14 +4714,136 @@ define("../cardkit2/oldspec", [
 });
 
 
+/* @source ../cardkit2/spec/common/source_item.js */;
+
+
+define("../cardkit2/spec/common/source_item", [
+  "../cardkit2/oldspec/common/item"
+], function(__oz0, require){
+
+    return require("../cardkit2/oldspec/common/item");
+
+});
+
+
+/* @source ../cardkit2/spec/common/item.js */;
+
+
+define("../cardkit2/spec/common/item", [], function(){
+
+return {
+    title: function(guard){
+        guard.watch('ck-part[type="title"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    titleLink: function(guard){
+        guard.watch('ck-part[type="titleLink"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    titleLinkAlone: function(guard){
+        guard.watch('ck-part[type="titleLinkAlone"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    titleLinkExtern: function(guard){
+        guard.watch('ck-part[type="titleLinkExtern"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    titlePrefix: function(guard){
+        guard.watch('ck-part[type="titlePrefix"]');
+    },
+    titleSuffix: function(guard){
+        guard.watch('ck-part[type="titleSuffix"]');
+    },
+    titleTag: function(guard){
+        guard.watch('ck-part[type="titleTag"]');
+    },
+    icon: function(guard){
+        guard.watch('ck-part[type="icon"]');
+        guard.bond({
+            imgUrl: 'src'
+        });
+    },
+    info: function(guard){
+        guard.watch('ck-part[type="info"]');
+    },
+    opt: function(guard){
+        guard.watch('ck-part[type="opt"]');
+    },
+    desc: function(guard){
+        guard.watch('ck-part[type="desc"]');
+    },
+    content: function(guard){
+        guard.watch('ck-part[type="content"]');
+    },
+    meta: function(guard){
+        guard.watch('ck-part[type="meta"]');
+    },
+    author: function(guard){
+        guard.watch('ck-part[type="author"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    authorLink: function(guard){
+        guard.watch('ck-part[type="authorLink"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    authorLinkAlone: function(guard){
+        guard.watch('ck-part[type="authorLinkAlone"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    authorLinkExtern: function(guard){
+        guard.watch('ck-part[type="authorLinkExtern"]');
+        guard.bond({
+            url: 'href'
+        });
+    },
+    authorPrefix: function(guard){
+        guard.watch('ck-part[type="authorPrefix"]');
+    },
+    authorSuffix: function(guard){
+        guard.watch('ck-part[type="authorSuffix"]');
+    },
+    avatar: function(guard){
+        guard.watch('ck-part[type="avatar"]');
+        guard.bond({
+            imgUrl: 'src'
+        });
+    },
+    authorInfo: function(guard){
+        guard.watch('ck-part[type="authorInfo"]');
+    },
+    authorDesc: function(guard){
+        guard.watch('ck-part[type="authorDesc"]');
+    },
+    authorMeta: function(guard){
+        guard.watch('ck-part[type="authorMeta"]');
+    }
+};
+
+});
+
+
 /* @source ../cardkit2/spec/common/source_scaffold.js */;
 
 
 define("../cardkit2/spec/common/source_scaffold", [
   "../cardkit2/oldspec/common/scaffold"
-], function(scaffold_specs){
+], function(__oz0, require){
 
-    return scaffold_specs;
+    return require("../cardkit2/oldspec/common/scaffold");
 
 });
 
@@ -4550,25 +4853,23 @@ define("../cardkit2/spec/common/source_scaffold", [
 
 define("../cardkit2/spec/common/scaffold", [], function(){
 
-return function(guard){
-    guard.component({
-        hd: function(guard){
-            guard.watch('ck-part[type="hd"]');
-            guard.bond({
-                url: 'href',
-                isExternUrl: function(node){
-                    var t = node.attr('target');
-                    return t && t !== '_self';
-                }
-            });
-        },
-        hdOpt: function(guard){
-            guard.watch('ck-part[type="hdOpt"]');
-        },
-        ft: function(guard){
-            guard.watch('ck-part[type="ft"]');
-        }
-    });
+return {
+    hd: function(guard){
+        guard.watch('ck-part[type="hd"]');
+        guard.bond({
+            url: 'href',
+            isExternUrl: function(node){
+                var t = node.attr('target');
+                return t && t !== '_self';
+            }
+        });
+    },
+    hdOpt: function(guard){
+        guard.watch('ck-part[type="hdOpt"]');
+    },
+    ft: function(guard){
+        guard.watch('ck-part[type="ft"]');
+    }
 };
 
 });
@@ -4578,11 +4879,13 @@ return function(guard){
 
 
 define("../cardkit2/spec/list", [
-  "mo/lang",
   "dollar",
   "../cardkit2/spec/common/scaffold",
-  "../cardkit2/spec/common/source_scaffold"
-], function(_, $, scaffold_specs, source_scaffold_specs){
+  "../cardkit2/spec/common/source_scaffold",
+  "../cardkit2/spec/common/item",
+  "../cardkit2/spec/common/source_item"
+], function($, 
+    scaffold_specs, source_scaffold_specs, item_specs, source_item_specs){ 
 
 var selector = 'ck-card[type="list"]';
 
@@ -4597,13 +4900,16 @@ return function(guard, parent){
         plainStyle: 'plain-style',
         plainHdStyle: 'plain-hd-style'
     });
-    scaffold_specs(guard);
-    source_scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(source_scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('ck-part[type="item"]');
+        guard.component(item_specs);
+        guard.source().component(source_item_specs);
     });
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        source.component(source_item_specs);
     });
 };
 
@@ -4614,13 +4920,15 @@ return function(guard, parent){
 
 
 define("../cardkit2/spec/box", [
-  "mo/lang",
   "dollar",
   "../cardkit2/spec/common/scaffold",
   "../cardkit2/spec/common/source_scaffold"
-], function(_, $, scaffold_specs, source_scaffold_specs){
+], function(__oz0, __oz1, __oz2, require){ 
 
-var selector = 'ck-card[type="box"]';
+var $ = require("dollar"),
+    scaffold_specs = require("../cardkit2/spec/common/scaffold"),
+    source_scaffold_specs = require("../cardkit2/spec/common/source_scaffold"),
+    selector = 'ck-card[type="box"]';
 
 return function(guard, parent){
     guard.watch(parent && $(selector, parent) || selector);
@@ -4630,8 +4938,8 @@ return function(guard, parent){
         plainStyle: 'plain-style',
         plainHdStyle: 'plain-hd-style'
     });
-    scaffold_specs(guard);
-    source_scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(source_scaffold_specs);
     guard.component('content', function(guard){
         guard.watch('ck-part[type="content"]');
     });
@@ -4647,23 +4955,18 @@ return function(guard, parent){
 
 
 define("../cardkit2/spec/page", [
-  "mo/lang",
   "dollar",
-  "../cardkit2/spec/box"
-], function(_, $, box_spec){
+  "../cardkit2/spec/box",
+  "../cardkit2/spec/list"
+], function(__oz0, __oz1, __oz2, require){ 
 
-return function(guard, source, parent){
-    guard.watch($('ck-card[type="page"]', parent));
-    guard.bond({
-        isFirst: 'firstpage',
-        cardId: 'id'
-    });
-    guard.component({
-        title: 'ck-part[type="title"]',
-        actionbar: actionbar_spec,
-        navdrawer: navdrawer_spec,
-        box: box_spec
-    });
+var $ = require("dollar");
+var specs = {
+    title: 'ck-part[type="title"]',
+    actionbar: actionbar_spec,
+    navdrawer: navdrawer_spec,
+    box: require("../cardkit2/spec/box"),
+    list: require("../cardkit2/spec/list")
 };
 
 function navdrawer_spec(guard){
@@ -4695,6 +4998,15 @@ function source_action_attr(source){
         return node.hasClass('ckd-overflow-item');
     });
 }
+
+return function(guard, source, parent){
+    guard.watch($('ck-card[type="page"]', parent));
+    guard.bond({
+        isFirst: 'firstpage',
+        cardId: 'id'
+    });
+    guard.component(specs);
+};
 
 });
 

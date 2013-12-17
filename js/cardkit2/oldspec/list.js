@@ -1,9 +1,9 @@
 
 define([
-    'mo/lang',
     'dollar',
-    './common/scaffold'
-], function(_, $, scaffold_specs){
+    './common/scaffold',
+    './common/item'
+], function($, scaffold_specs, item_specs){ 
 
 var selector = '.ck-list-unit';
 
@@ -18,13 +18,16 @@ return function(guard, parent){
         plainStyle: 'data-cfg-plain',
         plainHdStyle: 'data-cfg-plainhd'
     });
-    scaffold_specs(guard);
-    scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('.ckd-item');
+        guard.component(item_specs);
+        guard.source().component(item_specs);
     });
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        guard.component(item_specs);
     });
 };
 

@@ -1,11 +1,9 @@
 
-define([
-    'mo/lang',
-    'dollar',
-    './common/scaffold'
-], function(_, $, scaffold_specs){
+define(function(require){ 
 
-var selector = '.ck-box-unit';
+var $ = require('dollar'),
+    scaffold_specs = require('./common/scaffold'),
+    selector = '.ck-box-unit';
 
 return function(guard, parent){
     guard.watch(parent && $(selector, parent) || selector);
@@ -15,8 +13,8 @@ return function(guard, parent){
         plainStyle: 'data-cfg-plain',
         plainHdStyle: 'data-cfg-plainhd'
     });
-    scaffold_specs(guard);
-    scaffold_specs(guard.source());
+    guard.component(scaffold_specs);
+    guard.source().component(scaffold_specs);
     guard.component('content', function(guard){
         guard.watch('.ckd-content');
     });

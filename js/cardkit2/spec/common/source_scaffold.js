@@ -1,9 +1,7 @@
 
-define([
-   '../../oldspec/common/scaffold'
-], function(scaffold_specs){
+define(function(require){
 
-    return scaffold_specs;
+    return require('../../oldspec/common/scaffold');
 
 });
 
