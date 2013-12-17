@@ -1,1 +1,1 @@
-<span class="ck-ft">{%= content %}</span>
+<footer>{%= content %}</footer>

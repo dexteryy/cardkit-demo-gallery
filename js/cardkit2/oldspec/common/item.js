@@ -1,179 +1,158 @@
 
 define([], function(){
 
-    return {
-        title: function(component){
-            component.register('.ckd-title', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+return function(guard){
+    guard.component({
+        title: function(guard){
+            guard.watch('.ckd-title');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        titleLink: function(component){
-            component.register('.ckd-title-link', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLink: function(guard){
+            guard.watch('.ckd-title-link');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        titleLinkAlone: function(component){
-            component.register('.ckd-title-link-alone', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLinkAlone: function(guard){
+            guard.watch('.ckd-title-link-alone');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        titleLinkExtern: function(component){
-            component.register('.ckd-title-link-extern', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLinkExtern: function(guard){
+            guard.watch('.ckd-title-link-extern');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        titlePrefix: function(component){
-            component.register('.ckd-title-prefix', {
-                configures: {
-                    raw: 'raw'
-                }
+        titlePrefix: function(guard){
+            guard.watch('.ckd-title-prefix');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        titleSuffix: function(component){
-            component.register('.ckd-title-suffix', {
-                configures: {
-                    raw: 'raw'
-                }
+        titleSuffix: function(guard){
+            guard.watch('.ckd-title-suffix');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        titleTag: function(component){
-            component.register('.ckd-title-tag', {
-                configures: {
-                    raw: 'raw'
-                }
+        titleTag: function(guard){
+            guard.watch('.ckd-title-tag');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        icon: function(component){
-            component.register('.ckd-icon', {
-                configures: {
-                    imgUrl: 'src',
-                    raw: 'raw'
-                }
+        icon: function(guard){
+            guard.watch('.ckd-icon');
+            guard.bond({
+                imgUrl: 'src',
+                source: 'data-source'
             });
         },
-        info: function(component){
-            component.register('.ckd-info', {
-                configures: {
-                    raw: 'raw'
-                }
+        info: function(guard){
+            guard.watch('.ckd-info');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        opt: function(component){
-            component.register('.ckd-opt', {
-                configures: {
-                    raw: 'raw'
-                }
+        opt: function(guard){
+            guard.watch('.ckd-opt');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        desc: function(component){
-            component.register('.ckd-desc, .ckd-subtitle', {
-                configures: {
-                    raw: 'raw'
-                }
+        desc: function(guard){
+            guard.watch('.ckd-desc, .ckd-subtitle');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        content: function(component){
-            component.register('.ckd-content', {
-                configures: {
-                    raw: 'raw'
-                }
+        content: function(guard){
+            guard.watch('.ckd-content');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        meta: function(component){
-            component.register('.ckd-meta', {
-                configures: {
-                    raw: 'raw'
-                }
+        meta: function(guard){
+            guard.watch('.ckd-meta');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        author: function(component){
-            component.register('.ckd-author', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        author: function(guard){
+            guard.watch('.ckd-author');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        authorLink: function(component){
-            component.register('.ckd-author-link', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        authorLink: function(guard){
+            guard.watch('.ckd-author-link');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        authorLinkAlone: function(component){
-            component.register('.ckd-author-link-alone', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        authorLinkAlone: function(guard){
+            guard.watch('.ckd-author-link-alone');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        authorLinkExtern: function(component){
-            component.register('.ckd-author-link-extern', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        authorLinkExtern: function(guard){
+            guard.watch('.ckd-author-link-extern');
+            guard.bond({
+                url: 'href',
+                source: 'data-source'
             });
         },
-        authorPrefix: function(component){
-            component.register('.ckd-author-prefix', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorPrefix: function(guard){
+            guard.watch('.ckd-author-prefix');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        authorSuffix: function(component){
-            component.register('.ckd-author-suffix', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorSuffix: function(guard){
+            guard.watch('.ckd-author-suffix');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        avatar: function(component){
-            component.register('.ckd-avatar', {
-                configures: {
-                    imgUrl: 'src',
-                    raw: 'raw'
-                }
+        avatar: function(guard){
+            guard.watch('.ckd-avatar');
+            guard.bond({
+                imgUrl: 'src',
+                source: 'data-source'
             });
         },
-        authorInfo: function(component){
-            component.register('.ckd-author-info', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorInfo: function(guard){
+            guard.watch('.ckd-author-info');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        authorDesc: function(component){
-            component.register('.ckd-author-desc', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorDesc: function(guard){
+            guard.watch('.ckd-author-desc');
+            guard.bond({
+                source: 'data-source'
             });
         },
-        authorMeta: function(component){
-            component.register('.ckd-author-meta', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorMeta: function(guard){
+            guard.watch('.ckd-author-meta');
+            guard.bond({
+                source: 'data-source'
             });
         }
-    };
+    });
+};
 
 });
 

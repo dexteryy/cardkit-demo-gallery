@@ -62,15 +62,19 @@ describe("the page card", function(){
 
     describe("the content component in the visible root", function(){
 
-        var box;
+        var box, box1, box2;
 
         beforeEach(function(){
             box = bright_root.find('.ck-box-unit');
+            box1 = box.eq(0);
+            box2 = box.eq(1);
         });
 
         it("is among other contents in order", function(){
-            expect(box.prev()).to.be('p');
-            expect(box.next()).to.be('p');
+            expect(box1.prev()).to.be('p');
+            expect(box1.next()).to.be('p');
+            expect(box2.parent()).to.be('.yyy');
+            expect(box2.prev()).to.be('p');
         });
 
         it("with attributes", function(){
@@ -92,42 +96,42 @@ describe("the page card", function(){
 
             var title_1 = 'title 11111';
             var title_2 = 'title 22222';
-            var bright_hd = bright_box.find('.ck-hd');
+            var bright_hd = bright_box.find('.ck-hd span');
             var dark_hd = dark_box.find('ck-part[type="hd"]');
 
             dark_hd.html(title_1);
             expect(bright_hd).to.not.have.html(title_1);
 
             dark_box.updateDarkDOM();
-            bright_hd = bright_box.find('.ck-hd');
+            bright_hd = bright_box.find('.ck-hd span');
             expect(bright_hd).to.have.html(title_1);
 
             dark_hd.html(title_2);
             expect(bright_hd).to.have.html(title_1);
 
             dark_hd.updateDarkDOM();
-            bright_hd = bright_box.find('.ck-hd');
+            bright_hd = bright_box.find('.ck-hd span');
             expect(bright_hd).to.have.html(title_2);
 
         });
     
         it("remove component", function(){
 
-            var actions = bright_root.find('.ck-action');
+            var actions = bright_root.find('.ck-action button');
             var count = actions.length;
 
             dark_root.find('button[action-layout]').eq(count - 1).remove();
             expect(actions).to.length(count);
 
             dark_root.updateDarkDOM();
-            actions = bright_root.find('.ck-action');
+            actions = bright_root.find('.ck-action button');
             expect(actions).to.length(count - 1);
 
         });
 
         it("add component", function(){
 
-            var actions = bright_root.find('.ck-action');
+            var actions = bright_root.find('.ck-action button');
             var count = actions.length;
 
             dark_root.find('ck-part[type="actionbar"]')
@@ -135,7 +139,7 @@ describe("the page card", function(){
             expect(actions).to.length(count);
 
             dark_root.updateDarkDOM();
-            actions = bright_root.find('.ck-action');
+            actions = bright_root.find('.ck-action button');
             expect(actions).to.length(count + 1);
             expect(actions.eq(actions.length - 1)).to.have.html('yy');
 
@@ -144,15 +148,15 @@ describe("the page card", function(){
         it("custom updater", function(){
 
             var button1 = dark_root.find('button[action-layout]').eq(0);
-            var bright_button1 = bright_root.find('.ck-action').eq(0);
 
-            button1.observeDarkDOM('content', function(changes){
+            button1.responseDarkDOM('content', function(changes){
                 $(changes.root).html(changes.newValue);
                 return false;
             });
 
             button1.html('aaaa');
             dark_root.updateDarkDOM();
+            var bright_button1 = bright_root.find('.ck-action button').eq(0);
             expect(bright_button1).to.have.html('aaaa');
 
         });
@@ -174,11 +178,11 @@ describe("the page card", function(){
         });
 
         it("add component", function(){
-            expect(box1.find('.ck-ft')).to.exist;
+            expect(box1.find('footer')).to.exist;
         });
 
         it("merge component", function(){
-            expect(box1.find('.ck-hd')).to.not.html("This is source's head");
+            expect(box1.find('.ck-hd span')).to.not.html("This is source's head");
         });
 
         it("component's source", function(){
@@ -190,7 +194,9 @@ describe("the page card", function(){
         it("set source: content", function(){
             var content3 = dark_box2.find('[type="content"]').eq(2);
             content3.feedDarkDOM({
-                contentList: ['xx', 'yy']
+                contentData: {
+                    text: 'xxyy'
+                }
             });
             dark_root.updateDarkDOM();
             expect(box2.find('.ck-content').eq(2)).to.html('xxyy');
@@ -202,17 +208,21 @@ describe("the page card", function(){
             dark_box2.feedDarkDOM({
                 componentData: {
                     hd: {
-                        contentList: [hd_text],
+                        contentData: {
+                            text: hd_text
+                        }
                     },
                     ft: {
-                        contentList: [ft_text]
+                        contentData: {
+                            text: ft_text
+                        }
                     }
                 }
             });
             dark_root.updateDarkDOM();
             box2 = bright_root.find('.ck-box-unit').eq(1);
-            expect(box2.find('.ck-hd')).to.html(hd_text);
-            expect(box2.find('.ck-ft')).to.html(ft_text);
+            expect(box2.find('.ck-hd span')).to.html(hd_text);
+            expect(box2.find('footer')).to.html(ft_text);
         });
 
     });

@@ -1,5 +1,5 @@
 define([], function(){
 
-    return {"template":"\n<button class=\"ck-action\">{%= content %}</button>\n"}; 
+    return {"template":"\n<span class=\"ck-action\">{%= content %}</span>\n"}; 
 
 });

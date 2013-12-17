@@ -1,47 +1,51 @@
 
-define([
-    'darkdom',
-    'mo/template/micro',
-    '../../tpl/scaffold/hd',
-    '../../tpl/scaffold/ft'
-], function(darkdom, tpl,
-    tpl_hd, tpl_ft){
+define(function(require){ 
+
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl;
 
 var hd = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl.convertTpl(tpl_hd.template)
+    render: convert(require('../../tpl/scaffold/hd').template)
 });
 
 var hd_link = darkdom({
     unique: true,
     enableSource: true,
-    //template: ''
+    render: function(data){
+        return data.state.url;
+    }
 });
 
 var hd_link_extern = darkdom({
     unique: true,
     enableSource: true,
-    //template: ''
+    render: function(data){
+        return data.state.url;
+    }
 });
 
 var hd_opt = darkdom({
     enableSource: true,
-    //template: ''
+    entireAsContent: true,
+    render: convert(require('../../tpl/scaffold/hd_opt').template)
 });
 
 var ft = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl.convertTpl(tpl_ft.template)
+    render: convert(require('../../tpl/scaffold/ft').template)
 });
 
-return function(root){
-    root.contain('hd', hd);
-    root.contain('hdLink', hd_link);
-    root.contain('hdLinkExtern', hd_link_extern);
-    root.contain('hdOpt', hd_opt);
-    root.contain('ft', ft);
+return function(card){
+    card.contain({
+        hd: hd,
+        hdLink: hd_link,
+        hdLinkExtern: hd_link_extern,
+        hdOpt: hd_opt,
+        ft: ft
+    });
 };
 
 });

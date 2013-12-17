@@ -11,11 +11,3 @@
 @import 'moui/modalview/default';
 @import 'moui/growl/default';
 
-.ck-card,
-ck-card {
-  display:none;
-}
-
-.ck-card[autorender="true"] {
-  display:block;
-}

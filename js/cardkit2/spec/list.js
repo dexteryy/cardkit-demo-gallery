@@ -2,36 +2,32 @@
 define([
     'mo/lang',
     'dollar',
-    '../card/list',
-    './common/item',
-    './common/scaffold'
-], function(_, $, component, item_components, scaffold_components){
+    './common/scaffold',
+    './common/source_scaffold'
+], function(_, $, scaffold_specs, source_scaffold_specs){
 
-    return function(){
+var selector = 'ck-card[type="list"]';
 
-        return component.register($('ck-card[type="list"]'), {
-            configures: {
-                subtype: 'subtype',
-                blankContent: 'blank-content',
-                limit: 'limit', 
-                col: 'col', 
-                paperStyle: 'paper-style',
-                plainStyle: 'plain-style',
-                plainHdStyle: 'plain-hd-style'
-            },
-            components: _.mix({
-                item: function(component){
-                    component.register('ck-part[type="item"]', {
-                        configures: {
-                            raw: 'raw'
-                        },
-                        components: item_components
-                    });
-                }
-            }, scaffold_components)
-        });
-
-    };
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'subtype',
+        blankContent: 'blank-content',
+        limit: 'limit', 
+        col: 'col', 
+        paperStyle: 'paper-style',
+        plainStyle: 'plain-style',
+        plainHdStyle: 'plain-hd-style'
+    });
+    scaffold_specs(guard);
+    source_scaffold_specs(guard.source());
+    guard.component('item', function(guard){
+        guard.watch('ck-part[type="item"]');
+    });
+    guard.source().component('item', function(source){
+        source.watch('.ckd-item');
+    });
+};
 
 });
 

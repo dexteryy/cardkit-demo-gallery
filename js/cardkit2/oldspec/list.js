@@ -2,36 +2,31 @@
 define([
     'mo/lang',
     'dollar',
-    '../card/list',
-    './common/item',
     './common/scaffold'
-], function(_, $, component, item_components, scaffold_components){
+], function(_, $, scaffold_specs){
 
-    return function(){
+var selector = '.ck-list-unit';
 
-        return component.register($('.ck-list-unit'), {
-            configures: {
-                subtype: 'data-style',
-                blankContent: 'data-cfg-blank',
-                limit: 'data-cfg-limit', 
-                col: 'data-cfg-col', 
-                paperStyle: 'data-cfg-paper',
-                plainStyle: 'data-cfg-plain',
-                plainHdStyle: 'data-cfg-plainhd'
-            },
-            components: _.mix({
-                item: function(component){
-                    component.register('.ckd-item', {
-                        configures: {
-                            raw: 'data-source'
-                        },
-                        components: item_components
-                    });
-                }
-            }, scaffold_components)
-        });
-
-    };
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'data-style',
+        blankContent: 'data-cfg-blank',
+        limit: 'data-cfg-limit', 
+        col: 'data-cfg-col', 
+        paperStyle: 'data-cfg-paper',
+        plainStyle: 'data-cfg-plain',
+        plainHdStyle: 'data-cfg-plainhd'
+    });
+    scaffold_specs(guard);
+    scaffold_specs(guard.source());
+    guard.component('item', function(guard){
+        guard.watch('.ckd-item');
+    });
+    guard.source().component('item', function(source){
+        source.watch('.ckd-item');
+    });
+};
 
 });
 

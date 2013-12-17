@@ -1,2 +1,2 @@
 
-<button class="ck-action">{%= content %}</button>
+<span class="ck-action">{%= content %}</span>

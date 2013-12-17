@@ -1,2 +1,1 @@
-
-<div class="ck-navdrawer"></div>
+<div class="ck-navdrawer">{%= content %}</div>

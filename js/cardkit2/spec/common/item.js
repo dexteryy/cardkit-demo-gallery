@@ -1,179 +1,109 @@
 
 define([], function(){
 
-    return {
-        title: function(component){
-            component.register('ck-part[type="title"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+return function(guard){
+    guard.component({
+        title: function(guard){
+            guard.watch('ck-part[type="title"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        titleLink: function(component){
-            component.register('ck-part[type="titleLink"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLink: function(guard){
+            guard.watch('ck-part[type="titleLink"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        titleLinkAlone: function(component){
-            component.register('ck-part[type="titleLinkAlone"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLinkAlone: function(guard){
+            guard.watch('ck-part[type="titleLinkAlone"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        titleLinkExtern: function(component){
-            component.register('ck-part[type="titleLinkExtern"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
+        titleLinkExtern: function(guard){
+            guard.watch('ck-part[type="titleLinkExtern"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        titlePrefix: function(component){
-            component.register('ck-part[type="titlePrefix"]', {
-                configures: {
-                    raw: 'raw'
-                }
+        titlePrefix: function(guard){
+            guard.watch('ck-part[type="titlePrefix"]');
+        },
+        titleSuffix: function(guard){
+            guard.watch('ck-part[type="titleSuffix"]');
+        },
+        titleTag: function(guard){
+            guard.watch('ck-part[type="titleTag"]');
+        },
+        icon: function(guard){
+            guard.watch('ck-part[type="icon"]');
+            guard.bond({
+                imgUrl: 'src'
             });
         },
-        titleSuffix: function(component){
-            component.register('ck-part[type="titleSuffix"]', {
-                configures: {
-                    raw: 'raw'
-                }
+        info: function(guard){
+            guard.watch('ck-part[type="info"]');
+        },
+        opt: function(guard){
+            guard.watch('ck-part[type="opt"]');
+        },
+        desc: function(guard){
+            guard.watch('ck-part[type="desc"]');
+        },
+        content: function(guard){
+            guard.watch('ck-part[type="content"]');
+        },
+        meta: function(guard){
+            guard.watch('ck-part[type="meta"]');
+        },
+        author: function(guard){
+            guard.watch('ck-part[type="author"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        titleTag: function(component){
-            component.register('ck-part[type="titleTag"]', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorLink: function(guard){
+            guard.watch('ck-part[type="authorLink"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        icon: function(component){
-            component.register('ck-part[type="icon"]', {
-                configures: {
-                    imgUrl: 'src',
-                    raw: 'raw'
-                }
+        authorLinkAlone: function(guard){
+            guard.watch('ck-part[type="authorLinkAlone"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        info: function(component){
-            component.register('ck-part[type="info"]', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorLinkExtern: function(guard){
+            guard.watch('ck-part[type="authorLinkExtern"]');
+            guard.bond({
+                url: 'href'
             });
         },
-        opt: function(component){
-            component.register('ck-part[type="opt"]', {
-                configures: {
-                    raw: 'raw'
-                }
+        authorPrefix: function(guard){
+            guard.watch('ck-part[type="authorPrefix"]');
+        },
+        authorSuffix: function(guard){
+            guard.watch('ck-part[type="authorSuffix"]');
+        },
+        avatar: function(guard){
+            guard.watch('ck-part[type="avatar"]');
+            guard.bond({
+                imgUrl: 'src'
             });
         },
-        desc: function(component){
-            component.register('ck-part[type="desc"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
+        authorInfo: function(guard){
+            guard.watch('ck-part[type="authorInfo"]');
         },
-        content: function(component){
-            component.register('ck-part[type="content"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
+        authorDesc: function(guard){
+            guard.watch('ck-part[type="authorDesc"]');
         },
-        meta: function(component){
-            component.register('ck-part[type="meta"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
-        },
-        author: function(component){
-            component.register('ck-part[type="author"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
-            });
-        },
-        authorLink: function(component){
-            component.register('ck-part[type="authorLink"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
-            });
-        },
-        authorLinkAlone: function(component){
-            component.register('ck-part[type="authorLinkAlone"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
-            });
-        },
-        authorLinkExtern: function(component){
-            component.register('ck-part[type="authorLinkExtern"]', {
-                configures: {
-                    url: 'href',
-                    raw: 'raw'
-                }
-            });
-        },
-        authorPrefix: function(component){
-            component.register('ck-part[type="authorPrefix"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
-        },
-        authorSuffix: function(component){
-            component.register('ck-part[type="authorSuffix"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
-        },
-        avatar: function(component){
-            component.register('ck-part[type="avatar"]', {
-                configures: {
-                    imgUrl: 'src',
-                    raw: 'raw'
-                }
-            });
-        },
-        authorInfo: function(component){
-            component.register('ck-part[type="authorInfo"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
-        },
-        authorDesc: function(component){
-            component.register('ck-part[type="authorDesc"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
-        },
-        authorMeta: function(component){
-            component.register('ck-part[type="authorMeta"]', {
-                configures: {
-                    raw: 'raw'
-                }
-            });
+        authorMeta: function(guard){
+            guard.watch('ck-part[type="authorMeta"]');
         }
-    };
+    });
+};
 
 });
 

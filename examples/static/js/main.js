@@ -21,6 +21,7 @@
         _RE_SUFFIX = /\.(js|json)$/,
         _RE_RELPATH = /^\.+?\/.+/,
         _RE_DOT = /(^|\/)\.\//g,
+        _RE_DOTS = /[^/\/\.]+\/\.\.\//,
         _RE_ALIAS_IN_MID = /^([\w\-]+)\//,
         _builtin_mods = { "require": 1, "exports": 1, "module": 1, 
             "host": 1, "finish": 1 },
@@ -574,13 +575,10 @@
 
     exports.resolvename = function(url){
         url = url.replace(_RE_DOT, '$1');
-        var dots, dots_n, url_dup = url, RE_DOTS = /(\.\.\/)+/g;
-        while (dots = (RE_DOTS.exec(url_dup) || [])[0]) {
-            dots_n = dots.match(/\.\.\//g).length;
-            dots = dots.replace(/\./, '\\.');
-            url = url.replace(new RegExp('([^/\\.]+/){' + dots_n + '}' + dots), '');
+        while (_RE_DOTS.test(url)) {
+            url = url.replace(_RE_DOTS, '/').replace(/\/\//g, '/');
         }
-        return url.replace(/\/\//g, '/');
+        return url;
     };
 
     var origin = {};
@@ -1740,361 +1738,48 @@ define("../cardkit2/supports", [
 });
 
 
-/* @source ../cardkit2/oldspec.js */;
+/* @source ../cardkit2/oldspec/common/scaffold.js */;
 
 
-define("../cardkit2/oldspec", [], function(require){
+define("../cardkit2/oldspec/common/scaffold", [], function(){
 
-    return {
-    };
-
-});
-
-
-/* @source ../cardkit2/spec/common/source_scaffold.js */;
-
-
-define("../cardkit2/spec/common/source_scaffold", [], function(){
-
-return {
-    hd: function(source){
-        source.watch('.ckd-hd');
-        source.bond({
-            url: 'href'
-        });
-    },
-    hdLinkExtern: function(source){
-        source.watch('.ckd-hd-link-extern');
-        source.bond({
-            url: 'href'
-        });
-    },
-    hdLink: function(source){
-        source.watch('.ckd-hd-link');
-        source.bond({
-            url: 'href'
-        });
-    },
-    hdOpt: function(source){
-        source.watch('.ckd-hdopt');
-    },
-    ft: function(source){
-        source.watch('.ckd-ft');
-    }
-};
-
-});
-
-
-/* @source ../cardkit2/spec/common/scaffold.js */;
-
-
-define("../cardkit2/spec/common/scaffold", [], function(){
-
-return {
-    hd: function(guard){
-        guard.watch('ck-part[type="hd"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    hdLinkExtern: function(guard){
-        guard.watch('ck-part[type="hdLinkExtern"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    hdLink: function(guard){
-        guard.watch('ck-part[type="hdLink"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    hdOpt: function(guard){
-        guard.watch('ck-part[type="hdOpt"]');
-    },
-    ft: function(guard){
-        guard.watch('ck-part[type="ft"]');
-    }
-};
-
-});
-
-
-/* @source ../cardkit2/tpl/box/content.js */;
-
-define("../cardkit2/tpl/box/content", [], function(){
-
-    return {"template":"<div class=\"ck-content\">{%= content %}</div>\n"}; 
-
-});
-/* @source ../cardkit2/tpl/box.js */;
-
-define("../cardkit2/tpl/box", [], function(){
-
-    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= attr.subtype %}\"\n        data-cfg-paper=\"{%= attr.paperStyle %}\"\n        data-cfg-plain=\"{%= attr.plainStyle %}\"\n        data-cfg-plainhd=\"{%= attr.plainHdStyle %}\">\n    {%= component.hd %}\n    {%= content %}\n    {%= component.ft %}\n</div>\n"}; 
-
-});
-/* @source ../cardkit2/card/../tpl/scaffold/ft.js */;
-
-define("../cardkit2/card/../tpl/scaffold/ft", [], function(){
-
-    return {"template":"<span class=\"ck-ft\">{%= content %}</span>\n"}; 
-
-});
-/* @source ../cardkit2/card/../tpl/scaffold/hd.js */;
-
-define("../cardkit2/card/../tpl/scaffold/hd", [], function(){
-
-    return {"template":"{% if (attr.url) { %}\n<a class=\"ck-hd\" \n    href=\"{%= attr.url %}\">{%= content %}</span>\n{% } else { %}\n<span class=\"ck-hd\">{%= content %}</span>\n{% } %}\n"}; 
-
-});
-/* @source mo/template/string.js */;
-
-/**
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/template/string", [], function(require, exports){
-
-    exports.format = function(tpl, op){
-        return tpl.replace(/\{\{(\w+)\}\}/g, function(e1,e2){
-            return op[e2] != null ? op[e2] : "";
-        });
-    };
-
-    exports.escapeHTML = function(str){
-        str = str || '';
-        var xmlchar = {
-            //"&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            "'": "&#39;",
-            '"': "&quot;",
-            "{": "&#123;",
-            "}": "&#125;",
-            "@": "&#64;"
-        };
-        return str.replace(/[<>'"\{\}@]/g, function($1){
-            return xmlchar[$1];
-        });
-    };
-
-    exports.substr = function(str, limit, cb){
-        if(!str || typeof str !== "string")
-            return '';
-        var sub = str.substr(0, limit).replace(/([^\x00-\xff])/g, '$1 ').substr(0, limit).replace(/([^\x00-\xff])\s/g, '$1');
-        return cb ? cb.call(sub, sub) : (str.length > sub.length ? sub + '...' : sub);
-    };
-
-    exports.strsize = function(str){
-        return str.replace(/([^\x00-\xff]|[A-Z])/g, '$1 ').length;
-    };
-
-});
-
-
-/* @source mo/lang/oop.js */;
-
-/**
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/lang/oop", [
-  "mo/lang/es5",
-  "mo/lang/mix"
-], function(es5, _, require, exports){
-
-    var mix = _.mix;
-
-    exports.construct = function(base, mixes, factory){
-        if (mixes && !Array.isArray(mixes)) {
-            factory = mixes;
-            mixes = null;
-        }
-        if (!factory) {
-            factory = function(){
-                this.superConstructor.apply(this, arguments);
-            };
-        }
-        if (!base.__constructor) {
-            base.__constructor = base;
-            base.__supr = base.prototype;
-        }
-        var proto = Object.create(base.prototype),
-            supr = Object.create(base.prototype),
-            current_supr = supr;
-        supr.__super = base.__supr;
-        var sub = function(){
-            this.superMethod = sub.__superMethod;
-            this.superConstructor = su_construct;
-            this.constructor = sub.__constructor;
-            this.superClass = supr; // deprecated!
-            return factory.apply(this, arguments);
-        };
-        sub.__supr = supr;
-        sub.__constructor = sub;
-        sub.__superMethod = function(name, args){
-            var mysupr = current_supr;
-            current_supr = mysupr.__super;
-            var re = mysupr[name].apply(this, args);
-            current_supr = mysupr;
-            return re;
-        };
-        sub.prototype = proto;
-        if (mixes) {
-            mixes = mix.apply(this, mixes);
-            mix(proto, mixes);
-            mix(supr, mixes);
-        }
-        function su_construct(){
-            var cache_constructor = base.__constructor,
-                cache_super_method = base.__superMethod;
-            base.__constructor = sub;
-            base.__superMethod = sub.__superMethod;
-            _apply.prototype = base.prototype;
-            var su = new _apply(base, this, arguments);
-            for (var i in su) {
-                if (!this[i]) {
-                    this[i] = supr[i] = su[i];
+return function(guard){
+    guard.component({
+        hd: function(guard){
+            guard.watch('.ckd-hd');
+            guard.bond({
+                source: 'data-source',
+                url: 'href',
+                isExternUrl: function(node){
+                    return node.hasClass('ckd-hd-link-extern');
                 }
-            }
-            base.__constructor = cache_constructor;
-            base.__superMethod = cache_super_method;
-            this.superConstructor = su_construct;
+            });
+        },
+        hdLink: function(guard){
+            guard.watch('.ckd-hd-link:not(.ckd-hd)');
+            guard.bond({
+                source: 'data-source',
+                url: 'href'
+            });
+        },
+        hdLinkExtern: function(guard){
+            guard.watch('.ckd-hd-link-extern:not(.ckd-hd)');
+            guard.bond({
+                source: 'data-source',
+                url: 'href'
+            });
+        },
+        hdOpt: function(guard){
+            guard.watch('.ckd-hdopt');
+            guard.bond({
+                source: 'data-source'
+            });
+        },
+        ft: function(guard){
+            guard.watch('.ckd-ft');
         }
-        return sub;
-    };
-
-    function _apply(base, self, args){
-        base.apply(self, args);
-    }
-
-});
-
-/* @source mo/lang.js */;
-
-/**
- * ES5/6 shim and minimum utilities for language enhancement
- *
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/lang", [
-  "mo/lang/es5",
-  "mo/lang/type",
-  "mo/lang/mix",
-  "mo/lang/struct",
-  "mo/lang/oop"
-], function(es5, detect, _, struct, oo, require, exports){
-
-    var host = this,
-        window = host.window;
-
-    _.mix(exports, detect, _, struct, oo);
-
-    exports.ns = function(namespace, v, parent){
-        var i, p = parent || window, n = namespace.split(".").reverse();
-        while ((i = n.pop()) && n.length > 0) {
-            if (typeof p[i] === 'undefined') {
-                p[i] = {};
-            } else if (typeof p[i] !== "object") {
-                return false;
-            }
-            p = p[i];
-        }
-        if (typeof v !== 'undefined')
-            p[i] = v;
-        return p[i];
-    };
-
-});
-
-/* @source mo/template/micro.js */;
-
-/**
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
- * vim: et:ts=4:sw=4:sts=4
- */
-define("mo/template/micro", [
-  "mo/lang",
-  "mo/template/string"
-], function(_, stpl, require, exports){
-
-    var document = this.document;
-
-    exports.tplSettings = {
-        _cache: {},
-        comment: /\{\*([\s\S]+?)\*\}/g,
-        evaluate: /\{%([\s\S]+?)%\}/g,
-        interpolate: /\{%=([\s\S]+?)%\}/g
-    };
-    exports.tplHelpers = {
-        mix: _.mix,
-        escapeHTML: stpl.escapeHTML,
-        substr: stpl.substr,
-        include: convertTpl,
-        _has: function(obj){
-            return function(name){
-                return _.ns(name, undefined, obj);
-            };
-        }
-    };
-
-    function convertTpl(str, data, namespace){
-        var func, c  = exports.tplSettings, suffix = namespace ? '#' + namespace : '';
-        if (!/[\t\r\n% ]/.test(str)) {
-            func = c._cache[str + suffix];
-            if (!func) {
-                var tplbox = document.getElementById(str);
-                if (tplbox) {
-                    func = c._cache[str + suffix] = convertTpl(tplbox.innerHTML, false, namespace);
-                }
-            }
-        } else {
-            var tplfunc = new Function(namespace || 'obj', 'api', 'var __p=[];' 
-                + (namespace ? '' : 'with(obj){')
-                    + 'var mix=api.mix,escapeHTML=api.escapeHTML,substr=api.substr,include=api.include,has=api._has(' + (namespace || 'obj') + ');'
-                    + '__p.push(\'' +
-                    str.replace(/\\/g, '\\\\')
-                        .replace(/'/g, "\\'")
-                        .replace(c.comment, '')
-                        .replace(c.interpolate, function(match, code) {
-                            return "'," + code.replace(/\\'/g, "'") + ",'";
-                        })
-                        .replace(c.evaluate || null, function(match, code) {
-                            return "');" + code.replace(/\\'/g, "'")
-                                                .replace(/[\r\n\t]/g, ' ') + "__p.push('";
-                        })
-                        .replace(/\r/g, '\\r')
-                        .replace(/\n/g, '\\n')
-                        .replace(/\t/g, '\\t')
-                    + "');" 
-                + (namespace ? "" : "}")
-                + "return __p.join('');");
-            func = function(data, helpers){
-                return tplfunc.call(this, data, _.mix({}, exports.tplHelpers, helpers));
-            };
-        }
-        return !func ? '' : (data ? func(data) : func);
-    }
-
-    exports.convertTpl = convertTpl;
-    exports.reloadTpl = function(str){
-        delete exports.tplSettings._cache[str];
-    };
+    });
+};
 
 });
 
@@ -2985,6 +2670,417 @@ define("dollar", [
     return $;
 });
 
+/* @source mo/lang/oop.js */;
+
+/**
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/lang/oop", [
+  "mo/lang/es5",
+  "mo/lang/mix"
+], function(es5, _, require, exports){
+
+    var mix = _.mix;
+
+    exports.construct = function(base, mixes, factory){
+        if (mixes && !Array.isArray(mixes)) {
+            factory = mixes;
+            mixes = null;
+        }
+        if (!factory) {
+            factory = function(){
+                this.superConstructor.apply(this, arguments);
+            };
+        }
+        if (!base.__constructor) {
+            base.__constructor = base;
+            base.__supr = base.prototype;
+        }
+        var proto = Object.create(base.prototype),
+            supr = Object.create(base.prototype),
+            current_supr = supr;
+        supr.__super = base.__supr;
+        var sub = function(){
+            this.superMethod = sub.__superMethod;
+            this.superConstructor = su_construct;
+            this.constructor = sub.__constructor;
+            this.superClass = supr; // deprecated!
+            return factory.apply(this, arguments);
+        };
+        sub.__supr = supr;
+        sub.__constructor = sub;
+        sub.__superMethod = function(name, args){
+            var mysupr = current_supr;
+            current_supr = mysupr.__super;
+            var re = mysupr[name].apply(this, args);
+            current_supr = mysupr;
+            return re;
+        };
+        sub.prototype = proto;
+        if (mixes) {
+            mixes = mix.apply(this, mixes);
+            mix(proto, mixes);
+            mix(supr, mixes);
+        }
+        function su_construct(){
+            var cache_constructor = base.__constructor,
+                cache_super_method = base.__superMethod;
+            base.__constructor = sub;
+            base.__superMethod = sub.__superMethod;
+            _apply.prototype = base.prototype;
+            var su = new _apply(base, this, arguments);
+            for (var i in su) {
+                if (!this[i]) {
+                    this[i] = supr[i] = su[i];
+                }
+            }
+            base.__constructor = cache_constructor;
+            base.__superMethod = cache_super_method;
+            this.superConstructor = su_construct;
+        }
+        return sub;
+    };
+
+    function _apply(base, self, args){
+        base.apply(self, args);
+    }
+
+});
+
+/* @source mo/lang.js */;
+
+/**
+ * ES5/6 shim and minimum utilities for language enhancement
+ *
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/lang", [
+  "mo/lang/es5",
+  "mo/lang/type",
+  "mo/lang/mix",
+  "mo/lang/struct",
+  "mo/lang/oop"
+], function(es5, detect, _, struct, oo, require, exports){
+
+    var host = this,
+        window = host.window;
+
+    _.mix(exports, detect, _, struct, oo);
+
+    exports.ns = function(namespace, v, parent){
+        var i, p = parent || window, n = namespace.split(".").reverse();
+        while ((i = n.pop()) && n.length > 0) {
+            if (typeof p[i] === 'undefined') {
+                p[i] = {};
+            } else if (typeof p[i] !== "object") {
+                return false;
+            }
+            p = p[i];
+        }
+        if (typeof v !== 'undefined')
+            p[i] = v;
+        return p[i];
+    };
+
+});
+
+/* @source ../cardkit2/oldspec/list.js */;
+
+
+define("../cardkit2/oldspec/list", [
+  "mo/lang",
+  "dollar",
+  "../cardkit2/oldspec/common/scaffold"
+], function(_, $, scaffold_specs){
+
+var selector = '.ck-list-unit';
+
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'data-style',
+        blankContent: 'data-cfg-blank',
+        limit: 'data-cfg-limit', 
+        col: 'data-cfg-col', 
+        paperStyle: 'data-cfg-paper',
+        plainStyle: 'data-cfg-plain',
+        plainHdStyle: 'data-cfg-plainhd'
+    });
+    scaffold_specs(guard);
+    scaffold_specs(guard.source());
+    guard.component('item', function(guard){
+        guard.watch('.ckd-item');
+    });
+    guard.source().component('item', function(source){
+        source.watch('.ckd-item');
+    });
+};
+
+});
+
+
+/* @source ../cardkit2/tpl/item.js */;
+
+define("../cardkit2/tpl/item", [], function(){
+
+    return {"template":"<div class=\"ck-item {%= (itemLink && 'clickable' || '') %}\" \n        style=\"width:{%= (context.state.col ? Math.floor(1000/context.state.col)/10 + '%' : '') %};\">\n\n    <div class=\"ck-initem\">\n\n        {% if (itemLink) { %}\n        <a href=\"{%= itemLink %}\" \n            class=\"ck-link ck-link-mask {%= (itemLinkExtern ? 'ck-link-extern' : '') %}\"></a>\n        {% } %}\n\n        <div class=\"ck-title-box\">\n\n            {%= component.opt.join('') %}\n            {%= component.icon %}\n\n            <div class=\"ck-title-set\">\n\n                {% if (component.title) { %}\n                <div class=\"ck-title-line\">\n                    {%= component.titlePrefix.join('') %}\n                    {%= component.title %}\n                    {%= component.titleSuffix.join('') %}\n                    {%= component.titleTag.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.info.length) { %}\n                <div class=\"ck-info-wrap\">\n                    {%= component.info.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.desc.length) { %}\n                <div class=\"ck-desc-wrap\">\n                    {%= component.desc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.content.length) { %}\n            <div class=\"ck-content-wrap\">\n                {%= component.content.join('') %}\n            </div>\n            {% } %}\n\n            {% if (component.meta.length) { %}\n            <div class=\"ck-meta-wrap\">\n                {%= component.meta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n\n        {% if (component.author || component.authorDesc.length || component.authorMeta.length) { %}\n        <div class=\"ck-author-box\">\n\n            {%= component.avatar %}\n\n            <div class=\"ck-author-set\">\n\n                <div class=\"ck-author-line\">\n                    {%= component.authorPrefix.join('') %}\n                    {%= component.author %}\n                    {%= component.authorSuffix.join('') %}\n                </div>\n\n                {% if (component.authorInfo.length) { %}\n                <div class=\"ck-author-info-wrap\">\n                    {%= component.authorInfo.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.authorDesc.length) { %}\n                <div class=\"ck-author-desc-wrap\">\n                    {%= component.authorDesc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.authorMeta.length) { %}\n            <div class=\"ck-author-meta-wrap\">\n                {%= component.authorMeta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n        {% } %}\n\n    </div>\n\n</div>\n\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author_meta.js */;
+
+define("../cardkit2/tpl/item/author_meta", [], function(){
+
+    return {"template":"<span class=\"ck-author-meta\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author_info.js */;
+
+define("../cardkit2/tpl/item/author_info", [], function(){
+
+    return {"template":"<span class=\"ck-author-info\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author_desc.js */;
+
+define("../cardkit2/tpl/item/author_desc", [], function(){
+
+    return {"template":"<span class=\"ck-author-desc\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/avatar.js */;
+
+define("../cardkit2/tpl/item/avatar", [], function(){
+
+    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.itemAuthorLink) { %}\n    <a href=\"{%= context.itemAuthorLink %}\" \n            class=\"ck-avatar ck-link {%= (context.itemAuthorLinkExtern ? 'ck-link-extern' : '') %}\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-avatar\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author_suffix.js */;
+
+define("../cardkit2/tpl/item/author_suffix", [], function(){
+
+    return {"template":"<span class=\"ck-author-suffix\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author_prefix.js */;
+
+define("../cardkit2/tpl/item/author_prefix", [], function(){
+
+    return {"template":"<span class=\"ck-author-prefix\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/author.js */;
+
+define("../cardkit2/tpl/item/author", [], function(){
+
+    return {"template":"{% if (context.itemAuthorLink) { %}\n<a href=\"{%= context.itemAuthorLink %}\" \n    class=\"ck-author ck-link {%= (context.itemAuthorLinkExtern ? 'ck-link-extern' : '') %}\">{%= context %}</a>\n{% } else { %}\n<span class=\"ck-author\">{%= context %}</span>\n{% } %}\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/meta.js */;
+
+define("../cardkit2/tpl/item/meta", [], function(){
+
+    return {"template":"<span class=\"ck-meta\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/content.js */;
+
+define("../cardkit2/tpl/item/content", [], function(){
+
+    return {"template":"<span class=\"ck-content\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/opt.js */;
+
+define("../cardkit2/tpl/item/opt", [], function(){
+
+    return {"template":"<span class=\"ck-opt\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/info.js */;
+
+define("../cardkit2/tpl/item/info", [], function(){
+
+    return {"template":"<span class=\"ck-info\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/desc.js */;
+
+define("../cardkit2/tpl/item/desc", [], function(){
+
+    return {"template":"<span class=\"ck-desc\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/icon.js */;
+
+define("../cardkit2/tpl/item/icon", [], function(){
+
+    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.itemLinkAlone) { %}\n    <a href=\"{%= context.itemLinkAlone %}\" \n            class=\"ck-icon ck-link {%= (context.itemLinkExtern ? 'ck-link-extern' : '') %}\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-icon\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/title_tag.js */;
+
+define("../cardkit2/tpl/item/title_tag", [], function(){
+
+    return {"template":"<span class=\"ck-tag\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/title_suffix.js */;
+
+define("../cardkit2/tpl/item/title_suffix", [], function(){
+
+    return {"template":"<span class=\"ck-title-suffix\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/title_prefix.js */;
+
+define("../cardkit2/tpl/item/title_prefix", [], function(){
+
+    return {"template":"<span class=\"ck-title-prefix\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/item/title.js */;
+
+define("../cardkit2/tpl/item/title", [], function(){
+
+    return {"template":"{% if (context.itemLinkAlone) { %}\n<a href=\"{%= context.itemLinkAlone %}\" \n    class=\"ck-link {%= (context.itemLinkExtern ? 'ck-link-extern' : '') %}\">{%= content %}</a>\n{% } else { %}\n<span class=\"ck-title\">{%= content %}</span>\n{% } %}\n\n"}; 
+
+});
+/* @source mo/template/string.js */;
+
+/**
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/template/string", [], function(require, exports){
+
+    exports.format = function(tpl, op){
+        return tpl.replace(/\{\{(\w+)\}\}/g, function(e1,e2){
+            return op[e2] != null ? op[e2] : "";
+        });
+    };
+
+    exports.escapeHTML = function(str){
+        str = str || '';
+        var xmlchar = {
+            //"&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "'": "&#39;",
+            '"': "&quot;",
+            "{": "&#123;",
+            "}": "&#125;",
+            "@": "&#64;"
+        };
+        return str.replace(/[<>'"\{\}@]/g, function($1){
+            return xmlchar[$1];
+        });
+    };
+
+    exports.substr = function(str, limit, cb){
+        if(!str || typeof str !== "string")
+            return '';
+        var sub = str.substr(0, limit).replace(/([^\x00-\xff])/g, '$1 ').substr(0, limit).replace(/([^\x00-\xff])\s/g, '$1');
+        return cb ? cb.call(sub, sub) : (str.length > sub.length ? sub + '...' : sub);
+    };
+
+    exports.strsize = function(str){
+        return str.replace(/([^\x00-\xff]|[A-Z])/g, '$1 ').length;
+    };
+
+});
+
+
+/* @source mo/template/micro.js */;
+
+/**
+ * using AMD (Asynchronous Module Definition) API with OzJS
+ * see http://ozjs.org for details
+ *
+ * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+define("mo/template/micro", [
+  "mo/lang",
+  "mo/template/string"
+], function(_, stpl, require, exports){
+
+    var document = this.document;
+
+    exports.tplSettings = {
+        _cache: {},
+        comment: /\{\*([\s\S]+?)\*\}/g,
+        evaluate: /\{%([\s\S]+?)%\}/g,
+        interpolate: /\{%=([\s\S]+?)%\}/g
+    };
+    exports.tplHelpers = {
+        mix: _.mix,
+        escapeHTML: stpl.escapeHTML,
+        substr: stpl.substr,
+        include: convertTpl,
+        _has: function(obj){
+            return function(name){
+                return _.ns(name, undefined, obj);
+            };
+        }
+    };
+
+    function convertTpl(str, data, namespace){
+        var func, c  = exports.tplSettings, suffix = namespace ? '#' + namespace : '';
+        if (!/[\t\r\n% ]/.test(str)) {
+            func = c._cache[str + suffix];
+            if (!func) {
+                var tplbox = document.getElementById(str);
+                if (tplbox) {
+                    func = c._cache[str + suffix] = convertTpl(tplbox.innerHTML, false, namespace);
+                }
+            }
+        } else {
+            var tplfunc = new Function(namespace || 'obj', 'api', 'var __p=[];' 
+                + (namespace ? '' : 'with(obj){')
+                    + 'var mix=api.mix,escapeHTML=api.escapeHTML,substr=api.substr,include=api.include,has=api._has(' + (namespace || 'obj') + ');'
+                    + '__p.push(\'' +
+                    str.replace(/\\/g, '\\\\')
+                        .replace(/'/g, "\\'")
+                        .replace(c.comment, '')
+                        .replace(c.interpolate, function(match, code) {
+                            return "'," + code.replace(/\\'/g, "'") + ",'";
+                        })
+                        .replace(c.evaluate || null, function(match, code) {
+                            return "');" + code.replace(/\\'/g, "'")
+                                                .replace(/[\r\n\t]/g, ' ') + "__p.push('";
+                        })
+                        .replace(/\r/g, '\\r')
+                        .replace(/\n/g, '\\n')
+                        .replace(/\t/g, '\\t')
+                    + "');" 
+                + (namespace ? "" : "}")
+                + "return __p.join('');");
+            func = function(data, helpers){
+                return tplfunc.call(this, data, _.mix({}, exports.tplHelpers, helpers));
+            };
+        }
+        return !func ? '' : (data ? func(data) : func);
+    }
+
+    exports.convertTpl = convertTpl;
+    exports.reloadTpl = function(str){
+        delete exports.tplSettings._cache[str];
+    };
+
+});
+
+
 /* @source darkdom.js */;
 
 /**
@@ -3009,7 +3105,8 @@ define("darkdom", [
 var _defaults = {
         unique: false,
         enableSource: false,
-        template: false
+        entireAsContent: false,
+        render: false
     },
     _default_attrs = {
         autorender: 'autorender',
@@ -3021,14 +3118,32 @@ var _defaults = {
     _guards = {},
     _updaters = {},
     _uuid = 0,
-    _map = Array.prototype.map,
     _to_string = Object.prototype.toString,
     _matches_selector = $.find.matchesSelector,
-    RE_EVENT_SEL = /(\S+)\s*(.*)/,
     BRIGHT_ID = 'bright-root-id',
-    ID_PREFIX = '_brightRoot';
+    ID_PREFIX = '_brightRoot',
+    RE_CONTENT_COM = new RegExp('\\{\\{' 
+        + BRIGHT_ID + '=(\\w+)\\}\\}', 'g'),
+    RE_EVENT_SEL = /(\S+)\s*(.*)/,
+    RE_HTMLTAG = /^\s*<(\w+|!)[^>]*>/;
 
 var dom_ext = {
+
+    mountDarkDOM: function(){
+        var me = $(this),
+            guard = _guards[me.attr(BRIGHT_ID)];
+        if (guard) {
+            guard.mountRoot(me);
+        }
+    },
+
+    unmountDarkDOM: function(){
+        var me = $(this),
+            guard = _guards[me.attr(BRIGHT_ID)];
+        if (guard) {
+            guard.unmountRoot(me);
+        }
+    },
 
     updateDarkDOM: function(){
         update_target(this);
@@ -3046,7 +3161,7 @@ var dom_ext = {
         }
     },
 
-    observeDarkDOM: function(subject, handler){
+    responseDarkDOM: function(subject, handler){
         var target = $(this),
             bright_id = target.attr(BRIGHT_ID),
             updaters = _updaters[bright_id];
@@ -3085,11 +3200,15 @@ DarkDOM.prototype = {
     },
 
     contain: function(name, component, opt){
-        opt = opt || {};
-        if (opt.content) {
-            this._contents[name] = true;
+        if (typeof name === 'object') {
+            opt = component;
         }
-        this._components[name] = component; 
+        opt = opt || {};
+        var dict = kv_dict(name, component);
+        if (opt.content) {
+            _.mix(this._contents, dict);
+        }
+        _.mix(this._components, dict);
         return this;
     },
 
@@ -3098,7 +3217,7 @@ DarkDOM.prototype = {
         return this;
     },
 
-    observe: function(subject, handler){
+    response: function(subject, handler){
         this._updaters[subject] = handler;
         return this;
     },
@@ -3168,24 +3287,23 @@ DarkGuard.prototype = {
         return this;
     },
 
-    render: function(){
-        this._darkRoots.forEach(function(target){
-            this.renderRoot(target);
-        }, this);
+    mount: function(){
+        this._darkRoots.forEach(this.mountRoot, this);
+        return this;
+    },
+
+    unmount: function(){
+        this._darkRoots.forEach(this.unmountRoot, this);
         return this;
     },
 
     buffer: function(){
-        this._darkRoots.forEach(function(target){
-            this.bufferRoot(target);
-        }, this);
+        this._darkRoots.forEach(this.bufferRoot, this);
         return this;
     },
 
     update: function(){
-        this._darkRoots.forEach(function(target){
-            this.updateRoot(target);
-        }, this);
+        this._darkRoots.forEach(this.updateRoot, this);
         return this;
     },
 
@@ -3205,16 +3323,22 @@ DarkGuard.prototype = {
         return bright_id;
     },
 
-    renderRoot: function(target){
+    mountRoot: function(target){
         if (target.attr(this._attrs.autorender)
-                || target[0].isRenderedDarkDOM) {
+                || target[0].isMountedDarkDOM) {
             return this;
         }
         var data = render_root(this.scanRoot(target));
         target.hide().before(this.createRoot(data));
-        target.trigger('darkdom:rendered')
-            .trigger('darkdom:enabled');
+        target.trigger('darkdom:mounted')
+            .trigger('darkdom:updated');
         return this;
+    },
+
+    unmountRoot: function(target){
+        var bright_id = target.attr(BRIGHT_ID);
+        $('#' + bright_id).remove();
+        delete _darkdata[bright_id];
     },
 
     bufferRoot: function(target){
@@ -3234,17 +3358,17 @@ DarkGuard.prototype = {
     scanRoot: function(target){
         var is_source = this._config.isSource;
         var bright_id = this.registerRoot(target);
-        target[0].isRenderedDarkDOM = true;
+        target[0].isMountedDarkDOM = true;
         var data = {
             id: bright_id,
         };
         if (!is_source) {
             data.context = this._contextData;
         }
-        data.attr = {};
+        data.state = {};
         _.each(this._attrs, function(getter, name){
-            this[name] = read_attr(target, getter);
-        }, data.attr);
+            this[name] = read_state(target, getter);
+        }, data.state);
         this._scanComponents(data, target);
         if (!is_source
                 && this._sourceGuard) {
@@ -3279,32 +3403,13 @@ DarkGuard.prototype = {
             }
         }, this);
         data.componentData = re;
-        data.contentList = this._scanContents(target);
-    },
-
-    _scanContents: function(target){
-        return _map.call(target.contents(), function(content){
-            content = $(content);
-            if (content[0].nodeType === 1) {
-                var mark = content[0].isRenderedDarkDOM,
-                    buffer_id = content.attr(BRIGHT_ID),
-                    buffer = this._releaseContent(buffer_id);
-                if (buffer) {
-                    return buffer;
-                } else if (!mark) {
-                    return content[0].outerHTML || false;
-                }
-            } else if (content[0].nodeType === 3) {
-                content = content.text();
-                if (/\S/.test(content)) {
-                    return content;
-                }
-            }
-            return false;
-        }, this).filter(function(content){
-            return content;
+        data.contentData = this._scanContents(target, {
+            entireAsContent: this._options.entireAsContent,
+            hasNoComponents: !Object.keys(this._config.contents).length
         });
     },
+
+    _scanContents: scan_contents,
 
     renderBuffer: function(){
         this._buffer.forEach(function(data){
@@ -3333,12 +3438,6 @@ DarkGuard.prototype = {
         this._resetBuffer();
     },
 
-    _releaseContent: function(buffer_id){
-        var buffer = _content_buffer[buffer_id];
-        delete _content_buffer[buffer_id];
-        return buffer;
-    },
-
     _resetBuffer: function(){
         this._buffer.length = 0;
         return this;
@@ -3357,16 +3456,20 @@ DarkGuard.prototype = {
     },
 
     createRoot: function(data){
-        var bright_root = $(this.template(data));
+        var html = this.render(data);
+        if (!RE_HTMLTAG.test(html)) {
+            return html;
+        }
+        var bright_root = $(html);
         bright_root.attr(this._attrs.autorender, 'true');
         bright_root.attr('id', data.id);
         this.registerEvents(bright_root);
         return bright_root;
     },
 
-    template: function(data){
-        return (this._options.template
-            || default_template)(data);
+    render: function(data){
+        return (this._options.render
+            || default_render)(data);
     },
 
     triggerUpdate: function(changes){
@@ -3393,7 +3496,7 @@ DarkGuard.prototype = {
             changes.root.remove();
             return re;
         }
-        if (changes.root) {
+        if (changes.root[0]) {
             this.createRoot(changes.data).replaceAll(changes.root);
             return re;
         }
@@ -3457,7 +3560,7 @@ DarkGuard.prototype = {
         var source_dataset = _sourcedata[data.id];
         if (!source_dataset) {
             source_dataset = this.scanSource(data.id, 
-                data.attr.source);
+                data.state.source);
         }
         if (source_dataset) {
             merge_source(data, source_dataset, data.context);
@@ -3494,6 +3597,59 @@ function init_plugins($){
     }, $.fn);
 }
 
+function scan_contents(target, opt){
+    opt = opt || {};
+    var data = { 
+        index: {},
+        text: '',
+        _hasOuter: opt.entireAsContent
+    };
+    if (!target) {
+        return data;
+    }
+    opt.data = data;
+    if (data._hasOuter) {
+        content_spider.call(opt, 
+            target.clone().removeAttr(BRIGHT_ID));
+    } else {
+        target.contents().forEach(content_spider, opt);
+    }
+    return data;
+}
+
+function content_spider(content){
+    var data = this.data;
+    content = $(content);
+    if (content[0].nodeType !== 1) {
+        if (content[0].nodeType === 3) {
+            content = content.text();
+            if (/\S/.test(content)) {
+                data.text += content;
+            }
+        }
+        return;
+    }
+    var mark = content[0].isMountedDarkDOM;
+    if (this.hasNoComponents) {
+        if (!mark) {
+            data.text += content[0].outerHTML || '';
+        }
+        return;
+    }
+    var buffer_id = content.attr(BRIGHT_ID),
+        buffer = _content_buffer[buffer_id];
+    delete _content_buffer[buffer_id];
+    if (buffer) {
+        data.index[buffer_id] = buffer;
+        data.text += '{{' + BRIGHT_ID + '=' + buffer_id + '}}';
+    } else if (!mark) {
+        var childs_data = scan_contents(content);
+        data.text += content.clone()
+            .html(childs_data.text)[0].outerHTML || '';
+        _.mix(data.index, childs_data.index);
+    }
+}
+
 function update_target(target){
     target = $(target);
     var bright_id = target.attr(BRIGHT_ID);
@@ -3527,10 +3683,10 @@ function compare_model(origin, data){
         });
     }
     var abort;
-    _.each(data.attr, function(value, name){
+    _.each(data.state, function(value, name){
         if (this[name] != value) {
             abort = trigger_update(data.id, data, {
-                type: 'attr',
+                type: 'state',
                 name: name,
                 oldValue: this[name],
                 newValue: value
@@ -3539,18 +3695,19 @@ function compare_model(origin, data){
                 return false;
             }
         }
-    }, origin.attr || (origin.attr = {}));
+    }, origin.state || (origin.state = {}));
     if (abort === false) {
         return;
     }
     if (compare_contents(
-        origin.contentList || (origin.contentList = []), 
-        data.contentList
+        origin.contentData 
+            || (origin.contentData = scan_contents()), 
+        data.contentData
     )) {
         abort = trigger_update(data.id, data, {
             type: 'content',
-            oldValue: origin.contentList,
-            newValue: data.contentList
+            oldValue: origin.content,
+            newValue: data.content
         });
         if (abort === false) {
             return;
@@ -3573,27 +3730,18 @@ function compare_model(origin, data){
 }
 
 function compare_contents(origin, data){
-    if (origin.length !== data.length) {
+    if (origin.text.length !== data.text.length) {
         return true;
     }
-    var changed = false;
-    _.each(data, function(content, i){
-        if (typeof content === 'string') {
-            if (this[i] !== content) {
-                changed = true;
-                return false;
-            }
-        } else {
-            if (typeof this[i] === 'string'
-                   || !content.id
-                   || this[i].id !== content.id) {
-                changed = true;
-                return false;
-            }
-            compare_model(this[i], content);
+    var changed;
+    _.each(data.index || {}, function(data, bright_id){
+        if (!this[bright_id]) {
+            changed = true;
+            return false;
         }
-    }, origin);
-    return changed;
+        compare_model(this[bright_id], data);
+    }, origin.index);
+    return changed || (origin.text !== data.text);
 }
 
 function compare_components(dataset, name){
@@ -3633,7 +3781,7 @@ function trigger_update(bright_id, data, changes){
     if (guard) {
         re = guard.triggerUpdate(_.mix(changes, {
             data: data,
-            root: bright_root[0] && bright_root,
+            root: bright_root,
             rootId: bright_id
         }));
     } else if (!data) {
@@ -3644,7 +3792,7 @@ function trigger_update(bright_id, data, changes){
     if (!data || changes.type === "remove") {
         dark_root.trigger('darkdom:removed');
     } else if (re === false) {
-        dark_root.trigger('darkdom:rendered');
+        dark_root.trigger('darkdom:updated');
     }
     return re;
 }
@@ -3660,17 +3808,21 @@ function merge_source(data, source_data, context){
         data.id = source_data.id;
     }
     data.context = context;
-    _.each(source_data.attr || {}, function(value, name){
+    _.each(source_data.state || {}, function(value, name){
         if (this[name] === undefined) {
             this[name] = value;
         }
-    }, data.attr || (data.attr = {}));
+    }, data.state || (data.state = {}));
     // @note
-    var content_list = data.contentList || [];
-    if (!content_list.length) {
-        content_list = (source_data.contentList || []).slice();
+    var content = data.contentData 
+        || (data.contentData = scan_contents());
+    var source_content = source_data.contentData;
+    if (source_content && source_content.text
+            && (!content.text 
+                || source_content._hasOuter)) {
+        content.text = source_content.text; 
+        _.mix(content.index, source_content.index);
     }
-    data.contentList = content_list;
     // @note
     if (!data.componentData) {
         data.componentData = {};
@@ -3702,6 +3854,9 @@ function fix_userdata(data, guard){
             fix_userdata_component, 
             data.componentData);
     }
+    if (data.contentData) {
+        data.contentData._hasOuter = guard._options.entireAsContent;
+    }
 }
 
 function fix_userdata_component(component, name){
@@ -3729,12 +3884,15 @@ function render_root(data){
             this[name] = render_data(dataset);
         }
     }, data.component || (data.component = {}));
-    data.content = data.contentList.map(function(data){
-        if (typeof data === 'string') {
-            return data;
-        }
-        return render_data(data);
-    }).join('');
+    var content_data = data.contentData;
+    data.content = content_data.text
+        .replace(RE_CONTENT_COM, function($0, bright_id){
+            var data = content_data.index[bright_id];
+            if (data === 'string') {
+                return data;
+            }
+            return render_data(data);
+        });
     _darkdata[data.id] = data;
     return data;
 }
@@ -3747,16 +3905,19 @@ function render_data(data){
     if (!data.component) {
         data = render_root(data);
     }
-    return guard.createRoot(data)[0].outerHTML;
+    var root = guard.createRoot(data);
+    return typeof root === 'string' 
+        ? root
+        : root[0].outerHTML;
 }
 
-function read_attr(target, getter){
+function read_state(target, getter){
     return (typeof getter === 'string' 
         ? target.attr(getter) 
         : getter && getter(target)) || undefined;
 }
 
-function default_template(data){
+function default_render(data){
     return '<span>' + data.content + '</span>';
 }
 
@@ -3786,79 +3947,411 @@ return exports;
 
 });
 
+/* @source ../cardkit2/card/item.js */;
+
+
+define("../cardkit2/card/item", [
+  "darkdom",
+  "mo/template/micro",
+  "../cardkit2/tpl/item/title",
+  "../cardkit2/tpl/item/title_prefix",
+  "../cardkit2/tpl/item/title_suffix",
+  "../cardkit2/tpl/item/title_tag",
+  "../cardkit2/tpl/item/icon",
+  "../cardkit2/tpl/item/desc",
+  "../cardkit2/tpl/item/info",
+  "../cardkit2/tpl/item/opt",
+  "../cardkit2/tpl/item/content",
+  "../cardkit2/tpl/item/meta",
+  "../cardkit2/tpl/item/author",
+  "../cardkit2/tpl/item/author_prefix",
+  "../cardkit2/tpl/item/author_suffix",
+  "../cardkit2/tpl/item/avatar",
+  "../cardkit2/tpl/item/author_desc",
+  "../cardkit2/tpl/item/author_info",
+  "../cardkit2/tpl/item/author_meta",
+  "../cardkit2/tpl/item"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, __oz5, __oz6, __oz7, __oz8, __oz9, __oz10, __oz11, __oz12, __oz13, __oz14, __oz15, __oz16, __oz17, __oz18, __oz19, require){ 
+
+var darkdom = require("darkdom"),
+    convert = require("mo/template/micro").convertTpl;
+
+var title = darkdom({
+    unique: true,
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/item/title").template)
+});
+
+var title_link = darkdom({
+    unique: true,
+    enableSource: true,
+    render: function(data){
+        return data.state.url;
+    }
+});
+
+var title_link_alone = darkdom({
+    unique: true,
+    enableSource: true,
+    render: function(data){
+        return data.state.url;
+    }
+});
+
+var title_link_extern = darkdom({
+    unique: true,
+    enableSource: true,
+    render: function(data){
+        return data.state.url;
+    }
+});
+
+var title_prefix = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/title_prefix").template)
+});
+
+var title_suffix = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/title_suffix").template)
+});
+
+var title_tag = darkdom({
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/item/title_tag").template)
+});
+
+var icon = darkdom({
+    unique: true,
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/item/icon").template)
+});
+
+var desc = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/desc").template)
+});
+
+var info = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/info").template)
+});
+
+var opt = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/opt").template)
+});
+
+var content = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/content").template)
+});
+
+var meta = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/meta").template)
+});
+
+var author = darkdom({
+    unique: true,
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/item/author").template)
+});
+
+var author_link = darkdom({
+    unique: true,
+    enableSource: true,
+    render: function(data){
+        return data.state.url;
+    }
+});
+
+var author_link_extern = darkdom({
+    unique: true,
+    enableSource: true,
+    render: function(data){
+        return data.state.url;
+    }
+});
+
+var author_prefix = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/author_prefix").template)
+});
+
+var author_suffix = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/author_suffix").template)
+});
+
+var avatar = darkdom({
+    unique: true,
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/item/avatar").template)
+});
+
+var author_desc = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/author_desc").template)
+});
+
+var author_info = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/author_info").template)
+});
+
+var author_meta = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/item/author_meta").template)
+});
+
+var render_item = convert(require("../cardkit2/tpl/item").template);
+
+var item = darkdom({
+    enableSource: true,
+    render: function(data){
+        var com = data.component;
+        data.itemLinkAlone = com.titleLinkAlone;
+        data.itemLinkExtern = data.itemLinkAlone
+            || com.titleLinkExtern;
+        data.itemLink = data.itemLinkExtern
+            || com.titleLink
+            || ((data.componentData.title 
+                 || {}).state || {}).url;
+        data.itemAuthorLinkExtern = com.authorLinkExtern;
+        data.itemAuthorLink = data.itemAuthorLinkExtern
+            || com.authorLink
+            || ((data.componentData.author 
+                 || {}).state || {}).url;
+        return render_item(data);
+    }
+});
+item.contain({
+    title: title,
+    titleLink: title_link,
+    titleLinkAlone: title_link_alone,
+    titleLinkExtern: title_link_extern,
+    titlePrefix: title_prefix,
+    titleSuffix: title_suffix,
+    titleTag: title_tag,
+    icon: icon,
+    desc: desc,
+    info: info,
+    opt: opt,
+    content: content,
+    meta: meta,
+    author: author,
+    authorLink: author_link,
+    authorLinkExtern: author_link_extern,
+    authorPrefix: author_prefix,
+    authorSuffix: author_suffix,
+    avatar: avatar,
+    authorDesc: author_desc,
+    authorInfo: author_info,
+    authorMeta: author_meta
+});
+
+return item;
+
+});
+
+/* @source ../cardkit2/tpl/list.js */;
+
+define("../cardkit2/tpl/list", [], function(){
+
+    return {"template":"<div class=\"ck-list-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-blank=\"{%= state.blankContent %}\"\n        data-cfg-limit=\"{%= state.limit %}\"\n        data-cfg-col=\"{%= state.col %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% var has_split_hd = state.plain || state.plainhd || state.subtype === 'split'; %}\n\n    {% if (has_split_hd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!has_split_hd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n        \n        <div class=\"ck-list-wrap\">\n\n            {% if (component.item.length) { %}\n                <div class=\"ck-list\">\n                    <div class=\"ck-item blank\">\n                        <div class=\"ck-initem\">{%=(state.blank || '目前还没有内容')%}</div>\n                    </div>\n                </div>\n                {% return; %}\n            {% } %}\n\n            <div class=\"ck-list\">\n            {% component.item.forEach(function(item, i){ %}\n\n                {% if (i && (i % state.col === 0)) { %}\n                </div><div class=\"ck-list\">\n                {% } %}\n\n                {%= item %}\n\n            {% }); %}\n            </div>\n\n        </div>\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n\n"}; 
+
+});
+/* @source ../cardkit2/tpl/scaffold/ft.js */;
+
+define("../cardkit2/tpl/scaffold/ft", [], function(){
+
+    return {"template":"<footer>{%= content %}</footer>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/scaffold/hd_opt.js */;
+
+define("../cardkit2/tpl/scaffold/hd_opt", [], function(){
+
+    return {"template":"<span class=\"ck-hdopt\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/scaffold/hd.js */;
+
+define("../cardkit2/tpl/scaffold/hd", [], function(){
+
+    return {"template":"{% var hd_link = context.component.hdLink || state.url; %}\n<span class=\"ck-hd {%= (hd_link && 'clickable' || '') %}\">\n    {% if (hd_link) { %}\n    <a href=\"{%= hd_link %}\" \n        class=\"ck-link ck-link-mask {%= (context.component.hdLinkExtern ? 'ck-link-extern' : '') %}\"></a>\n    {% } %}\n    <span>{%= content %}</span>\n</span>\n"}; 
+
+});
 /* @source ../cardkit2/card/common/scaffold.js */;
 
 
 define("../cardkit2/card/common/scaffold", [
   "darkdom",
   "mo/template/micro",
-  "../cardkit2/card/../tpl/scaffold/hd",
-  "../cardkit2/card/../tpl/scaffold/ft"
-], function(darkdom, tpl,
-    tpl_hd, tpl_ft){
+  "../cardkit2/tpl/scaffold/hd",
+  "../cardkit2/tpl/scaffold/hd_opt",
+  "../cardkit2/tpl/scaffold/ft"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
+
+var darkdom = require("darkdom"),
+    convert = require("mo/template/micro").convertTpl;
 
 var hd = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl.convertTpl(tpl_hd.template)
+    render: convert(require("../cardkit2/tpl/scaffold/hd").template)
 });
 
 var hd_link = darkdom({
     unique: true,
     enableSource: true,
-    //template: ''
+    render: function(data){
+        return data.state.url;
+    }
 });
 
 var hd_link_extern = darkdom({
     unique: true,
     enableSource: true,
-    //template: ''
+    render: function(data){
+        return data.state.url;
+    }
 });
 
 var hd_opt = darkdom({
     enableSource: true,
-    //template: ''
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/scaffold/hd_opt").template)
 });
 
 var ft = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl.convertTpl(tpl_ft.template)
+    render: convert(require("../cardkit2/tpl/scaffold/ft").template)
 });
 
-return function(root){
-    root.contain('hd', hd);
-    root.contain('hdLink', hd_link);
-    root.contain('hdLinkExtern', hd_link_extern);
-    root.contain('hdOpt', hd_opt);
-    root.contain('ft', ft);
+return function(card){
+    card.contain({
+        hd: hd,
+        hdLink: hd_link,
+        hdLinkExtern: hd_link_extern,
+        hdOpt: hd_opt,
+        ft: ft
+    });
 };
 
 });
 
 
+/* @source ../cardkit2/card/list.js */;
+
+
+define("../cardkit2/card/list", [
+  "darkdom",
+  "mo/template/micro",
+  "../cardkit2/card/common/scaffold",
+  "../cardkit2/tpl/list",
+  "../cardkit2/card/item"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
+
+var darkdom = require("darkdom"),
+    convert = require("mo/template/micro").convertTpl,
+    scaffold_components = require("../cardkit2/card/common/scaffold");
+
+var list = darkdom({
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/list").template)
+});
+scaffold_components(list);
+list.contain('item', require("../cardkit2/card/item"));
+
+return list;
+
+});
+
+
+/* @source ../cardkit2/oldspec/box.js */;
+
+
+define("../cardkit2/oldspec/box", [
+  "mo/lang",
+  "dollar",
+  "../cardkit2/oldspec/common/scaffold"
+], function(_, $, scaffold_specs){
+
+var selector = '.ck-box-unit';
+
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'data-style',
+        paperStyle: 'data-cfg-paper',
+        plainStyle: 'data-cfg-plain',
+        plainHdStyle: 'data-cfg-plainhd'
+    });
+    scaffold_specs(guard);
+    scaffold_specs(guard.source());
+    guard.component('content', function(guard){
+        guard.watch('.ckd-content');
+    });
+    guard.source().component('content', function(source){
+        source.watch('.ckd-content');
+    });
+};
+
+});
+
+/* @source ../cardkit2/tpl/box.js */;
+
+define("../cardkit2/tpl/box", [], function(){
+
+    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% var has_split_hd = state.plain || state.plainhd; %}\n\n    {% if (has_split_hd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!has_split_hd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n\n        {% if (content && new RegExp('\\S', 'm').test(content)) { %}\n            <section>\n                {%= content %}\n            </section>\n        {% } %}\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n"}; 
+
+});
+/* @source ../cardkit2/tpl/box/content.js */;
+
+define("../cardkit2/tpl/box/content", [], function(){
+
+    return {"template":"<div class=\"ck-content\">{%= content %}</div>\n"}; 
+
+});
 /* @source ../cardkit2/card/box.js */;
 
 
 define("../cardkit2/card/box", [
-  "mo/lang",
-  "dollar",
   "darkdom",
   "mo/template/micro",
   "../cardkit2/card/common/scaffold",
-  "../cardkit2/tpl/box",
-  "../cardkit2/tpl/box/content"
-], function(_, $, darkdom, tpl, 
-    scaffold_components, tpl_box, tpl_box_content){
+  "../cardkit2/tpl/box/content",
+  "../cardkit2/tpl/box"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
+
+var darkdom = require("darkdom"),
+    convert = require("mo/template/micro").convertTpl,
+    scaffold_components = require("../cardkit2/card/common/scaffold");
 
 var content = darkdom({
     enableSource: true,
-    template: tpl.convertTpl(tpl_box_content.template)
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/box/content").template)
 });
 
 var box = darkdom({
     enableSource: true,
-    template: tpl.convertTpl(tpl_box.template)
+    render: convert(require("../cardkit2/tpl/box").template)
 });
 scaffold_components(box);
 box.contain('content', content, {
@@ -3870,17 +4363,262 @@ return box;
 });
 
 
+/* @source ../cardkit2/oldspec/page.js */;
+
+
+define("../cardkit2/oldspec/page", [
+  "mo/lang",
+  "dollar",
+  "../cardkit2/oldspec/box"
+], function(_, $, box_spec){
+
+return function(guard, source, parent){
+    guard.watch($('.ck-card', parent));
+    guard.bond({
+        isFirst: function(node){
+            return node.attr('id') === 'ckDefault';
+        },
+        cardId: 'id'
+    });
+    guard.component({
+        title: '.ckcfg-card-title',
+        actionbar: actionbar_spec,
+        navdrawer: navdrawer_spec,
+        box: box_spec
+    });
+};
+
+function navdrawer_spec(guard){
+    guard.watch('.ckcfg-navdrawer');
+}
+
+function actionbar_spec(guard){
+    guard.watch('.ckcfg-card-actions');
+    guard.bond('source', 'data-source');
+    guard.component('action', action_spec);
+    guard.source().component('action', action_spec);
+}
+
+function action_spec(guard){
+    guard.watch('.ckd-item, .ckd-overflow-item');
+    guard.bond('source', 'data-source');
+    action_attr(guard);
+    action_attr(guard.source());
+}
+
+function action_attr(guard){
+    if (!guard) {
+        return;
+    }
+    guard.bond('forceOverflow', function(node){
+        return node.hasClass('ckd-overflow-item');
+    });
+}
+
+});
+
+
+/* @source ../cardkit2/tpl/page.js */;
+
+define("../cardkit2/tpl/page", [], function(){
+
+    return {"template":"\n<div class=\"ck-card\" \n        card-id=\"{%= state.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
+
+});
+/* @source ../cardkit2/tpl/page/navdrawer.js */;
+
+define("../cardkit2/tpl/page/navdrawer", [], function(){
+
+    return {"template":"<div class=\"ck-navdrawer\">{%= content %}</div>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/page/actionbar.js */;
+
+define("../cardkit2/tpl/page/actionbar", [], function(){
+
+    return {"template":"<div class=\"ck-actionbar\">\n{% component.action.forEach(function(action){ %}\n    {%= action %}\n{% }); %}\n</div>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/page/actionbar/action.js */;
+
+define("../cardkit2/tpl/page/actionbar/action", [], function(){
+
+    return {"template":"\n<span class=\"ck-action\">{%= content %}</span>\n"}; 
+
+});
+/* @source ../cardkit2/tpl/page/title.js */;
+
+define("../cardkit2/tpl/page/title", [], function(){
+
+    return {"template":"<div class=\"ck-top-title\">{%= content %}</div>\n"}; 
+
+});
+/* @source ../cardkit2/card/page.js */;
+
+
+define("../cardkit2/card/page", [
+  "darkdom",
+  "mo/template/micro",
+  "../cardkit2/tpl/page/title",
+  "../cardkit2/tpl/page/actionbar/action",
+  "../cardkit2/tpl/page/actionbar",
+  "../cardkit2/tpl/page/navdrawer",
+  "../cardkit2/tpl/page",
+  "../cardkit2/card/box",
+  "../cardkit2/card/list"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, __oz5, __oz6, __oz7, __oz8, require){ 
+
+var darkdom = require("darkdom"),
+    convert = require("mo/template/micro").convertTpl;
+
+var title = darkdom({
+    unique: true,
+    render: convert(require("../cardkit2/tpl/page/title").template)
+});
+
+var action = darkdom({
+    enableSource: true,
+    entireAsContent: true,
+    render: convert(require("../cardkit2/tpl/page/actionbar/action").template)
+});
+
+var actionbar = darkdom({
+    unique: true,
+    enableSource: true,
+    render: convert(require("../cardkit2/tpl/page/actionbar").template)
+});
+actionbar.contain('action', action);
+
+var navdrawer = darkdom({
+    unique: true,
+    render: convert(require("../cardkit2/tpl/page/navdrawer").template)
+});
+
+var page = darkdom({
+    render: convert(require("../cardkit2/tpl/page").template)
+});
+page.contain({
+    title: title,
+    actionbar: actionbar,
+    navdrawer: navdrawer
+});
+page.contain({
+    box: require("../cardkit2/card/box"),
+    list: require("../cardkit2/card/list") 
+}, { content: true });
+
+return page;
+
+});
+
+
+/* @source ../cardkit2/oldspec.js */;
+
+
+define("../cardkit2/oldspec", [
+  "../cardkit2/card/page",
+  "../cardkit2/oldspec/page",
+  "../cardkit2/card/box",
+  "../cardkit2/oldspec/box",
+  "../cardkit2/card/list",
+  "../cardkit2/oldspec/list"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, __oz5, require){
+
+    return {
+        page: [require("../cardkit2/card/page"), require("../cardkit2/oldspec/page")],
+        box: [require("../cardkit2/card/box"), require("../cardkit2/oldspec/box")],
+        list: [require("../cardkit2/card/list"), require("../cardkit2/oldspec/list")],
+    };
+
+});
+
+
+/* @source ../cardkit2/spec/common/source_scaffold.js */;
+
+
+define("../cardkit2/spec/common/source_scaffold", [
+  "../cardkit2/oldspec/common/scaffold"
+], function(scaffold_specs){
+
+    return scaffold_specs;
+
+});
+
+
+/* @source ../cardkit2/spec/common/scaffold.js */;
+
+
+define("../cardkit2/spec/common/scaffold", [], function(){
+
+return function(guard){
+    guard.component({
+        hd: function(guard){
+            guard.watch('ck-part[type="hd"]');
+            guard.bond({
+                url: 'href',
+                isExternUrl: function(node){
+                    var t = node.attr('target');
+                    return t && t !== '_self';
+                }
+            });
+        },
+        hdOpt: function(guard){
+            guard.watch('ck-part[type="hdOpt"]');
+        },
+        ft: function(guard){
+            guard.watch('ck-part[type="ft"]');
+        }
+    });
+};
+
+});
+
+
+/* @source ../cardkit2/spec/list.js */;
+
+
+define("../cardkit2/spec/list", [
+  "mo/lang",
+  "dollar",
+  "../cardkit2/spec/common/scaffold",
+  "../cardkit2/spec/common/source_scaffold"
+], function(_, $, scaffold_specs, source_scaffold_specs){
+
+var selector = 'ck-card[type="list"]';
+
+return function(guard, parent){
+    guard.watch(parent && $(selector, parent) || selector);
+    guard.bond({
+        subtype: 'subtype',
+        blankContent: 'blank-content',
+        limit: 'limit', 
+        col: 'col', 
+        paperStyle: 'paper-style',
+        plainStyle: 'plain-style',
+        plainHdStyle: 'plain-hd-style'
+    });
+    scaffold_specs(guard);
+    source_scaffold_specs(guard.source());
+    guard.component('item', function(guard){
+        guard.watch('ck-part[type="item"]');
+    });
+    guard.source().component('item', function(source){
+        source.watch('.ckd-item');
+    });
+};
+
+});
+
+
 /* @source ../cardkit2/spec/box.js */;
 
 
 define("../cardkit2/spec/box", [
   "mo/lang",
   "dollar",
-  "../cardkit2/card/box",
   "../cardkit2/spec/common/scaffold",
   "../cardkit2/spec/common/source_scaffold"
-], function(_, $, box_card, 
-        scaffold_specs, source_scaffold_specs){
+], function(_, $, scaffold_specs, source_scaffold_specs){
 
 var selector = 'ck-card[type="box"]';
 
@@ -3892,18 +4630,14 @@ return function(guard, parent){
         plainStyle: 'plain-style',
         plainHdStyle: 'plain-hd-style'
     });
+    scaffold_specs(guard);
+    source_scaffold_specs(guard.source());
     guard.component('content', function(guard){
         guard.watch('ck-part[type="content"]');
-    });
-    _.each(scaffold_specs, function(spec, name){
-        guard.component(name, spec);
     });
     guard.source().component('content', function(source){
         source.watch('.ckd-content');
     });
-    _.each(source_scaffold_specs, function(spec, name){
-        this.component(name, spec);
-    }, guard.source());
 };
 
 });
@@ -3964,97 +4698,6 @@ function source_action_attr(source){
 
 });
 
-/* @source ../cardkit2/tpl/page/navdrawer.js */;
-
-define("../cardkit2/tpl/page/navdrawer", [], function(){
-
-    return {"template":"\n<div class=\"ck-navdrawer\"></div>\n"}; 
-
-});
-/* @source ../cardkit2/tpl/page/actionbar/action.js */;
-
-define("../cardkit2/tpl/page/actionbar/action", [], function(){
-
-    return {"template":"\n<button class=\"ck-action\">{%= content %}</button>\n"}; 
-
-});
-/* @source ../cardkit2/tpl/page/actionbar.js */;
-
-define("../cardkit2/tpl/page/actionbar", [], function(){
-
-    return {"template":"\n<div class=\"ck-actionbar\">\n{% component.action.forEach(function(action){ %}\n    {%= action %}\n{% }); %}\n</div>\n"}; 
-
-});
-/* @source ../cardkit2/tpl/page/title.js */;
-
-define("../cardkit2/tpl/page/title", [], function(){
-
-    return {"template":"\n<div class=\"ck-title\"></div>\n"}; 
-
-});
-/* @source ../cardkit2/tpl/page.js */;
-
-define("../cardkit2/tpl/page", [], function(){
-
-    return {"template":"\n<div class=\"ck-card\" \n        card-id=\"{%= attr.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
-
-});
-/* @source ../cardkit2/card/page.js */;
-
-
-define("../cardkit2/card/page", [
-  "mo/lang",
-  "dollar",
-  "darkdom",
-  "mo/template/micro",
-  "../cardkit2/card/box",
-  "../cardkit2/tpl/page",
-  "../cardkit2/tpl/page/title",
-  "../cardkit2/tpl/page/actionbar",
-  "../cardkit2/tpl/page/actionbar/action",
-  "../cardkit2/tpl/page/navdrawer"
-], function(_, $, darkdom, tpl, box,
-    tpl_page, tpl_title, tpl_actionbar, tpl_action, tpl_navdrawer){
-
-var title = darkdom({
-    unique: true,
-    template: tpl.convertTpl(tpl_title.template)
-});
-
-var action = darkdom({
-    enableSource: true,
-    template: tpl.convertTpl(tpl_action.template)
-});
-
-var actionbar = darkdom({
-    unique: true,
-    enableSource: true,
-    template: tpl.convertTpl(tpl_actionbar.template)
-}).contain('action', action);
-
-var navdrawer = darkdom({
-    unique: true,
-    template: tpl.convertTpl(tpl_navdrawer.template)
-});
-
-var page = darkdom({
-    template: tpl.convertTpl(tpl_page.template)
-});
-page.bond({
-    cardId: 'id'
-});
-page.contain('title', title);
-page.contain('actionbar', actionbar);
-page.contain('navdrawer', navdrawer);
-page.contain('box', box, {
-    content: true
-});
-
-return page;
-
-});
-
-
 /* @source ../cardkit2/spec.js */;
 
 
@@ -4062,12 +4705,15 @@ define("../cardkit2/spec", [
   "../cardkit2/card/page",
   "../cardkit2/spec/page",
   "../cardkit2/card/box",
-  "../cardkit2/spec/box"
-], function(__oz0, __oz1, __oz2, __oz3, require){
+  "../cardkit2/spec/box",
+  "../cardkit2/card/list",
+  "../cardkit2/spec/list"
+], function(__oz0, __oz1, __oz2, __oz3, __oz4, __oz5, require){
 
     return {
         page: [require("../cardkit2/card/page"), require("../cardkit2/spec/page")],
-        box: [require("../cardkit2/card/box"), require("../cardkit2/spec/box")]
+        box: [require("../cardkit2/card/box"), require("../cardkit2/spec/box")],
+        list: [require("../cardkit2/card/list"), require("../cardkit2/spec/list")],
     };
 
 });
@@ -4132,7 +4778,7 @@ var exports = {
         }
         var guard = component.createGuard();
         spec(guard, parent);
-        guard.render();
+        guard.mount();
         return true;
     },
 
@@ -4165,14 +4811,14 @@ require.config({
 define('mo/easing/functions', [], function(){});
 define('mo/mainloop', [], function(){});
 
-define('cardkit/pageready', [
-    'finish', 
-    'cardkit/bus'
-], function(finish, bus){
-    bus.once('readycardchange', function(){
-        setTimeout(finish, 500);
-    });
-});
+//define('cardkit/pageready', [
+    //'finish', 
+    //'cardkit/bus'
+//], function(finish, bus){
+    //bus.once('readycardchange', function(){
+        //setTimeout(finish, 500);
+    //});
+//});
 
 require([
     'dollar', 

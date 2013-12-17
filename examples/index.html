@@ -95,17 +95,17 @@
 require([
     'mo/lang',
     'dollar',
-    'darkdom',
     'cardkit/app'
-], function(_, $, darkdom, cardkit){
+], function(_, $, cardkit){
 
-cardkit.init();
+cardkit.init({
+    supportOldVersion: true
+});
 cardkit.render('ck-card');
-
     
 });
 </script>
-<script src="js/common.js"></script>
+<!--<script src="js/common.js"></script>-->
 </body>
 </html>
 

@@ -1,23 +1,19 @@
 
-define([
-    'mo/lang',
-    'dollar',
-    'darkdom',
-    'mo/template/micro',
-    './common/scaffold',
-    '../tpl/box',
-    '../tpl/box/content'
-], function(_, $, darkdom, tpl, 
-    scaffold_components, tpl_box, tpl_box_content){
+define(function(require){ 
+
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl,
+    scaffold_components = require('./common/scaffold');
 
 var content = darkdom({
     enableSource: true,
-    template: tpl.convertTpl(tpl_box_content.template)
+    entireAsContent: true,
+    render: convert(require('../tpl/box/content').template)
 });
 
 var box = darkdom({
     enableSource: true,
-    template: tpl.convertTpl(tpl_box.template)
+    render: convert(require('../tpl/box').template)
 });
 scaffold_components(box);
 box.contain('content', content, {

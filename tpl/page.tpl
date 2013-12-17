@@ -1,6 +1,6 @@
 
 <div class="ck-card" 
-        card-id="{%= attr.cardId %}">
+        card-id="{%= state.cardId %}">
     {%= component.title %}
     {%= component.actionbar %}
     {%= component.navdrawer %}

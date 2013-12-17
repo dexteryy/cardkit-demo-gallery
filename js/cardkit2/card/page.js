@@ -1,51 +1,44 @@
 
-define([
-    'mo/lang',
-    'dollar',
-    'darkdom',
-    'mo/template/micro',
-    './box',
-    '../tpl/page',
-    '../tpl/page/title',
-    '../tpl/page/actionbar',
-    '../tpl/page/actionbar/action',
-    '../tpl/page/navdrawer'
-], function(_, $, darkdom, tpl, box,
-    tpl_page, tpl_title, tpl_actionbar, tpl_action, tpl_navdrawer){
+define(function(require){ 
+
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl;
 
 var title = darkdom({
     unique: true,
-    template: tpl.convertTpl(tpl_title.template)
+    render: convert(require('../tpl/page/title').template)
 });
 
 var action = darkdom({
     enableSource: true,
-    template: tpl.convertTpl(tpl_action.template)
+    entireAsContent: true,
+    render: convert(require('../tpl/page/actionbar/action').template)
 });
 
 var actionbar = darkdom({
     unique: true,
     enableSource: true,
-    template: tpl.convertTpl(tpl_actionbar.template)
-}).contain('action', action);
+    render: convert(require('../tpl/page/actionbar').template)
+});
+actionbar.contain('action', action);
 
 var navdrawer = darkdom({
     unique: true,
-    template: tpl.convertTpl(tpl_navdrawer.template)
+    render: convert(require('../tpl/page/navdrawer').template)
 });
 
 var page = darkdom({
-    template: tpl.convertTpl(tpl_page.template)
+    render: convert(require('../tpl/page').template)
 });
-page.bond({
-    cardId: 'id'
+page.contain({
+    title: title,
+    actionbar: actionbar,
+    navdrawer: navdrawer
 });
-page.contain('title', title);
-page.contain('actionbar', actionbar);
-page.contain('navdrawer', navdrawer);
-page.contain('box', box, {
-    content: true
-});
+page.contain({
+    box: require('./box'),
+    list: require('./list') 
+}, { content: true });
 
 return page;
 

@@ -1,2 +1,1 @@
-
-<div class="ck-title"></div>
+<div class="ck-top-title">{%= content %}</div>

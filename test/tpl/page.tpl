@@ -27,15 +27,18 @@
 
     <p>This is normal text</p>
 
-    <ck-card type="box"
-            subtype="">
-        <ck-part type="content" 
-            source-selector=".ckd-source.content1"></ck-part>
-        This is box's content
-        <ck-part type="content" 
-            source-selector=".ckd-source.content1"></ck-part>
-        <ck-part type="content"></ck-part>
-    </ck-card>
+    <div class="yyy">
+        <p>This is normal text</p>
+        <ck-card type="box"
+                subtype="">
+            <ck-part type="content" 
+                source-selector=".ckd-source.content1"></ck-part>
+            This is box's content
+            <ck-part type="content" 
+                source-selector=".ckd-source.content1"></ck-part>
+            <ck-part type="content"></ck-part>
+        </ck-card>
+    </div>
 
 </ck-card>
 

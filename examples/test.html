@@ -45,15 +45,18 @@
 
     <p>This is normal text</p>
 
-    <ck-card type="box"
-            subtype="">
-        <ck-part type="content" 
-            source-selector=".ckd-source.content1"></ck-part>
-        This is box's content
-        <ck-part type="content" 
-            source-selector=".ckd-source.content1"></ck-part>
-        <ck-part type="content"></ck-part>
-    </ck-card>
+    <div class="yyy">
+        <p>This is normal text</p>
+        <ck-card type="box"
+                subtype="">
+            <ck-part type="content" 
+                source-selector=".ckd-source.content1"></ck-part>
+            This is box's content
+            <ck-part type="content" 
+                source-selector=".ckd-source.content1"></ck-part>
+            <ck-part type="content"></ck-part>
+        </ck-card>
+    </div>
 
 </ck-card>
 
@@ -130,28 +133,6 @@ require([
 cardkit.init();
 cardkit.render('ck-card');
 
-dark_root = $('ck-card');
-bright_root = $('.ck-card');
-bright_box = bright_root.find('.ck-box-unit');
-dark_box = dark_root.find('ck-card[type="box"]').eq(0);
-
-var title_1 = 'title 11111';
-var title_2 = 'title 22222';
-var bright_hd = bright_box.find('.ck-hd');
-var dark_hd = dark_box.find('ck-part[type="hd"]');
-
-dark_hd.html(title_1);
-darkdom.update(dark_hd);
-bright_hd = bright_box.find('.ck-hd');
-console.info(bright_hd.html())
-
-var title = dark_root.find('[type="title"]');
-darkdom.fill(title, {
-    contentList: ['yy']
-});
-darkdom.update(dark_root);
-console.info(title[0])
-    
 });
 </script>
 <script src="js/common.js"></script>

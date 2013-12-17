@@ -56,7 +56,7 @@ var exports = {
         }
         var guard = component.createGuard();
         spec(guard, parent);
-        guard.render();
+        guard.mount();
         return true;
     },
 
