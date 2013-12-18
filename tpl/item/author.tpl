@@ -1,7 +1,7 @@
 {% if (context.authorLink) { %}
 <a href="{%= context.authorLink %}" 
     target="{%= (context.authorLinkTarget || '_self') %}" 
-    class="ck-author ck-link">{%= context %}</a>
+    class="ck-author ck-link">{%= content %}</a>
 {% } else { %}
-<span class="ck-author">{%= context %}</span>
+<span class="ck-author">{%= content %}</span>
 {% } %}

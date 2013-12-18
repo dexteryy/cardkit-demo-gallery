@@ -2935,7 +2935,7 @@ define("../cardkit2/tpl/item/author_prefix", [], function(){
 
 define("../cardkit2/tpl/item/author", [], function(){
 
-    return {"template":"{% if (context.authorLink) { %}\n<a href=\"{%= context.authorLink %}\" \n    target=\"{%= (context.authorLinkTarget || '_self') %}\" \n    class=\"ck-author ck-link\">{%= context %}</a>\n{% } else { %}\n<span class=\"ck-author\">{%= context %}</span>\n{% } %}\n"}; 
+    return {"template":"{% if (context.authorLink) { %}\n<a href=\"{%= context.authorLink %}\" \n    target=\"{%= (context.authorLinkTarget || '_self') %}\" \n    class=\"ck-author ck-link\">{%= content %}</a>\n{% } else { %}\n<span class=\"ck-author\">{%= content %}</span>\n{% } %}\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item/meta.js */;
@@ -4338,7 +4338,7 @@ define("../cardkit2/tpl/scaffold/hd_opt", [], function(){
 
 define("../cardkit2/tpl/scaffold/hd", [], function(){
 
-    return {"template":"<span class=\"ck-hd {%= (hdLink && 'clickable' || '') %}\">\n    {% if (hdLink) { %}\n    <a href=\"{%= hdLink %}\" \n        target=\"{%= (context.hdLinkTarget || '_self') %}\" \n        class=\"ck-link ck-link-mask\"></a>\n    {% } %}\n    <span>{%= content %}</span>\n</span>\n"}; 
+    return {"template":"<span class=\"ck-hd {%= (hdLink && 'clickable' || '') %}\">\n    {% if (hdLink) { %}\n    <a href=\"{%= hdLink %}\" \n        target=\"{%= (hdLinkTarget || '_self') %}\" \n        class=\"ck-link ck-link-mask\"></a>\n    {% } %}\n    <span>{%= content %}</span>\n</span>\n"}; 
 
 });
 /* @source ../cardkit2/card/common/scaffold.js */;
