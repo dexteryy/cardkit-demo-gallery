@@ -1,6 +1,7 @@
-{% if (context.itemLinkAlone) { %}
-<a href="{%= context.itemLinkAlone %}" 
-    class="ck-link {%= (context.itemLinkExtern ? 'ck-link-extern' : '') %}">{%= content %}</a>
+{% if (context.isItemLinkAlone) { %}
+<a href="{%= context.itemLink %}" 
+    target="{%= (context.itemLinkTarget || '_self') %}" 
+    class="ck-link">{%= content %}</a>
 {% } else { %}
 <span class="ck-title">{%= content %}</span>
 {% } %}

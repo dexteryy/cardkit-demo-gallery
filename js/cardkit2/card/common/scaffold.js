@@ -2,27 +2,33 @@
 define(function(require){ 
 
 var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl;
+    convert = require('mo/template/micro').convertTpl,
+    read_state = function(data, state){
+        return data && (data.state || {})[state];
+    };
+
+var render_hd = convert(require('../../tpl/scaffold/hd').template);
 
 var hd = darkdom({
     unique: true,
     enableSource: true,
-    render: convert(require('../../tpl/scaffold/hd').template)
+    render: function(data){
+        var hdlink_data = data.context.componentData.hdLink;
+        var hd_link = read_state(hdlink_data, 'link');
+        data.hdLink = hd_link
+            || data.state.link;
+        data.hdLinkTarget = hd_link 
+            ? read_state(hdlink_data, 'linkTarget')
+            : data.state.linkTarget;
+        return render_hd(data);
+    }
 });
 
 var hd_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var hd_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -41,7 +47,6 @@ var ft = darkdom({
 return {
     hd: hd,
     hdLink: hd_link,
-    hdLinkExtern: hd_link_extern,
     hdOpt: hd_opt,
     ft: ft
 };

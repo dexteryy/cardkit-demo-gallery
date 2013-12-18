@@ -19,12 +19,22 @@ return function(guard, parent){
         plainHdStyle: 'data-cfg-plainhd'
     });
     guard.component(scaffold_specs);
-    guard.source().component(scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('.ckd-item');
+        guard.bond({
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            }
+        });
         guard.component(item_specs);
         guard.source().component(item_specs);
     });
+    guard.source().component(scaffold_specs);
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
         guard.component(item_specs);

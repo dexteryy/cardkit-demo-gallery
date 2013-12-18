@@ -1,7 +1,8 @@
 {% if (state.imgUrl) { %}
-    {% if (context.itemAuthorLink) { %}
-    <a href="{%= context.itemAuthorLink %}" 
-            class="ck-avatar ck-link {%= (context.itemAuthorLinkExtern ? 'ck-link-extern' : '') %}">
+    {% if (context.authorLink) { %}
+    <a href="{%= context.authorLink %}" 
+            target="{%= (context.authorLinkTarget || '_self') %}" 
+            class="ck-avatar ck-link">
         <img src="{%= state.imgUrl %}"/>
     </a>
     {% } else { %}

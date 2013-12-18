@@ -22,14 +22,29 @@ return function(guard, parent){
         plainHdStyle: 'plain-hd-style'
     });
     guard.component(scaffold_specs);
-    guard.source().component(source_scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('ck-part[type="item"]');
+        guard.bond({
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
+        });
         guard.component(item_specs);
         guard.source().component(source_item_specs);
     });
+    guard.source().component(source_scaffold_specs);
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        guard.bond({
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            }
+        });
         source.component(source_item_specs);
     });
 };

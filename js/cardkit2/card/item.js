@@ -2,7 +2,10 @@
 define(function(require){ 
 
 var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl;
+    convert = require('mo/template/micro').convertTpl,
+    read_state = function(data, state){
+        return data && (data.state || {})[state];
+    };
 
 var title = darkdom({
     unique: true,
@@ -14,23 +17,7 @@ var title_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var title_link_alone = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
-    }
-});
-
-var title_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -97,15 +84,7 @@ var author_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var author_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -151,26 +130,24 @@ var item = darkdom({
     enableSource: true,
     render: function(data){
         var com = data.component;
-        data.itemLinkAlone = com.titleLinkAlone;
-        data.itemLinkExtern = data.itemLinkAlone
-            || com.titleLinkExtern;
-        data.itemLink = data.itemLinkExtern
-            || com.titleLink
-            || ((data.componentData.title 
-                 || {}).state || {}).url;
-        data.itemAuthorLinkExtern = com.authorLinkExtern;
-        data.itemAuthorLink = data.itemAuthorLinkExtern
-            || com.authorLink
-            || ((data.componentData.author 
-                 || {}).state || {}).url;
+        var comdata = data.componentData;
+        var link_data = com.titleLink 
+            ? comdata.titleLink : comdata.title;
+        data.itemLinkTarget = read_state(link_data, 'linkTarget');
+        data.isItemLinkAlone = read_state(link_data, 'isAlone');
+        data.itemLink = com.titleLink
+            || read_state(comdata.title, 'link');
+        var author_data = com.authorLink 
+            ? comdata.authorLink : comdata.author;
+        data.authorLinkTarget = read_state(author_data, 'linkTarget');
+        data.authorLink = com.authorLink
+            || read_state(comdata.author, 'link');
         return render_item(data);
     }
 });
 item.contain({
     title: title,
     titleLink: title_link,
-    titleLinkAlone: title_link_alone,
-    titleLinkExtern: title_link_extern,
     titlePrefix: title_prefix,
     titleSuffix: title_suffix,
     titleTag: title_tag,
@@ -182,7 +159,6 @@ item.contain({
     meta: meta,
     author: author,
     authorLink: author_link,
-    authorLinkExtern: author_link_extern,
     authorPrefix: author_prefix,
     authorSuffix: author_suffix,
     avatar: avatar,

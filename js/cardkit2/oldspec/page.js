@@ -1,7 +1,11 @@
 
 define(function(require){ 
 
-var $ = require('dollar');
+var $ = require('dollar'),
+    get_source = function(node){
+        return '.' + node.data('source');
+    };
+
 var specs = {
     title: '.ckcfg-card-title',
     actionbar: actionbar_spec,
@@ -16,14 +20,14 @@ function navdrawer_spec(guard){
 
 function actionbar_spec(guard){
     guard.watch('.ckcfg-card-actions');
-    guard.bond('source', 'data-source');
+    guard.bond('source', get_source);
     guard.component('action', action_spec);
     guard.source().component('action', action_spec);
 }
 
 function action_spec(guard){
     guard.watch('.ckd-item, .ckd-overflow-item');
-    guard.bond('source', 'data-source');
+    guard.bond('source', get_source);
     action_attr(guard);
     action_attr(guard.source());
 }
@@ -37,7 +41,7 @@ function action_attr(guard){
     });
 }
 
-return function(guard, source, parent){
+return function(guard, parent){
     guard.watch($('.ck-card', parent));
     guard.bond({
         isFirst: function(node){

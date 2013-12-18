@@ -40,7 +40,7 @@ function source_action_attr(source){
     });
 }
 
-return function(guard, source, parent){
+return function(guard, parent){
     guard.watch($('ck-card[type="page"]', parent));
     guard.bond({
         isFirst: 'firstpage',

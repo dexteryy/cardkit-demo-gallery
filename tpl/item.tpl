@@ -3,9 +3,10 @@
 
     <div class="ck-initem">
 
-        {% if (itemLink) { %}
+        {% if (itemLink && !isItemLinkAlone) { %}
         <a href="{%= itemLink %}" 
-            class="ck-link ck-link-mask {%= (itemLinkExtern ? 'ck-link-extern' : '') %}"></a>
+            target="{%= (itemLinkTarget || '_self') %}"
+            class="ck-link ck-link-mask"></a>
         {% } %}
 
         <div class="ck-title-box">

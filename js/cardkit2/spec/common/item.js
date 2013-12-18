@@ -5,25 +5,17 @@ return {
     title: function(guard){
         guard.watch('ck-part[type="title"]');
         guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
         });
     },
     titleLink: function(guard){
         guard.watch('ck-part[type="titleLink"]');
         guard.bond({
-            url: 'href'
-        });
-    },
-    titleLinkAlone: function(guard){
-        guard.watch('ck-part[type="titleLinkAlone"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    titleLinkExtern: function(guard){
-        guard.watch('ck-part[type="titleLinkExtern"]');
-        guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
         });
     },
     titlePrefix: function(guard){
@@ -59,25 +51,15 @@ return {
     author: function(guard){
         guard.watch('ck-part[type="author"]');
         guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target'
         });
     },
     authorLink: function(guard){
         guard.watch('ck-part[type="authorLink"]');
         guard.bond({
-            url: 'href'
-        });
-    },
-    authorLinkAlone: function(guard){
-        guard.watch('ck-part[type="authorLinkAlone"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    authorLinkExtern: function(guard){
-        guard.watch('ck-part[type="authorLinkExtern"]');
-        guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target'
         });
     },
     authorPrefix: function(guard){

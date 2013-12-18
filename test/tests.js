@@ -23,7 +23,7 @@ describe("the page card", function(){
         })).appendTo('body');
         page_source = $(tpl.convertTpl(tpl_page_source.template, {
         })).appendTo('body');
-        app.render(page);
+        app.render(page.parent());
         dark_root = $('ck-card');
         bright_root = $('.ck-card');
     });

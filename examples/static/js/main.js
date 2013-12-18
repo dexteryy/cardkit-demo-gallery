@@ -1743,153 +1743,151 @@ define("../cardkit2/supports", [
 
 define("../cardkit2/oldspec/common/item", [], function(){
 
+var get_source = function(node){
+    return '.' + node.data('source');
+};
+
 return {
     title: function(guard){
         guard.watch('.ckd-title');
         guard.bond({
-            url: 'href',
-            source: 'data-source'
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            },
+            source: get_source
         });
     },
     titleLink: function(guard){
         guard.watch('.ckd-title-link');
         guard.bond({
-            url: 'href',
-            source: 'data-source'
-        });
-    },
-    titleLinkAlone: function(guard){
-        guard.watch('.ckd-title-link-alone');
-        guard.bond({
-            url: 'href',
-            source: 'data-source'
-        });
-    },
-    titleLinkExtern: function(guard){
-        guard.watch('.ckd-title-link-extern');
-        guard.bond({
-            url: 'href',
-            source: 'data-source'
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            },
+            source: get_source
         });
     },
     titlePrefix: function(guard){
         guard.watch('.ckd-title-prefix');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     titleSuffix: function(guard){
         guard.watch('.ckd-title-suffix');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     titleTag: function(guard){
         guard.watch('.ckd-title-tag');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     icon: function(guard){
         guard.watch('.ckd-icon');
         guard.bond({
             imgUrl: 'src',
-            source: 'data-source'
+            source: get_source
         });
     },
     info: function(guard){
         guard.watch('.ckd-info');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     opt: function(guard){
         guard.watch('.ckd-opt');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     desc: function(guard){
         guard.watch('.ckd-desc, .ckd-subtitle');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     content: function(guard){
         guard.watch('.ckd-content');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     meta: function(guard){
         guard.watch('.ckd-meta');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     author: function(guard){
         guard.watch('.ckd-author');
         guard.bond({
-            url: 'href',
-            source: 'data-source'
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-author-link-extern') 
+                    && '_blank';
+            },
+            source: get_source
         });
     },
     authorLink: function(guard){
         guard.watch('.ckd-author-link');
         guard.bond({
-            url: 'href',
-            source: 'data-source'
-        });
-    },
-    authorLinkAlone: function(guard){
-        guard.watch('.ckd-author-link-alone');
-        guard.bond({
-            url: 'href',
-            source: 'data-source'
-        });
-    },
-    authorLinkExtern: function(guard){
-        guard.watch('.ckd-author-link-extern');
-        guard.bond({
-            url: 'href',
-            source: 'data-source'
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-author-link-extern') 
+                    && '_blank';
+            },
+            source: get_source
         });
     },
     authorPrefix: function(guard){
         guard.watch('.ckd-author-prefix');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     authorSuffix: function(guard){
         guard.watch('.ckd-author-suffix');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     avatar: function(guard){
         guard.watch('.ckd-avatar');
         guard.bond({
             imgUrl: 'src',
-            source: 'data-source'
+            source: get_source
         });
     },
     authorInfo: function(guard){
         guard.watch('.ckd-author-info');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     authorDesc: function(guard){
         guard.watch('.ckd-author-desc');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     authorMeta: function(guard){
         guard.watch('.ckd-author-meta');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     }
 };
@@ -1902,35 +1900,37 @@ return {
 
 define("../cardkit2/oldspec/common/scaffold", [], function(){
 
+var get_source = function(node){
+    return '.' + node.data('source');
+};
+
 return {
     hd: function(guard){
         guard.watch('.ckd-hd');
         guard.bond({
-            source: 'data-source',
-            url: 'href',
-            isExternUrl: function(node){
-                return node.hasClass('ckd-hd-link-extern');
-            }
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-hd-link-extern') 
+                    && '_blank';
+            },
+            source: get_source
         });
     },
     hdLink: function(guard){
         guard.watch('.ckd-hd-link:not(.ckd-hd)');
         guard.bond({
-            source: 'data-source',
-            url: 'href'
-        });
-    },
-    hdLinkExtern: function(guard){
-        guard.watch('.ckd-hd-link-extern:not(.ckd-hd)');
-        guard.bond({
-            source: 'data-source',
-            url: 'href'
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-hd-link-extern') 
+                    && '_blank';
+            },
+            source: get_source
         });
     },
     hdOpt: function(guard){
         guard.watch('.ckd-hdopt');
         guard.bond({
-            source: 'data-source'
+            source: get_source
         });
     },
     ft: function(guard){
@@ -2850,12 +2850,22 @@ return function(guard, parent){
         plainHdStyle: 'data-cfg-plainhd'
     });
     guard.component(scaffold_specs);
-    guard.source().component(scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('.ckd-item');
+        guard.bond({
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            }
+        });
         guard.component(item_specs);
         guard.source().component(item_specs);
     });
+    guard.source().component(scaffold_specs);
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
         guard.component(item_specs);
@@ -2876,7 +2886,7 @@ define("../cardkit2/tpl/list", [], function(){
 
 define("../cardkit2/tpl/item", [], function(){
 
-    return {"template":"<div class=\"ck-item {%= (itemLink && 'clickable' || '') %}\" \n        style=\"width:{%= (context.state.col ? Math.floor(1000/context.state.col)/10 + '%' : '') %};\">\n\n    <div class=\"ck-initem\">\n\n        {% if (itemLink) { %}\n        <a href=\"{%= itemLink %}\" \n            class=\"ck-link ck-link-mask {%= (itemLinkExtern ? 'ck-link-extern' : '') %}\"></a>\n        {% } %}\n\n        <div class=\"ck-title-box\">\n\n            {%= component.opt.join('') %}\n            {%= component.icon %}\n\n            <div class=\"ck-title-set\">\n\n                {% if (component.title) { %}\n                <div class=\"ck-title-line\">\n                    {%= component.titlePrefix.join('') %}\n                    {%= component.title %}\n                    {%= component.titleSuffix.join('') %}\n                    {%= component.titleTag.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.info.length) { %}\n                <div class=\"ck-info-wrap\">\n                    {%= component.info.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.desc.length) { %}\n                <div class=\"ck-desc-wrap\">\n                    {%= component.desc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.content.length) { %}\n            <div class=\"ck-content-wrap\">\n                {%= component.content.join('') %}\n            </div>\n            {% } %}\n\n            {% if (component.meta.length) { %}\n            <div class=\"ck-meta-wrap\">\n                {%= component.meta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n\n        {% if (component.author || component.authorDesc.length || component.authorMeta.length) { %}\n        <div class=\"ck-author-box\">\n\n            {%= component.avatar %}\n\n            <div class=\"ck-author-set\">\n\n                <div class=\"ck-author-line\">\n                    {%= component.authorPrefix.join('') %}\n                    {%= component.author %}\n                    {%= component.authorSuffix.join('') %}\n                </div>\n\n                {% if (component.authorInfo.length) { %}\n                <div class=\"ck-author-info-wrap\">\n                    {%= component.authorInfo.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.authorDesc.length) { %}\n                <div class=\"ck-author-desc-wrap\">\n                    {%= component.authorDesc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.authorMeta.length) { %}\n            <div class=\"ck-author-meta-wrap\">\n                {%= component.authorMeta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n        {% } %}\n\n    </div>\n\n</div>\n\n"}; 
+    return {"template":"<div class=\"ck-item {%= (itemLink && 'clickable' || '') %}\" \n        style=\"width:{%= (context.state.col ? Math.floor(1000/context.state.col)/10 + '%' : '') %};\">\n\n    <div class=\"ck-initem\">\n\n        {% if (itemLink && !isItemLinkAlone) { %}\n        <a href=\"{%= itemLink %}\" \n            target=\"{%= (itemLinkTarget || '_self') %}\"\n            class=\"ck-link ck-link-mask\"></a>\n        {% } %}\n\n        <div class=\"ck-title-box\">\n\n            {%= component.opt.join('') %}\n            {%= component.icon %}\n\n            <div class=\"ck-title-set\">\n\n                {% if (component.title) { %}\n                <div class=\"ck-title-line\">\n                    {%= component.titlePrefix.join('') %}\n                    {%= component.title %}\n                    {%= component.titleSuffix.join('') %}\n                    {%= component.titleTag.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.info.length) { %}\n                <div class=\"ck-info-wrap\">\n                    {%= component.info.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.desc.length) { %}\n                <div class=\"ck-desc-wrap\">\n                    {%= component.desc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.content.length) { %}\n            <div class=\"ck-content-wrap\">\n                {%= component.content.join('') %}\n            </div>\n            {% } %}\n\n            {% if (component.meta.length) { %}\n            <div class=\"ck-meta-wrap\">\n                {%= component.meta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n\n        {% if (component.author || component.authorDesc.length || component.authorMeta.length) { %}\n        <div class=\"ck-author-box\">\n\n            {%= component.avatar %}\n\n            <div class=\"ck-author-set\">\n\n                <div class=\"ck-author-line\">\n                    {%= component.authorPrefix.join('') %}\n                    {%= component.author %}\n                    {%= component.authorSuffix.join('') %}\n                </div>\n\n                {% if (component.authorInfo.length) { %}\n                <div class=\"ck-author-info-wrap\">\n                    {%= component.authorInfo.join('') %}\n                </div>\n                {% } %}\n\n                {% if (component.authorDesc.length) { %}\n                <div class=\"ck-author-desc-wrap\">\n                    {%= component.authorDesc.join('') %}\n                </div>\n                {% } %}\n\n            </div>\n\n            {% if (component.authorMeta.length) { %}\n            <div class=\"ck-author-meta-wrap\">\n                {%= component.authorMeta.join('') %}\n            </div>\n            {% } %}\n\n        </div>\n        {% } %}\n\n    </div>\n\n</div>\n\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item/author_meta.js */;
@@ -2904,7 +2914,7 @@ define("../cardkit2/tpl/item/author_desc", [], function(){
 
 define("../cardkit2/tpl/item/avatar", [], function(){
 
-    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.itemAuthorLink) { %}\n    <a href=\"{%= context.itemAuthorLink %}\" \n            class=\"ck-avatar ck-link {%= (context.itemAuthorLinkExtern ? 'ck-link-extern' : '') %}\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-avatar\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
+    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.authorLink) { %}\n    <a href=\"{%= context.authorLink %}\" \n            target=\"{%= (context.authorLinkTarget || '_self') %}\" \n            class=\"ck-avatar ck-link\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-avatar\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item/author_suffix.js */;
@@ -2925,7 +2935,7 @@ define("../cardkit2/tpl/item/author_prefix", [], function(){
 
 define("../cardkit2/tpl/item/author", [], function(){
 
-    return {"template":"{% if (context.itemAuthorLink) { %}\n<a href=\"{%= context.itemAuthorLink %}\" \n    class=\"ck-author ck-link {%= (context.itemAuthorLinkExtern ? 'ck-link-extern' : '') %}\">{%= context %}</a>\n{% } else { %}\n<span class=\"ck-author\">{%= context %}</span>\n{% } %}\n"}; 
+    return {"template":"{% if (context.authorLink) { %}\n<a href=\"{%= context.authorLink %}\" \n    target=\"{%= (context.authorLinkTarget || '_self') %}\" \n    class=\"ck-author ck-link\">{%= context %}</a>\n{% } else { %}\n<span class=\"ck-author\">{%= context %}</span>\n{% } %}\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item/meta.js */;
@@ -2967,7 +2977,7 @@ define("../cardkit2/tpl/item/desc", [], function(){
 
 define("../cardkit2/tpl/item/icon", [], function(){
 
-    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.itemLinkAlone) { %}\n    <a href=\"{%= context.itemLinkAlone %}\" \n            class=\"ck-icon ck-link {%= (context.itemLinkExtern ? 'ck-link-extern' : '') %}\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-icon\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
+    return {"template":"{% if (state.imgUrl) { %}\n    {% if (context.isItemLinkAlone) { %}\n    <a href=\"{%= context.itemLink %}\" \n            target=\"{%= (context.itemLinkTarget || '_self') %}\" \n            class=\"ck-icon ck-link\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </a>\n    {% } else { %}\n    <span class=\"ck-icon\">\n        <img src=\"{%= state.imgUrl %}\"/>\n    </span>\n    {% } %}\n{% } %}\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item/title_tag.js */;
@@ -2995,7 +3005,7 @@ define("../cardkit2/tpl/item/title_prefix", [], function(){
 
 define("../cardkit2/tpl/item/title", [], function(){
 
-    return {"template":"{% if (context.itemLinkAlone) { %}\n<a href=\"{%= context.itemLinkAlone %}\" \n    class=\"ck-link {%= (context.itemLinkExtern ? 'ck-link-extern' : '') %}\">{%= content %}</a>\n{% } else { %}\n<span class=\"ck-title\">{%= content %}</span>\n{% } %}\n\n"}; 
+    return {"template":"{% if (context.isItemLinkAlone) { %}\n<a href=\"{%= context.itemLink %}\" \n    target=\"{%= (context.itemLinkTarget || '_self') %}\" \n    class=\"ck-link\">{%= content %}</a>\n{% } else { %}\n<span class=\"ck-title\">{%= content %}</span>\n{% } %}\n\n"}; 
 
 });
 /* @source mo/template/string.js */;
@@ -4141,7 +4151,10 @@ define("../cardkit2/card/item", [
 ], function(__oz0, __oz1, __oz2, __oz3, __oz4, __oz5, __oz6, __oz7, __oz8, __oz9, __oz10, __oz11, __oz12, __oz13, __oz14, __oz15, __oz16, __oz17, __oz18, __oz19, require){ 
 
 var darkdom = require("darkdom"),
-    convert = require("mo/template/micro").convertTpl;
+    convert = require("mo/template/micro").convertTpl,
+    read_state = function(data, state){
+        return data && (data.state || {})[state];
+    };
 
 var title = darkdom({
     unique: true,
@@ -4153,23 +4166,7 @@ var title_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var title_link_alone = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
-    }
-});
-
-var title_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -4236,15 +4233,7 @@ var author_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var author_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -4290,27 +4279,24 @@ var item = darkdom({
     enableSource: true,
     render: function(data){
         var com = data.component;
-        data.itemLinkAlone = com.titleLinkAlone;
-        data.itemLinkExtern = data.itemLinkAlone
-            || com.titleLinkExtern;
-        data.itemLink = data.itemLinkExtern
-            || com.titleLink
-            || ((data.componentData.title 
-                 || {}).state || {}).url;
-        data.itemAuthorLinkExtern = com.authorLinkExtern;
-        data.itemAuthorLink = data.itemAuthorLinkExtern
-            || com.authorLink
-            || ((data.componentData.author 
-                 || {}).state || {}).url;
-        console.info(data)
+        var comdata = data.componentData;
+        var link_data = com.titleLink 
+            ? comdata.titleLink : comdata.title;
+        data.itemLinkTarget = read_state(link_data, 'linkTarget');
+        data.isItemLinkAlone = read_state(link_data, 'isAlone');
+        data.itemLink = com.titleLink
+            || read_state(comdata.title, 'link');
+        var author_data = com.authorLink 
+            ? comdata.authorLink : comdata.author;
+        data.authorLinkTarget = read_state(author_data, 'linkTarget');
+        data.authorLink = com.authorLink
+            || read_state(comdata.author, 'link');
         return render_item(data);
     }
 });
 item.contain({
     title: title,
     titleLink: title_link,
-    titleLinkAlone: title_link_alone,
-    titleLinkExtern: title_link_extern,
     titlePrefix: title_prefix,
     titleSuffix: title_suffix,
     titleTag: title_tag,
@@ -4322,7 +4308,6 @@ item.contain({
     meta: meta,
     author: author,
     authorLink: author_link,
-    authorLinkExtern: author_link_extern,
     authorPrefix: author_prefix,
     authorSuffix: author_suffix,
     avatar: avatar,
@@ -4353,7 +4338,7 @@ define("../cardkit2/tpl/scaffold/hd_opt", [], function(){
 
 define("../cardkit2/tpl/scaffold/hd", [], function(){
 
-    return {"template":"{% var hd_link = context.component.hdLink || state.url; %}\n<span class=\"ck-hd {%= (hd_link && 'clickable' || '') %}\">\n    {% if (hd_link) { %}\n    <a href=\"{%= hd_link %}\" \n        class=\"ck-link ck-link-mask {%= (context.component.hdLinkExtern ? 'ck-link-extern' : '') %}\"></a>\n    {% } %}\n    <span>{%= content %}</span>\n</span>\n"}; 
+    return {"template":"<span class=\"ck-hd {%= (hdLink && 'clickable' || '') %}\">\n    {% if (hdLink) { %}\n    <a href=\"{%= hdLink %}\" \n        target=\"{%= (context.hdLinkTarget || '_self') %}\" \n        class=\"ck-link ck-link-mask\"></a>\n    {% } %}\n    <span>{%= content %}</span>\n</span>\n"}; 
 
 });
 /* @source ../cardkit2/card/common/scaffold.js */;
@@ -4368,27 +4353,33 @@ define("../cardkit2/card/common/scaffold", [
 ], function(__oz0, __oz1, __oz2, __oz3, __oz4, require){ 
 
 var darkdom = require("darkdom"),
-    convert = require("mo/template/micro").convertTpl;
+    convert = require("mo/template/micro").convertTpl,
+    read_state = function(data, state){
+        return data && (data.state || {})[state];
+    };
+
+var render_hd = convert(require("../cardkit2/tpl/scaffold/hd").template);
 
 var hd = darkdom({
     unique: true,
     enableSource: true,
-    render: convert(require("../cardkit2/tpl/scaffold/hd").template)
+    render: function(data){
+        var hdlink_data = data.context.componentData.hdLink;
+        var hd_link = read_state(hdlink_data, 'link');
+        data.hdLink = hd_link
+            || data.state.link;
+        data.hdLinkTarget = hd_link 
+            ? read_state(hdlink_data, 'linkTarget')
+            : data.state.linkTarget;
+        return render_hd(data);
+    }
 });
 
 var hd_link = darkdom({
     unique: true,
     enableSource: true,
     render: function(data){
-        return data.state.url;
-    }
-});
-
-var hd_link_extern = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.url;
+        return data.state.link;
     }
 });
 
@@ -4407,7 +4398,6 @@ var ft = darkdom({
 return {
     hd: hd,
     hdLink: hd_link,
-    hdLinkExtern: hd_link_extern,
     hdOpt: hd_opt,
     ft: ft
 };
@@ -4473,10 +4463,10 @@ return function(guard, parent){
         plainHdStyle: 'data-cfg-plainhd'
     });
     guard.component(scaffold_specs);
-    guard.source().component(scaffold_specs);
     guard.component('content', function(guard){
         guard.watch('.ckd-content');
     });
+    guard.source().component(scaffold_specs);
     guard.source().component('content', function(source){
         source.watch('.ckd-content');
     });
@@ -4549,7 +4539,11 @@ define("../cardkit2/oldspec/page", [
   "../cardkit2/oldspec/list"
 ], function(__oz0, __oz1, __oz2, require){ 
 
-var $ = require("dollar");
+var $ = require("dollar"),
+    get_source = function(node){
+        return '.' + node.data('source');
+    };
+
 var specs = {
     title: '.ckcfg-card-title',
     actionbar: actionbar_spec,
@@ -4564,14 +4558,14 @@ function navdrawer_spec(guard){
 
 function actionbar_spec(guard){
     guard.watch('.ckcfg-card-actions');
-    guard.bond('source', 'data-source');
+    guard.bond('source', get_source);
     guard.component('action', action_spec);
     guard.source().component('action', action_spec);
 }
 
 function action_spec(guard){
     guard.watch('.ckd-item, .ckd-overflow-item');
-    guard.bond('source', 'data-source');
+    guard.bond('source', get_source);
     action_attr(guard);
     action_attr(guard.source());
 }
@@ -4585,7 +4579,7 @@ function action_attr(guard){
     });
 }
 
-return function(guard, source, parent){
+return function(guard, parent){
     guard.watch($('.ck-card', parent));
     guard.bond({
         isFirst: function(node){
@@ -4735,25 +4729,17 @@ return {
     title: function(guard){
         guard.watch('ck-part[type="title"]');
         guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
         });
     },
     titleLink: function(guard){
         guard.watch('ck-part[type="titleLink"]');
         guard.bond({
-            url: 'href'
-        });
-    },
-    titleLinkAlone: function(guard){
-        guard.watch('ck-part[type="titleLinkAlone"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    titleLinkExtern: function(guard){
-        guard.watch('ck-part[type="titleLinkExtern"]');
-        guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
         });
     },
     titlePrefix: function(guard){
@@ -4789,25 +4775,15 @@ return {
     author: function(guard){
         guard.watch('ck-part[type="author"]');
         guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target'
         });
     },
     authorLink: function(guard){
         guard.watch('ck-part[type="authorLink"]');
         guard.bond({
-            url: 'href'
-        });
-    },
-    authorLinkAlone: function(guard){
-        guard.watch('ck-part[type="authorLinkAlone"]');
-        guard.bond({
-            url: 'href'
-        });
-    },
-    authorLinkExtern: function(guard){
-        guard.watch('ck-part[type="authorLinkExtern"]');
-        guard.bond({
-            url: 'href'
+            link: 'href',
+            linkTarget: 'target'
         });
     },
     authorPrefix: function(guard){
@@ -4857,11 +4833,15 @@ return {
     hd: function(guard){
         guard.watch('ck-part[type="hd"]');
         guard.bond({
-            url: 'href',
-            isExternUrl: function(node){
-                var t = node.attr('target');
-                return t && t !== '_self';
-            }
+            link: 'href',
+            linkTarget: 'target'
+        });
+    },
+    hdLink: function(guard){
+        guard.watch('ck-part[type="hdLink"]');
+        guard.bond({
+            link: 'href',
+            linkTarget: 'target'
         });
     },
     hdOpt: function(guard){
@@ -4901,14 +4881,29 @@ return function(guard, parent){
         plainHdStyle: 'plain-hd-style'
     });
     guard.component(scaffold_specs);
-    guard.source().component(source_scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('ck-part[type="item"]');
+        guard.bond({
+            link: 'href',
+            linkTarget: 'target',
+            isAlone: 'alone-mode'
+        });
         guard.component(item_specs);
         guard.source().component(source_item_specs);
     });
+    guard.source().component(source_scaffold_specs);
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
+        guard.bond({
+            link: 'href',
+            linkTarget: function(node){
+                return node.hasClass('ckd-title-link-extern') 
+                    && '_blank';
+            },
+            isAlone: function(node){
+                return node.hasClass('ckd-title-link-alone');
+            }
+        });
         source.component(source_item_specs);
     });
 };
@@ -4939,10 +4934,10 @@ return function(guard, parent){
         plainHdStyle: 'plain-hd-style'
     });
     guard.component(scaffold_specs);
-    guard.source().component(source_scaffold_specs);
     guard.component('content', function(guard){
         guard.watch('ck-part[type="content"]');
     });
+    guard.source().component(source_scaffold_specs);
     guard.source().component('content', function(source){
         source.watch('.ckd-content');
     });
@@ -4999,7 +4994,7 @@ function source_action_attr(source){
     });
 }
 
-return function(guard, source, parent){
+return function(guard, parent){
     guard.watch($('ck-card[type="page"]', parent));
     guard.bond({
         isFirst: 'firstpage',
