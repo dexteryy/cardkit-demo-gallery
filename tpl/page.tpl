@@ -1,5 +1,5 @@
 
-<div class="ck-card" 
+<div class="ck-page-card" 
         card-id="{%= state.cardId %}">
     {%= component.title %}
     {%= component.actionbar %}

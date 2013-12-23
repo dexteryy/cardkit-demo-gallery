@@ -25,7 +25,7 @@ describe("the page card", function(){
         })).appendTo('body');
         app.render(page.parent());
         dark_root = $('ck-card');
-        bright_root = $('.ck-card');
+        bright_root = $('.ck-page-card');
     });
 
     describe("the hidden root", function(){
@@ -65,7 +65,7 @@ describe("the page card", function(){
         var box, box1, box2;
 
         beforeEach(function(){
-            box = bright_root.find('.ck-box-unit');
+            box = bright_root.find('.ck-box-card');
             box1 = box.eq(0);
             box2 = box.eq(1);
         });
@@ -88,7 +88,7 @@ describe("the page card", function(){
         var bright_box, dark_box;
 
         beforeEach(function(){
-            bright_box = bright_root.find('.ck-box-unit');
+            bright_box = bright_root.find('.ck-box-card');
             dark_box = dark_root.find('ck-card[type="box"]').eq(0);
         });
     
@@ -168,8 +168,8 @@ describe("the page card", function(){
         var box1, box2, dark_box2;
 
         beforeEach(function(){
-            box1 = bright_root.find('.ck-box-unit').eq(0);
-            box2 = bright_root.find('.ck-box-unit').eq(1);
+            box1 = bright_root.find('.ck-box-card').eq(0);
+            box2 = bright_root.find('.ck-box-card').eq(1);
             dark_box2 = dark_root.find('ck-card[type="box"]').eq(1);
         });
 
@@ -220,7 +220,7 @@ describe("the page card", function(){
                 }
             });
             dark_root.updateDarkDOM();
-            box2 = bright_root.find('.ck-box-unit').eq(1);
+            box2 = bright_root.find('.ck-box-card').eq(1);
             expect(box2.find('.ck-hd span')).to.html(hd_text);
             expect(box2.find('footer')).to.html(ft_text);
         });

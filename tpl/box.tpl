@@ -1,14 +1,14 @@
-<div class="ck-box-unit"
+<div class="ck-box-card"
         data-style="{%= state.subtype %}"
-        data-cfg-paper="{%= state.paperStyle %}"
-        data-cfg-plain="{%= state.plainStyle %}"
-        data-cfg-plainhd="{%= state.plainHdStyle %}">
+        {%= state.paperStyle ? 'data-cfg-paper="true" ' : '' %}
+        {%= state.plainStyle ? 'data-cfg-plain="true" ' : '' %}
+        {%= state.plainHdStyle ? 'data-cfg-plainhd="true" ' : '' %}>
 
     {% if (hasSplitHd) { %}
         {%= hd_wrap(component) %}
     {% } %}
 
-    <article class="ck-unit-wrap">
+    <article class="ck-card-wrap">
 
         {% if (!hasSplitHd) { %}
             {%= hd_wrap(component) %}

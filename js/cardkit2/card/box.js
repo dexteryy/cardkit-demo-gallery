@@ -17,8 +17,8 @@ var render_box = convert(require('../tpl/box').template);
 var box = darkdom({
     enableSource: true,
     render: function(data){
-        data.hasSplitHd = data.state.plain 
-            || data.state.plainhd;
+        data.hasSplitHd = data.state.plainStyle === 'true'
+            || data.state.plainHdStyle === 'true';
         return render_box(data);
     }
 });

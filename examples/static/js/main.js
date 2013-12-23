@@ -576,7 +576,7 @@
     exports.resolvename = function(url){
         url = url.replace(_RE_DOT, '$1');
         while (_RE_DOTS.test(url)) {
-            url = url.replace(_RE_DOTS, '/').replace(/\/\//g, '/');
+            url = url.replace(_RE_DOTS, '/').replace(/(^|[^:])\/\/+/g, '$1/');
         }
         return url;
     };
@@ -2879,7 +2879,7 @@ return function(guard, parent){
 
 define("../cardkit2/tpl/list", [], function(){
 
-    return {"template":"<div class=\"ck-list-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-blank=\"{%= state.blankContent %}\"\n        data-cfg-limit=\"{%= state.limit %}\"\n        data-cfg-col=\"{%= state.col %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n        \n        <div class=\"ck-list-wrap\">\n\n            {% if (component.item.length) { %}\n\n                <div class=\"ck-list\">\n                {% component.item.forEach(function(item, i){ %}\n\n                    {% if (i && (i % state.col === 0)) { %}\n                    </div><div class=\"ck-list\">\n                    {% } %}\n\n                    {%= item %}\n\n                {% }); %}\n                </div>\n\n            {% } else { %}\n\n                <div class=\"ck-list\">\n                    <div class=\"ck-item blank\">\n                        <div class=\"ck-initem\">{%=(state.blank || '目前还没有内容')%}</div>\n                    </div>\n                </div>\n\n            {% } %}\n\n        </div>\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n\n"}; 
+    return {"template":"<div class=\"ck-list-card\"\n        data-style=\"{%= state.subtype %}\"\n        {%= state.paperStyle ? 'data-cfg-paper=\"true\" ' : '' %}\n        {%= state.plainStyle ? 'data-cfg-plain=\"true\" ' : '' %}\n        {%= state.plainHdStyle ? 'data-cfg-plainhd=\"true\" ' : '' %}\n        {%= state.blankContent ? 'data-cfg-blank=\"' + state.blankContent + '\" ' : '' %}\n        {%= state.limit ? 'data-cfg-limit=\"' + state.limit+ '\" ' : '' %}\n        {%= state.col ? 'data-cfg-col=\"' + state.col + '\" ' : '' %}>\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-card-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n        \n        <div class=\"ck-list-wrap\">\n\n            {% if (component.item.length) { %}\n\n                <div class=\"ck-list\">\n                {% component.item.forEach(function(item, i){ %}\n\n                    {% if (i && (i % state.col === 0)) { %}\n                    </div><div class=\"ck-list\">\n                    {% } %}\n\n                    {%= item %}\n\n                {% }); %}\n                </div>\n\n            {% } else { %}\n\n                <div class=\"ck-list\">\n                    <div class=\"ck-item blank\">\n                        <div class=\"ck-initem\">{%=(state.blankContent || '目前还没有内容')%}</div>\n                    </div>\n                </div>\n\n            {% } %}\n\n        </div>\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n\n"}; 
 
 });
 /* @source ../cardkit2/tpl/item.js */;
@@ -3286,7 +3286,6 @@ var _defaults = {
         render: false
     },
     _default_attrs = {
-        autorender: 'autorender',
         source: 'source-selector'
     },
     _content_buffer = {},
@@ -3298,10 +3297,11 @@ var _defaults = {
     _tuid = 0,
     _to_string = Object.prototype.toString,
     _matches_selector = $.find.matchesSelector,
-    BRIGHT_ID = 'bright-root-id',
+    IS_BRIGHT = 'dd-autogen',
+    MY_BRIGHT = 'dd-connect',
     ID_PREFIX = '_brightRoot_',
     RE_CONTENT_COM = new RegExp('\\{\\{' 
-        + BRIGHT_ID + '=(\\w+)\\}\\}', 'g'),
+        + MY_BRIGHT + '=(\\w+)\\}\\}', 'g'),
     RE_EVENT_SEL = /(\S+)\s*(.*)/,
     RE_HTMLTAG = /^\s*<(\w+|!)[^>]*>/;
 
@@ -3309,7 +3309,7 @@ var dom_ext = {
 
     mountDarkDOM: function(){
         var me = $(this),
-            guard = _guards[me.attr(BRIGHT_ID)];
+            guard = _guards[me.attr(MY_BRIGHT)];
         if (guard) {
             guard.mountRoot(me);
         }
@@ -3317,7 +3317,7 @@ var dom_ext = {
 
     unmountDarkDOM: function(){
         var me = $(this),
-            guard = _guards[me.attr(BRIGHT_ID)];
+            guard = _guards[me.attr(MY_BRIGHT)];
         if (guard) {
             guard.unmountRoot(me);
         }
@@ -3329,7 +3329,7 @@ var dom_ext = {
     },
 
     feedDarkDOM: function(fn){
-        var bright_id = $(this).attr(BRIGHT_ID),
+        var bright_id = $(this).attr(MY_BRIGHT),
             guard = _guards[bright_id];
         if (guard) {
             var user_data = is_function(fn) 
@@ -3341,7 +3341,7 @@ var dom_ext = {
 
     responseDarkDOM: function(subject, handler){
         var target = $(this),
-            bright_id = target.attr(BRIGHT_ID),
+            bright_id = target.attr(MY_BRIGHT),
             updaters = _updaters[bright_id];
         if (!updaters) {
             updaters = _updaters[bright_id] = {};
@@ -3497,11 +3497,14 @@ DarkGuard.prototype = {
 
     registerRoot: function(target){
         target = $(target);
-        var bright_id = target.attr(BRIGHT_ID);
+        if (target.attr(IS_BRIGHT)) {
+            return;
+        }
+        var bright_id = target.attr(MY_BRIGHT);
         if (!bright_id) {
             bright_id = uuid();
             if (!this._config.isSource) {
-                target.attr(BRIGHT_ID, bright_id);
+                target.attr(MY_BRIGHT, bright_id);
             }
         }
         _guards[bright_id] = this;
@@ -3514,11 +3517,11 @@ DarkGuard.prototype = {
 
     unregisterRoot: function(target){
         target = $(target);
-        var bright_id = target.attr(BRIGHT_ID);
+        var bright_id = target.attr(MY_BRIGHT);
         if (this !== _guards[bright_id]) {
             return;
         }
-        target.removeAttr(BRIGHT_ID);
+        target.removeAttr(MY_BRIGHT);
         unregister(bright_id);
         _.each(dom_ext, function(method, name){
             delete this[name];
@@ -3531,7 +3534,7 @@ DarkGuard.prototype = {
 
     mountRoot: function(target){
         target = $(target);
-        if (target.attr(this._attrs.autorender)
+        if (target.attr(IS_BRIGHT)
                 || target[0].isMountedDarkDOM) {
             return this;
         }
@@ -3545,14 +3548,14 @@ DarkGuard.prototype = {
 
     unmountRoot: function(target){
         target = $(target);
-        var bright_id = target.attr(BRIGHT_ID);
+        var bright_id = target.attr(MY_BRIGHT);
         $('#' + bright_id).remove();
         delete _darkdata[bright_id];
     },
 
     bufferRoot: function(target){
         target = $(target);
-        if (target.attr(this._attrs.autorender)) {
+        if (target.attr(IS_BRIGHT)) {
             return this;
         }
         var data = this.scanRoot(target); 
@@ -3655,7 +3658,7 @@ DarkGuard.prototype = {
             return html;
         }
         var bright_root = $(html);
-        bright_root.attr(this._attrs.autorender, 'true');
+        bright_root.attr(IS_BRIGHT, 'true');
         bright_root.attr('id', data.id);
         this.registerEvents(bright_root);
         return bright_root;
@@ -3698,7 +3701,7 @@ DarkGuard.prototype = {
 
     registerEvents: function(bright_root){
         var self = this;
-        var dark_root = $('[' + BRIGHT_ID + '="' 
+        var dark_root = $('[' + MY_BRIGHT + '="' 
             + bright_root.attr('id') + '"]');
         _.each(this._config.events, function(subject, bright_sel){
             bright_sel = RE_EVENT_SEL.exec(bright_sel);
@@ -3766,8 +3769,8 @@ DarkGuard.prototype = {
 
 DarkGuard.gc = function(){
     var current = {};
-    $('[' + BRIGHT_ID + ']').forEach(function(target){
-        this[$(target).attr(BRIGHT_ID)] = true;
+    $('[' + MY_BRIGHT + ']').forEach(function(target){
+        this[$(target).attr(MY_BRIGHT)] = true;
     }, current);
     Object.keys(_guards).forEach(function(bright_id){
         if (!this[bright_id]) {
@@ -3818,7 +3821,7 @@ function scan_contents(target, opt){
     opt.data = data;
     if (data._hasOuter) {
         content_spider.call(opt, 
-            target.clone().removeAttr(BRIGHT_ID));
+            target.clone().removeAttr(MY_BRIGHT));
     } else {
         target.contents().forEach(content_spider, opt);
     }
@@ -3844,12 +3847,12 @@ function content_spider(content){
         }
         return;
     }
-    var buffer_id = content.attr(BRIGHT_ID),
+    var buffer_id = content.attr(MY_BRIGHT),
         buffer = _content_buffer[buffer_id];
     delete _content_buffer[buffer_id];
     if (buffer) {
         data.index[buffer_id] = buffer;
-        data.text += '{{' + BRIGHT_ID + '=' + buffer_id + '}}';
+        data.text += '{{' + MY_BRIGHT + '=' + buffer_id + '}}';
     } else if (!mark) {
         var childs_data = scan_contents(content);
         data.text += content.clone()
@@ -3860,7 +3863,7 @@ function content_spider(content){
 
 function update_target(target){
     target = $(target);
-    var bright_id = target.attr(BRIGHT_ID);
+    var bright_id = target.attr(MY_BRIGHT);
     if (!target.parent()[0]) {
         return trigger_update(bright_id, null, {
             type: 'remove'
@@ -3996,7 +3999,7 @@ function trigger_update(bright_id, data, changes){
         bright_root.remove();
         re = false;
     }
-    var dark_root = $('[' + BRIGHT_ID + '="' + bright_id + '"]');
+    var dark_root = $('[' + MY_BRIGHT + '="' + bright_id + '"]');
     if (!data || changes.type === "remove") {
         dark_root.trigger('darkdom:removed');
     } else if (re === false) {
@@ -4459,8 +4462,8 @@ var render_list = convert(require("../cardkit2/tpl/list").template);
 var list = darkdom({
     enableSource: true,
     render: function(data){
-        data.hasSplitHd = data.state.plain 
-            || data.state.plainhd 
+        data.hasSplitHd = data.state.plainStyle === 'true' 
+            || data.state.plainHdStyle === 'true'
             || data.state.subtype === 'split';
         return render_list(data);
     }
@@ -4509,7 +4512,7 @@ return function(guard, parent){
 
 define("../cardkit2/tpl/box", [], function(){
 
-    return {"template":"<div class=\"ck-box-unit\"\n        data-style=\"{%= state.subtype %}\"\n        data-cfg-paper=\"{%= state.paperStyle %}\"\n        data-cfg-plain=\"{%= state.plainStyle %}\"\n        data-cfg-plainhd=\"{%= state.plainHdStyle %}\">\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-unit-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n\n        {% if (content && new RegExp('\\S', 'm').test(content)) { %}\n            <section>\n                {%= content %}\n            </section>\n        {% } %}\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n"}; 
+    return {"template":"<div class=\"ck-box-card\"\n        data-style=\"{%= state.subtype %}\"\n        {%= state.paperStyle ? 'data-cfg-paper=\"true\" ' : '' %}\n        {%= state.plainStyle ? 'data-cfg-plain=\"true\" ' : '' %}\n        {%= state.plainHdStyle ? 'data-cfg-plainhd=\"true\" ' : '' %}>\n\n    {% if (hasSplitHd) { %}\n        {%= hd_wrap(component) %}\n    {% } %}\n\n    <article class=\"ck-card-wrap\">\n\n        {% if (!hasSplitHd) { %}\n            {%= hd_wrap(component) %}\n        {% } %}\n\n        {% if (content && new RegExp('\\S', 'm').test(content)) { %}\n            <section>\n                {%= content %}\n            </section>\n        {% } %}\n\n        {%= component.ft %}\n\n    </article>\n\n</div>\n\n{% function hd_wrap(component){ %}\n\n    {% if (!component.hd) { %}\n        {% return; %}\n    {% } %}\n\n    <header class=\"ck-hd-wrap\">\n\n        {%= component.hd %}\n\n        {% if (component.hdOpt.length) { %}\n            <div class=\"ck-hdopt-wrap\">\n                {%= component.hdOpt.join('') %}\n            </div>\n        {% } %}\n\n    </header>\n\n{% } %}\n\n"}; 
 
 });
 /* @source ../cardkit2/tpl/box/content.js */;
@@ -4546,8 +4549,8 @@ var render_box = convert(require("../cardkit2/tpl/box").template);
 var box = darkdom({
     enableSource: true,
     render: function(data){
-        data.hasSplitHd = data.state.plain 
-            || data.state.plainhd;
+        data.hasSplitHd = data.state.plainStyle === 'true'
+            || data.state.plainHdStyle === 'true';
         return render_box(data);
     }
 });
@@ -4628,7 +4631,7 @@ return function(guard, parent){
 
 define("../cardkit2/tpl/page", [], function(){
 
-    return {"template":"\n<div class=\"ck-card\" \n        card-id=\"{%= state.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
+    return {"template":"\n<div class=\"ck-page-card\" \n        card-id=\"{%= state.cardId %}\">\n    {%= component.title %}\n    {%= component.actionbar %}\n    {%= component.navdrawer %}\n    {%= content %}\n</div>\n\n"}; 
 
 });
 /* @source ../cardkit2/tpl/page/navdrawer.js */;

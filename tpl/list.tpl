@@ -1,17 +1,17 @@
-<div class="ck-list-unit"
+<div class="ck-list-card"
         data-style="{%= state.subtype %}"
-        data-cfg-blank="{%= state.blankContent %}"
-        data-cfg-limit="{%= state.limit %}"
-        data-cfg-col="{%= state.col %}"
-        data-cfg-paper="{%= state.paperStyle %}"
-        data-cfg-plain="{%= state.plainStyle %}"
-        data-cfg-plainhd="{%= state.plainHdStyle %}">
+        {%= state.paperStyle ? 'data-cfg-paper="true" ' : '' %}
+        {%= state.plainStyle ? 'data-cfg-plain="true" ' : '' %}
+        {%= state.plainHdStyle ? 'data-cfg-plainhd="true" ' : '' %}
+        {%= state.blankContent ? 'data-cfg-blank="' + state.blankContent + '" ' : '' %}
+        {%= state.limit ? 'data-cfg-limit="' + state.limit+ '" ' : '' %}
+        {%= state.col ? 'data-cfg-col="' + state.col + '" ' : '' %}>
 
     {% if (hasSplitHd) { %}
         {%= hd_wrap(component) %}
     {% } %}
 
-    <article class="ck-unit-wrap">
+    <article class="ck-card-wrap">
 
         {% if (!hasSplitHd) { %}
             {%= hd_wrap(component) %}
@@ -37,7 +37,7 @@
 
                 <div class="ck-list">
                     <div class="ck-item blank">
-                        <div class="ck-initem">{%=(state.blank || '目前还没有内容')%}</div>
+                        <div class="ck-initem">{%=(state.blankContent || '目前还没有内容')%}</div>
                     </div>
                 </div>
 

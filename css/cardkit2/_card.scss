@@ -1,9 +1,32 @@
 
-.ck-card,
-ck-card {
-  display:none;
+@import "card/page";
+
+@import "card/common/scaffold";
+
+@import "card/box";
+
+@import "card/common/item";
+
+@import "card/list";
+
+@import "card/mini";
+
+@import "card/form";
+
+@import "card/banner";
+
+.ck-blank-card {
+  @extend %ck-card;
+  @extend %card-parts;
+
+  .ck-card-wrap > div {
+    @extend %item;
+    padding:$moui_space 0;
+    display:block;
+    border:none;
+    text-align:center;
+    font-size:$moui_maintitle_size;
+  }
+
 }
 
-.ck-card[autorender="true"] {
-  display:block;
-}

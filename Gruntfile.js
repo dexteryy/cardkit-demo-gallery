@@ -498,7 +498,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test', [
         'copy:target_to_examples',
-        'copy:target_to_pub',
+        //'copy:target_to_pub',
         "karma:main"
     ]);
 
