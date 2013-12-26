@@ -1,13 +1,9 @@
 
 require.config({
     baseUrl: 'js/vendor/',
-    distUrl: 'static/js/vendor/',
-    aliases: {
-        'cardkit': '../cardkit2/'
-    }
+    distUrl: 'static/js/vendor/'
 });
 
-//define('mo/lang/es5', [], function(){});
 define('mo/easing/functions', [], function(){});
 define('mo/mainloop', [], function(){});
 
@@ -21,13 +17,18 @@ define('mo/mainloop', [], function(){});
 //});
 
 require([
-    'dollar', 
-    'cardkit/bus',
-    'cardkit/app'
-], function(){
+    'mo/lang',
+    'dollar',
+    'cardkit'
+], function(_, $, cardkit){
 
-    if (false) {
-        require(['mo/cookie', 'mo/console'], function(){});
-    }
+cardkit.init({
+    supportOldVersion: true
+});
+cardkit.openPage();
+
+if (false) {
+    require(['mo/cookie', 'mo/console'], function(){});
+}
 
 });

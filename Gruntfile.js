@@ -8,36 +8,45 @@ module.exports = function(grunt) {
         config = {};
         grunt.log.writeln('WARNING: config.js does not exist');
     }
-    config.staticDir = config.staticDir || 'public/static';
+    config.pubDir = config.pubDir || 'public';
+    config.staticDir = config.staticDir || config.pubDir + '/static';
 
     var pkg = grunt.file.readJSON('package.json');
 
     grunt.initConfig({
         pkg: pkg,
         meta: {
+            pubDir: config.pubDir,
+            jsStaticDir: config.jsStaticDir || (config.staticDir + '/js'),
+            cssStaticDir: config.cssStaticDir || (config.staticDir + '/css'),
+            assetStaticDir: config.assetStaticDir || (config.staticDir + '/pics'),
             targetDir: 'target',
-            distDir: '.dist',
-            releaseDir: 'dist',
+            distDir: 'dist',
             originDir: 'origin',
-            examplesDir: 'examples',
-            examplesStaticDir: 'examples/static',
-            tplDir: "tpl",
-            jstplDir: "js/<%= pkg.name %>/tpl",
-            jsVendorDir: "js/vendor",
-            jsStaticDir: config.jsStaticDir || (config.staticDir + '/<%= pkg.name %>/js'),
-            cssStaticDir: config.cssStaticDir || (config.staticDir + '/<%= pkg.name %>/css'),
-            assetStaticDir: config.assetStaticDir || (config.staticDir + '/<%= pkg.name %>/pics'),
+            tplDir: "tpl/<%= pkg.name %>",
+            jsTplDir: "js/<%= pkg.name %>/tpl",
+            cardkitTplDir: "tpl/cardkit",
+            cardkitJsTplDir: "js/vendor/cardkit/tpl",
+            cssVendorDir: "css",
+            jsVendorDir: "js/vendor"
         },
 
         clean: {
-            jstpl: ["<%= meta.jstplDir %>/"],
-            jsVendor: ["<%= meta.jsVendorDir %>/"],
-            cssVendor: ["css/*/**", "!css/<%= pkg.name %>/**"],
             origin: ["<%= meta.originDir %>/"],
-            examples_static: ["<%= meta.examplesStaticDir %>"],
+            js_vendor: ["<%= meta.jsVendorDir %>/"],
+            css_vendor: [
+                "<%= meta.cssVendorDir %>/moui", 
+                "<%= meta.cssVendorDir %>/cardkit"
+            ],
+            js_tpl: ["<%= meta.jsTplDir %>"],
+            cardkit_tpl: ["<%= meta.cardkitJsTplDir %>"],
+            target_js: ["<%= meta.targetDir %>/js"],
+            target_css: ["<%= meta.targetDir %>/css"],
+            target_pics: ["<%= meta.targetDir %>/pics"],
+            dist: ["<%= meta.distDir %>"],
             pub_static: {
                 options: {
-                    force: true,
+                    force: true
                 },
                 src: [
                     "<%= meta.jsStaticDir %>/*", 
@@ -48,21 +57,12 @@ module.exports = function(grunt) {
                     "!<%= meta.assetStaticDir %>/.**"
                 ]
             },
-            target_js: ["<%= meta.targetDir %>/js"],
-            target_css: ["<%= meta.targetDir %>/css"],
-            target_pics: ["<%= meta.targetDir %>/pics"],
-            release: ["<%= meta.releaseDir %>"],
-            dist: ["<%= meta.distDir %>"]
+            pub_html: ["<%= meta.pubDir %>/**/*.html"]
         },
 
         dispatch: {
             options: {
                 directory: "bower_components"
-            },
-            "ozjs": {
-                use: {
-                    "<%= meta.jsVendorDir %>/": "oz.js"
-                }
             },
             "mo": {
                 use: {
@@ -108,7 +108,7 @@ module.exports = function(grunt) {
                 use: [{
                     cwd: "scss/moui",
                     src: ["**"],
-                    dest: "css/moui/"
+                    dest: "<%= meta.cssVendorDir %>/moui/"
                 }, {
                     src: ["**/*.js", "!**/Gruntfile.js"],
                     dest: "<%= meta.jsVendorDir %>/moui/"
@@ -117,16 +117,29 @@ module.exports = function(grunt) {
         },
 
         furnace: {
-            tpl: {
+            js_tpl: {
                 options: {
                     importas: 'tpl',
                     exportas: 'amd'
                 },
                 files: [{
-                    expand: true,     // Enable dynamic expansion.
-                    cwd: '<%= meta.tplDir %>/',
-                    src: ['**/*.tpl'], // Actual pattern(s) to match.
-                    dest: '<%= meta.jstplDir %>/',   // Destination path prefix.
+                    expand: true,
+                    cwd: '<%= meta.tplDir %>',
+                    src: ['**/*.tpl'],
+                    dest: '<%= meta.jsTtplDir %>',
+                    ext: '.js'
+                }]
+            },
+            cardkit_tpl: {
+                options: {
+                    importas: 'tpl',
+                    exportas: 'amd'
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= meta.cardkitTplDir %>',
+                    src: ['**/*.tpl'],
+                    dest: '<%= meta.cardkitJsTplDir %>',
                     ext: '.js'
                 }]
             }
@@ -139,15 +152,17 @@ module.exports = function(grunt) {
                 config: {
                     baseUrl: "<%= meta.jsVendorDir %>/",
                     distUrl: "<%= meta.targetDir %>/<%= meta.jsVendorDir %>/",
-                    loader: "oz.js",
+                    loader: '../../node_modules/ozjs/oz.js',
                     disableAutoSuffix: true
                 }
             },
             browsers: {
-                src: 'examples/js/browsers_test.js',
+                src: 'js/browsers_test.js',
                 config: {
                     baseUrl: "<%= meta.jsVendorDir %>/",
-                    loader: "oz.js"
+                    distUrl: "<%= meta.targetDir %>/<%= meta.jsVendorDir %>/",
+                    loader: '../../node_modules/ozjs/oz.js',
+                    disableAutoSuffix: true
                 }
             }
         },
@@ -173,6 +188,23 @@ module.exports = function(grunt) {
             }
         },
 
+        includereplace: {
+            main: {
+                options: {
+                    globals: {
+                        appname: '<%= pkg.name %>'
+                    }
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'docs/',
+                    src: ['**/*.html'],
+                    dest: '<%= meta.pubDir %>/',
+                    ext: '.orig.html'
+                }]
+            }
+        },
+
         imagemin: {
             main: {
                 options: {
@@ -183,6 +215,22 @@ module.exports = function(grunt) {
                     cwd: 'pics/',
                     src: ['**/*.{png,jpg}'],
                     dest: '<%= meta.targetDir %>/pics/'
+                }]
+            }
+        },
+
+        htmlmin: {
+            main: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= meta.pubDir %>/',
+                    src: ['**/*.orig.html'],
+                    dest: '<%= meta.pubDir %>/',
+                    ext: '.html'
                 }]
             }
         },
@@ -251,14 +299,6 @@ module.exports = function(grunt) {
                     dest: '<%= meta.distDir %>/pics/'
                 }]
             },
-            target_to_examples: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= meta.targetDir %>/',
-                    src: ['**'],
-                    dest: '<%= meta.examplesStaticDir %>/'
-                }]
-            },
             target_to_pub: {
                 files: [{
                     expand: true,
@@ -295,32 +335,6 @@ module.exports = function(grunt) {
                     dest: '<%= meta.assetStaticDir %>/'
                 }]
             },
-            release_to_pub: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= meta.releaseDir %>/js/',
-                    src: ['**', '!**/*.min.*'],
-                    dest: '<%= meta.jsStaticDir %>/'
-                }, {
-                    expand: true,
-                    cwd: '<%= meta.releaseDir %>/css/',
-                    src: ['**', '!**/*.min.*'],
-                    dest: '<%= meta.cssStaticDir %>/'
-                }, {
-                    expand: true,
-                    cwd: '<%= meta.releaseDir %>/pics/',
-                    src: ['**'],
-                    dest: '<%= meta.assetStaticDir %>/'
-                }]
-            },
-            release_to_examples: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= meta.releaseDir %>/',
-                    src: ['**'],
-                    dest: '<%= meta.examplesStaticDir %>/'
-                }]
-            },
             min_to_pub: {
                 files: [{
                     expand: true,
@@ -332,22 +346,6 @@ module.exports = function(grunt) {
                     cwd: '<%= meta.distDir %>/css/',
                     src: ['**/*.min.*'],
                     dest: '<%= meta.cssStaticDir %>/'
-                }]
-            },
-            restore: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= meta.releaseDir %>/',
-                    src: ['**'],
-                    dest: '<%= meta.distDir %>/'
-                }]
-            },
-            release: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= meta.distDir %>/',
-                    src: ['**'],
-                    dest: '<%= meta.releaseDir %>/'
                 }]
             }
         },
@@ -361,33 +359,32 @@ module.exports = function(grunt) {
                     asi: true 
                 },
                 files: {
-                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsVendorDir %>/**', '!<%= meta.jstplDir %>/**']
+                    src: [
+                        '*.js', 
+                        'js/**/*.js', 
+                        '!<%= meta.jsVendorDir %>/**', 
+                        '!<%= meta.jsTplDir %>/**'
+                    ]
                 }
             },
             dist: {
                 files: {
-                    src: ['./*.js', 'js/**/*.js', '!<%= meta.jsVendorDir %>/**', '!<%= meta.jstplDir %>/**']
-                }
-            }
-        },
-
-        complexity: {
-            generic: {
-                src: ['js/<%= pkg.name %>/**/*.js', '!<%= meta.jstplDir %>/**'],
-                options: {
-                    cyclomatic: 10,
-                    halstead: 25,
-                    maintainability: 100
+                    src: [
+                        '*.js', 
+                        'js/**/*.js', 
+                        '!<%= meta.jsVendorDir %>/**', 
+                        '!<%= meta.jsTplDir %>/**'
+                    ]
                 }
             }
         },
 
         connect: {
-            examples: {
+            pub: {
                 options: {
                     hostname: 'localhost',
                     port: 9001,
-                    base: 'examples/',
+                    base: 'public/',
                     keepalive: true
                 }
             }
@@ -397,8 +394,6 @@ module.exports = function(grunt) {
             main: {
                 configFile: 'karma.conf.js',
                 singleRun: true
-                //autoWatch: false,
-                //background: true,
             }
         },
 
@@ -406,10 +401,9 @@ module.exports = function(grunt) {
             js: {
                 files: [
                     'js/**/*.js', 
-                    '!<%= meta.jstplDir %>/**',
-                    'test/**',
-                    'examples/js/**/*.js',
-                    '!examples/js/**/*_pack.js'
+                    '!<%= meta.jsTplDir %>/**',
+                    '!<%= meta.cardkitJsTplDir %>/**',
+                    'test/**'
                 ],
                 tasks: [
                     'dev:js',
@@ -446,16 +440,28 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-compass');
     grunt.loadNpmTasks('grunt-contrib-connect');
-    grunt.loadNpmTasks('grunt-complexity');
+    grunt.loadNpmTasks('grunt-include-replace');
     grunt.loadNpmTasks('grunt-furnace');
     grunt.loadNpmTasks('grunt-dispatch');
     grunt.loadNpmTasks('grunt-ozjs');
     grunt.loadNpmTasks('grunt-karma');
+
+    grunt.registerTask('build_components', [
+    ]);
+
+    grunt.registerTask('update', [
+        //'clean:js_vendor',
+        //'clean:css_vendor',
+        'clean:origin',
+        'dispatch',
+        'build_components'
+    ]);
 
     grunt.registerTask('dev:js', [
         'clean:target_js', 
@@ -475,12 +481,17 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('dev:tpl', [
-        'clean:jstpl',
-        'furnace:tpl', 
+        'clean:js_tpl',
+        'clean:cardkit_tpl',
+        'furnace:js_tpl', 
+        'furnace:cardkit_tpl', 
         'dev:js'
     ]);
 
-    grunt.registerTask('build_components', [
+    grunt.registerTask('dev:html', [
+        'clean:pub_html',
+        'includereplace',
+        'htmlmin'
     ]);
 
     grunt.registerTask('dev', [
@@ -497,47 +508,22 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('test', [
-        'copy:target_to_examples',
-        //'copy:target_to_pub',
-        "karma:main"
-    ]);
-
-    grunt.registerTask('restore', [
-        //'clean:pub_static',
-        'copy:release_to_pub',
-        'clean:examples_static',
-        'copy:release_to_examples',
-        'clean:dist',
-        'copy:restore'
+        'karma:main',
+        'clean:pub_static',
+        'copy:target_to_pub',
+        'dev:html'
     ]);
 
     grunt.registerTask('default', [
         'build_components',
         'jshint:dist',
         'dev',
-        'restore'
-    ]);
-
-    grunt.registerTask('deploy', [
-        //'clean:pub_static',
-        'copy:dist_to_pub'
-    ]);
-
-    grunt.registerTask('update', [
-        //'clean:jsVendor',
-        'clean:cssVendor',
-        'clean:origin',
-        'dispatch',
-        'build_components'
-    ]);
-
-    grunt.registerTask('publish', [
-        'build_components',
-        'jshint:dist',
-        'dev',
+        'karma:main',
         'build',
-        'copy:release',
-        'restore'
+        'clean:pub_static',
+        'copy:dist_to_pub',
+        'copy:min_to_pub',
+        'dev:html'
     ]);
 
 };

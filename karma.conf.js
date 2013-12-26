@@ -32,7 +32,7 @@ module.exports = function(config) {
         files: [
             { pattern: 'js/**/*.js', included: false },
             { pattern: 'test/tpl/**/*.tpl', included: false },
-            "examples/static/css/main.css",
+            "target/css/main.css",
             "test/config.js",
             "test/tests.js",
         ],

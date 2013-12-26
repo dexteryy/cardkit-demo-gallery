@@ -5,14 +5,14 @@ require([
     'darkdom',
     'test/tpl/page',
     'test/tpl/page_source',
-    'cardkit/app'
+    'cardkit'
 ], function(_, tpl, darkdom, 
-    tpl_page, tpl_page_source, app){
+    tpl_page, tpl_page_source, cardkit){
 
 var $ = window.jQuery;
 darkdom.initPlugins($);
 
-app.init();
+cardkit.init();
 
 describe("the page card", function(){
 
@@ -23,7 +23,7 @@ describe("the page card", function(){
         })).appendTo('body');
         page_source = $(tpl.convertTpl(tpl_page_source.template, {
         })).appendTo('body');
-        app.render(page.parent());
+        cardkit.openPage();
         dark_root = $('ck-card');
         bright_root = $('.ck-page-card');
     });
