@@ -1,13 +1,12 @@
 
-define([
+define('cardkit', [
     'mo/lang',
     'dollar',
     'darkdom',
     'cardkit/spec',
     'cardkit/oldspec',
     'cardkit/supports',
-    'cardkit/bus',
-    'mo/domready'
+    'cardkit/bus'
 ], function(_, $, darkdom, 
     specs, oldspecs, supports, bus){
 
