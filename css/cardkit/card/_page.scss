@@ -2,6 +2,11 @@
 .ck-card,
 .ck-page-card {
   display:none;
+
+  &.active {
+    display:block;
+  }
+
 }
 
 .ck-page-card {

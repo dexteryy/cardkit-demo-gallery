@@ -1,7 +1,9 @@
 
 define(function(require){ 
 
-var $ = require('dollar');
+var $ = require('dollar'),
+    selector = 'ck-card[type="page"][active-page="true"]';
+
 var specs = {
     title: 'ck-part[type="title"]',
     actionbar: actionbar_spec,
@@ -41,7 +43,7 @@ function source_action_attr(source){
 }
 
 return function(guard, parent){
-    guard.watch($('ck-card[type="page"]' + '.ck-page-willopen', parent));
+    guard.watch($(selector, parent));
     guard.bond({
         isActive: 'active-page',
         cardId: 'id'

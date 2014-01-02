@@ -4,7 +4,6 @@ define(function(require){
 var $ = require('dollar'),
     selector = '.ck-page-card',
     selector_old = '.ck-card',
-    willopen = '.ck-page-willopen',
     get_source = function(node){
         return '.' + node.data('source');
     };
@@ -45,8 +44,8 @@ function action_attr(guard){
 }
 
 return function(guard, parent){
-    guard.watch($(selector + willopen, parent));
-    guard.watch($(selector_old + willopen, parent));
+    guard.watch($(selector + '[active-page="true"]', parent));
+    guard.watch($(selector_old + '[active-page="true"]', parent));
     guard.bond({
         isActive: 'active-page',
         cardId: 'id'

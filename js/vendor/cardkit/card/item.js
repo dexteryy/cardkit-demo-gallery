@@ -1,172 +1,223 @@
 
-define(function(require){ 
+define([
+    'mo/lang/mix',
+    'darkdom',
+    'mo/template/micro',
+    '../tpl/item',
+    '../tpl/item/title',
+    '../tpl/item/title_prefix',
+    '../tpl/item/title_suffix',
+    '../tpl/item/title_tag',
+    '../tpl/item/icon',
+    '../tpl/item/desc',
+    '../tpl/item/info',
+    '../tpl/item/opt',
+    '../tpl/item/content',
+    '../tpl/item/meta',
+    '../tpl/item/author',
+    '../tpl/item/author_prefix',
+    '../tpl/item/author_suffix',
+    '../tpl/item/avatar',
+    '../tpl/item/author_desc',
+    '../tpl/item/author_info',
+    '../tpl/item/author_meta',
+], function(_, darkdom, tpl, 
+    tpl_item, tpl_title, tpl_title_prefix, tpl_title_suffix, tpl_title_tag, 
+    tpl_icon, tpl_desc, tpl_info, tpl_opt, tpl_content, tpl_meta,
+    tpl_author, tpl_author_prefix, tpl_author_suffix, 
+    tpl_avatar, tpl_author_desc, tpl_author_info, tpl_author_meta){ 
 
-var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl,
+var convert = tpl.convertTpl,
     read_state = function(data, state){
         return data && (data.state || {})[state];
-    };
+    },
+    render_item = convert(tpl_item.template);
 
-var title = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../tpl/item/title').template)
-});
+var exports = {
 
-var title_link = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.link;
+    title: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_title.template)
+        });
+    },
+
+    titleLink: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                return data.state.link;
+            }
+        });
+    },
+
+    titlePrefix: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_title_prefix.template)
+        });
+    },
+
+    titleSuffix: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_title_suffix.template)
+        });
+    },
+
+    titleTag: function(){
+        return darkdom({
+            enableSource: true,
+            render: convert(tpl_title_tag.template)
+        });
+    },
+
+    icon: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_icon.template)
+        });
+    },
+
+    desc: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_desc.template)
+        });
+    },
+
+    info: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_info.template)
+        });
+    },
+
+    opt: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_opt.template)
+        });
+    },
+
+    content: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_content.template)
+        });
+    },
+
+    meta: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_meta.template)
+        });
+    },
+
+    author: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_author.template)
+        });
+    },
+
+    authorLink: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                return data.state.link;
+            }
+        });
+    },
+
+    authorPrefix: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_author_prefix.template)
+        });
+    },
+
+    authorSuffix: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_author_suffix.template)
+        });
+    },
+
+    avatar: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_avatar.template)
+        });
+    },
+
+    authorDesc: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_author_desc.template)
+        });
+    },
+
+    authorInfo: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_author_info.template)
+        });
+    },
+
+    authorMeta: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_author_meta.template)
+        });
+    },
+
+    item: function(){
+        var item = darkdom({
+            enableSource: true,
+            render: function(data){
+                var com = data.component;
+                var comdata = data.componentData;
+                var link_data = com.titleLink 
+                    ? comdata.titleLink : comdata.title;
+                data.itemLinkTarget = read_state(link_data, 'linkTarget');
+                data.isItemLinkAlone = read_state(link_data, 'isAlone');
+                data.itemLink = com.titleLink
+                    || read_state(comdata.title, 'link');
+                var author_data = com.authorLink 
+                    ? comdata.authorLink : comdata.author;
+                data.authorLinkTarget = read_state(author_data, 'linkTarget');
+                data.authorLink = com.authorLink
+                    || read_state(comdata.author, 'link');
+                return render_item(data);
+            }
+        });
+        var parts = _.copy(exports);
+        delete parts.item;
+        item.contain(parts);
+        return item;
     }
-});
 
-var title_prefix = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/title_prefix').template)
-});
+};
 
-var title_suffix = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/title_suffix').template)
-});
-
-var title_tag = darkdom({
-    enableSource: true,
-    render: convert(require('../tpl/item/title_tag').template)
-});
-
-var icon = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../tpl/item/icon').template)
-});
-
-var desc = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/desc').template)
-});
-
-var info = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/info').template)
-});
-
-var opt = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/opt').template)
-});
-
-var content = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/content').template)
-});
-
-var meta = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/meta').template)
-});
-
-var author = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../tpl/item/author').template)
-});
-
-var author_link = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.link;
-    }
-});
-
-var author_prefix = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/author_prefix').template)
-});
-
-var author_suffix = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/author_suffix').template)
-});
-
-var avatar = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../tpl/item/avatar').template)
-});
-
-var author_desc = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/author_desc').template)
-});
-
-var author_info = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/author_info').template)
-});
-
-var author_meta = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/item/author_meta').template)
-});
-
-var render_item = convert(require('../tpl/item').template);
-
-var item = darkdom({
-    enableSource: true,
-    render: function(data){
-        var com = data.component;
-        var comdata = data.componentData;
-        var link_data = com.titleLink 
-            ? comdata.titleLink : comdata.title;
-        data.itemLinkTarget = read_state(link_data, 'linkTarget');
-        data.isItemLinkAlone = read_state(link_data, 'isAlone');
-        data.itemLink = com.titleLink
-            || read_state(comdata.title, 'link');
-        var author_data = com.authorLink 
-            ? comdata.authorLink : comdata.author;
-        data.authorLinkTarget = read_state(author_data, 'linkTarget');
-        data.authorLink = com.authorLink
-            || read_state(comdata.author, 'link');
-        return render_item(data);
-    }
-});
-item.contain({
-    title: title,
-    titleLink: title_link,
-    titlePrefix: title_prefix,
-    titleSuffix: title_suffix,
-    titleTag: title_tag,
-    icon: icon,
-    desc: desc,
-    info: info,
-    opt: opt,
-    content: content,
-    meta: meta,
-    author: author,
-    authorLink: author_link,
-    authorPrefix: author_prefix,
-    authorSuffix: author_suffix,
-    avatar: avatar,
-    authorDesc: author_desc,
-    authorInfo: author_info,
-    authorMeta: author_meta
-});
-
-return item;
+return exports;
 
 });

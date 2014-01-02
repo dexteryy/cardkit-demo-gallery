@@ -1,10 +1,11 @@
 
-define(function(require){ 
+define([
+    'dollar',
+    './common/scaffold',
+    './common/source_scaffold'
+], function($, scaffold_specs, source_scaffold_specs){ 
 
-var $ = require('dollar'),
-    scaffold_specs = require('./common/scaffold'),
-    source_scaffold_specs = require('./common/source_scaffold'),
-    selector = 'ck-card[type="box"]';
+var selector = 'ck-card[type="box"]';
 
 return function(guard, parent){
     guard.watch(parent && $(selector, parent) || selector);

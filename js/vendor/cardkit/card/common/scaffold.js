@@ -1,55 +1,67 @@
 
-define(function(require){ 
+define([
+    'darkdom',
+    'mo/template/micro',
+    '../../tpl/scaffold/hd',
+    '../../tpl/scaffold/hd_opt',
+    '../../tpl/scaffold/ft',
+], function(darkdom, tpl, 
+    tpl_hd, tpl_hd_opt, tpl_ft){ 
 
-var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl,
+var convert = tpl.convertTpl,
     read_state = function(data, state){
         return data && (data.state || {})[state];
-    };
+    },
+    render_hd = convert(tpl_hd.template);
 
-var render_hd = convert(require('../../tpl/scaffold/hd').template);
+var exports = {
 
-var hd = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        var hdlink_data = data.context.componentData.hdLink;
-        var hd_link = read_state(hdlink_data, 'link');
-        data.hdLink = hd_link
-            || data.state.link;
-        data.hdLinkTarget = hd_link 
-            ? read_state(hdlink_data, 'linkTarget')
-            : data.state.linkTarget;
-        return render_hd(data);
+    hd: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                var hdlink_data = data.context.componentData.hdLink;
+                var hd_link = read_state(hdlink_data, 'link');
+                data.hdLink = hd_link
+                    || data.state.link;
+                data.hdLinkTarget = hd_link 
+                    ? read_state(hdlink_data, 'linkTarget')
+                    : data.state.linkTarget;
+                return render_hd(data);
+            }
+        });
+    },
+
+    hdLink: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                return data.state.link;
+            }
+        });
+    },
+
+    hdOpt: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_hd_opt.template)
+        });
+    },
+
+    ft: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_ft.template)
+        });
     }
-});
 
-var hd_link = darkdom({
-    unique: true,
-    enableSource: true,
-    render: function(data){
-        return data.state.link;
-    }
-});
-
-var hd_opt = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../../tpl/scaffold/hd_opt').template)
-});
-
-var ft = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../../tpl/scaffold/ft').template)
-});
-
-return {
-    hd: hd,
-    hdLink: hd_link,
-    hdOpt: hd_opt,
-    ft: ft
 };
+
+return exports;
 
 });
 

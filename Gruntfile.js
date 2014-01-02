@@ -418,7 +418,10 @@ module.exports = function(grunt) {
                 ]
             },
             tpl: {
-                files: ['<%= meta.tplDir %>/**/*.tpl'],
+                files: [
+                    '<%= meta.tplDir %>/**/*.tpl',
+                    '<%= meta.cardkitTplDir %>/**/*.tpl'
+                ],
                 tasks: [
                     'dev:tpl',
                     'test'
@@ -508,10 +511,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('test', [
-        'karma:main',
         'clean:pub_static',
         'copy:target_to_pub',
-        'dev:html'
+        'dev:html',
+        'karma:main'
     ]);
 
     grunt.registerTask('default', [

@@ -1,9 +1,10 @@
 
-define(function(require){ 
+define([
+    'dollar',
+    './common/scaffold'
+], function($, scaffold_specs){ 
 
-var $ = require('dollar'),
-    scaffold_specs = require('./common/scaffold'),
-    selector = '.ck-box-card',
+var selector = '.ck-box-card',
     selector_old = '.ck-box-unit';
 
 return function(guard, parent){

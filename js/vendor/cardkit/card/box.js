@@ -1,33 +1,45 @@
 
-define(function(require){ 
+define([
+    'darkdom',
+    'mo/template/micro',
+    '../tpl/box',
+    '../tpl/box/content',
+    './common/scaffold'
+], function(darkdom, tpl, 
+    tpl_box, tpl_content, scaffold_components){ 
 
-var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl;
+var convert = tpl.convertTpl,
+    render_box = convert(tpl_box.template);
 
-var scaffold_components = require('./common/scaffold');
+var exports = {
 
-var content = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/box/content').template)
-});
+    content: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_content.template)
+        });
+    },
 
-var render_box = convert(require('../tpl/box').template);
-
-var box = darkdom({
-    enableSource: true,
-    render: function(data){
-        data.hasSplitHd = data.state.plainStyle === 'true'
-            || data.state.plainHdStyle === 'true';
-        return render_box(data);
+    box: function(){
+        var box = darkdom({
+            enableSource: true,
+            render: function(data){
+                data.hasSplitHd = data.state.plainStyle === 'true'
+                    || data.state.plainHdStyle === 'true';
+                return render_box(data);
+            }
+        });
+        box.contain(scaffold_components);
+        box.contain('content', exports.content, {
+            content: true
+        });
+        return box;
     }
-});
-box.contain(scaffold_components);
-box.contain('content', content, {
-    content: true
-});
 
-return box;
+};
+
+return exports;
 
 });
 

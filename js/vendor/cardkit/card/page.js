@@ -1,55 +1,79 @@
 
-define(function(require){ 
+define([
+    'darkdom',
+    'mo/template/micro',
+    '../tpl/page/title',
+    '../tpl/page/actionbar/action',
+    '../tpl/page/actionbar',
+    '../tpl/page/navdrawer',
+    '../tpl/page',
+    './box',
+    './list'
+], function(darkdom, tpl, 
+    tpl_title, tpl_action, tpl_actionbar, tpl_navdrawer, tpl_page, 
+    box, list){ 
 
-var darkdom = require('darkdom'),
-    convert = require('mo/template/micro').convertTpl;
+var convert = tpl.convertTpl;
 
-var title = darkdom({
-    unique: true,
-    render: convert(require('../tpl/page/title').template)
-});
+var exports = {
 
-var action = darkdom({
-    enableSource: true,
-    entireAsContent: true,
-    render: convert(require('../tpl/page/actionbar/action').template)
-});
+    title: function(){
+        return darkdom({
+            unique: true,
+            render: convert(tpl_title.template)
+        });
+    },
 
-var actionbar = darkdom({
-    unique: true,
-    enableSource: true,
-    render: convert(require('../tpl/page/actionbar').template)
-});
-actionbar.contain('action', action);
+    action: function(){
+        return darkdom({
+            enableSource: true,
+            entireAsContent: true,
+            render: convert(tpl_action.template)
+        });
+    },
 
-var navdrawer = darkdom({
-    unique: true,
-    render: convert(require('../tpl/page/navdrawer').template)
-});
+    actionbar: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: convert(tpl_actionbar.template)
+        }).contain('action', exports.action);
+    },
 
-var page = darkdom({
-    render: convert(require('../tpl/page').template)
-});
-page.contain({
-    title: title,
-    actionbar: actionbar,
-    navdrawer: navdrawer
-});
-page.contain({
-    box: require('./box'),
-    list: require('./list') 
-}, { content: true });
+    navdrawer: function(){
+        return darkdom({
+            unique: true,
+            render: convert(tpl_navdrawer.template)
+        });
+    },
 
-page.response('state:isActive', function(changes){
-    if (changes.newValue === 'true') {
-        changes.root.show();
-    } else {
-        changes.root.hide();
+    page: function(){
+        var page = darkdom({
+            render: convert(tpl_page.template)
+        });
+        page.contain({
+            title: exports.title,
+            actionbar: exports.actionbar,
+            navdrawer: exports.navdrawer
+        });
+        page.contain({
+            box: box.box,
+            list: list.list, 
+        }, { content: true });
+        page.response('state:isActive', function(changes){
+            if (changes.newValue === 'true') {
+                changes.root.addClass('active');
+            } else {
+                changes.root.removeClass('active');
+            }
+            return false;
+        });
+        return page;
     }
-    return false;
-});
 
-return page;
+};
+
+return exports;
 
 });
 

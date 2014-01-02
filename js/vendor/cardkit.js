@@ -17,8 +17,7 @@ var _components = {},
     _defaults = {
         defaultPage: 'ckDefault',
         supportOldVersion: false
-    },
-    WILL_OPEN_FLAG = 'ck-page-willopen';
+    };
 
 var exports = {
 
@@ -29,12 +28,12 @@ var exports = {
 
     initSpec: function(){
         _.each(specs, function(data, name){
-            this.component(name, data[0]);
+            this.component(name, data[0][name]());
             this.spec(name, data[1]);
         }, this);
         if (this._config.supportOldVersion) {
             _.each(oldspecs, function(data, name){
-                this.component(name, data[0]);
+                this.component(name, data[0][name]());
                 this.spec(name, data[1]);
             }, this);
         }
@@ -90,12 +89,12 @@ var exports = {
             _last_page.attr('active-page', 'false').updateDarkDOM();
         }
         var page = $('#' + pid);
+        page.attr('active-page', 'true');
         if (!page[0].isMountedDarkDOM) {
-            page.addClass(WILL_OPEN_FLAG);
             this.render('page');
-            page.removeClass(WILL_OPEN_FLAG);
+        } else {
+            page.updateDarkDOM();
         }
-        page.attr('active-page', 'true').updateDarkDOM();
         _last_page = page;
     },
 

@@ -6,7 +6,7 @@
   "devDependencies": {
     "mo": ">=1.6.6",
     "dollar": ">=1.3.4",
-    "darkdom": ">=0.4.0",
+    "darkdom": ">=0.4.1",
     "eventmaster": ">=2.1.0",
     "nerv": "~0.3.0",
     "soviet": ">=1.0.0",
