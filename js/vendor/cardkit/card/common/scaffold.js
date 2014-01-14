@@ -46,7 +46,7 @@ var exports = {
     hdOpt: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_hd_opt.template)
         });
     },

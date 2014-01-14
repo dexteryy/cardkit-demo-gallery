@@ -2,13 +2,14 @@
 define([], function(){
 
 var get_source = function(node){
-    return '.' + node.data('source');
+    var source = node.data('source');
+    return source && ('.' + source);
 };
 
 return {
     hd: function(guard){
         guard.watch('.ckd-hd');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
@@ -19,7 +20,7 @@ return {
     },
     hdLink: function(guard){
         guard.watch('.ckd-hd-link:not(.ckd-hd)');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
@@ -30,7 +31,7 @@ return {
     },
     hdOpt: function(guard){
         guard.watch('.ckd-hdopt');
-        guard.bond({
+        guard.state({
             source: get_source
         });
     },

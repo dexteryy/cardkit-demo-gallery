@@ -15,6 +15,11 @@
 
 @import "card/banner";
 
+ck-card,
+ck-part {
+  display:none;
+}
+
 .ck-blank-card {
   @extend %ck-card;
   @extend %card-parts;

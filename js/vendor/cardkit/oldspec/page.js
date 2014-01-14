@@ -2,34 +2,46 @@
 define(function(require){ 
 
 var $ = require('dollar'),
-    selector = '.ck-page-card',
-    selector_old = '.ck-card',
+    UNMOUNT_FLAG = '.unmount-page',
     get_source = function(node){
-        return '.' + node.data('source');
+        var source = node.data('source');
+        return source && ('.' + source);
     };
 
 var specs = {
     title: '.ckcfg-card-title',
     actionbar: actionbar_spec,
-    navdrawer: navdrawer_spec,
+    nav: nav_spec,
+    footer: footer_spec,
     box: require('./box'),
     list: require('./list')
 };
 
-function navdrawer_spec(guard){
-    guard.watch('.ckcfg-navdrawer');
+function nav_spec(guard){
+    guard.watch('.ckcfg-card-nav');
+    guard.state({
+        link: 'href'
+    });
 }
 
 function actionbar_spec(guard){
     guard.watch('.ckcfg-card-actions');
-    guard.bond('source', get_source);
+    guard.state({
+        limit: 'data-cfg-limit',
+        source: get_source
+    });
     guard.component('action', action_spec);
     guard.source().component('action', action_spec);
 }
 
+function footer_spec(guard){
+    guard.watch('.ckcfg-card-footer');
+    guard.state('source', get_source);
+}
+
 function action_spec(guard){
     guard.watch('.ckd-item, .ckd-overflow-item');
-    guard.bond('source', get_source);
+    guard.state('source', get_source);
     action_attr(guard);
     action_attr(guard.source());
 }
@@ -38,20 +50,28 @@ function action_attr(guard){
     if (!guard) {
         return;
     }
-    guard.bond('forceOverflow', function(node){
+    guard.state('forceOverflow', function(node){
         return node.hasClass('ckd-overflow-item');
     });
 }
 
-return function(guard, parent){
-    guard.watch($(selector + '[active-page="true"]', parent));
-    guard.watch($(selector_old + '[active-page="true"]', parent));
-    guard.bond({
-        isActive: 'active-page',
+function exports(guard, parent){
+    guard.watch($(exports.SELECTOR + UNMOUNT_FLAG, parent));
+    guard.watch($(exports.SELECTOR_OLD + UNMOUNT_FLAG, parent));
+    guard.state({
+        isPageActive: 'data-active-page',
+        isDeckActive: 'data-active-deck',
+        currentDeck: 'data-current-deck',
+        deck: 'data-deck',
         cardId: 'id'
     });
     guard.component(specs);
-};
+}
+
+exports.SELECTOR = '.ck-page-card';
+exports.SELECTOR_OLD = '.ck-card';
+
+return exports;
 
 });
 

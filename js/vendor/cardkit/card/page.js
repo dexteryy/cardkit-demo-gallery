@@ -1,19 +1,22 @@
 
 define([
     'darkdom',
+    'dollar',
+    'mo/lang/mix',
     'mo/template/micro',
     '../tpl/page/title',
     '../tpl/page/actionbar/action',
     '../tpl/page/actionbar',
-    '../tpl/page/navdrawer',
+    '../tpl/page/nav',
     '../tpl/page',
     './box',
     './list'
-], function(darkdom, tpl, 
-    tpl_title, tpl_action, tpl_actionbar, tpl_navdrawer, tpl_page, 
+], function(darkdom, $, _, tpl, 
+    tpl_title, tpl_action, tpl_actionbar, tpl_nav, tpl_page, 
     box, list){ 
 
-var convert = tpl.convertTpl;
+var convert = tpl.convertTpl,
+    actionbar_render = convert(tpl_actionbar.template);
 
 var exports = {
 
@@ -21,6 +24,13 @@ var exports = {
         return darkdom({
             unique: true,
             render: convert(tpl_title.template)
+        });
+    },
+
+    nav: function(){
+        return darkdom({
+            unique: true,
+            render: convert(tpl_nav.template)
         });
     },
 
@@ -36,14 +46,31 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_actionbar.template)
+            render: function(data){
+                var limit = data.state.limit || 1;
+                data.visibleActions = [];
+                data.overflowActions = [];
+                data.componentData.action.forEach(function(action, i){
+                    var action_html = data.component.action[i];
+                    if (this.length < limit
+                            && !action.state.forceOverflow) {
+                        this.push(action_html);
+                    } else {
+                        data.overflowActions.push(action_html);
+                    }
+                }, data.visibleActions);
+                return actionbar_render(data);
+            }
         }).contain('action', exports.action);
     },
 
-    navdrawer: function(){
+    footer: function(){
         return darkdom({
             unique: true,
-            render: convert(tpl_navdrawer.template)
+            enableSource: true,
+            render: function(data){
+                return data.content;
+            }
         });
     },
 
@@ -51,27 +78,65 @@ var exports = {
         var page = darkdom({
             render: convert(tpl_page.template)
         });
-        page.contain({
-            title: exports.title,
-            actionbar: exports.actionbar,
-            navdrawer: exports.navdrawer
-        });
+        var parts = _.copy(exports);
+        delete parts.page;
+        page.contain(parts);
         page.contain({
             box: box.box,
             list: list.list, 
         }, { content: true });
-        page.response('state:isActive', function(changes){
-            if (changes.newValue === 'true') {
-                changes.root.addClass('active');
-            } else {
-                changes.root.removeClass('active');
-            }
-            return false;
-        });
+        page.response('state:isPageActive', when_page_active);
+        page.response('state:isDeckActive', when_deck_active);
+        page.response('state:currentDeck', when_deck_change);
         return page;
     }
 
 };
+
+function when_page_active(changes){
+    if (changes.newValue === 'true') {
+        changes.root.css('min-height', window.innerHeight + 'px')
+            .attr('data-page-active', true);
+        setTimeout(function(){
+            changes.root.addClass('topbar-enabled');
+        }, 100);
+    } else {
+        changes.root.attr('data-page-active', false)
+            .removeClass('topbar-enabled');
+    }
+    return false;
+}
+
+function when_deck_active(changes){
+    if (changes.newValue === 'true') {
+        changes.root.attr('data-deck-active', true);
+        setTimeout(function(){
+            unwrap_deactive(changes.root);
+        }, 400);
+    } else {
+        changes.root.attr('data-deck-active', false);
+        setTimeout(function(){
+            wrap_deactive(changes.root);
+        }, 400);
+    }
+    return false;
+}
+
+function when_deck_change(changes){
+    changes.root.attr('data-curdeck', changes.newValue);
+    return false;
+}
+
+function wrap_deactive(node){
+    $('<div class="ck-narrow-wrapper"></div>').insertBefore(node).append(node);
+}
+
+function unwrap_deactive(node){
+    var p = node.parent();
+    if (p.hasClass('ck-narrow-wrapper')) {
+        p.before(node).remove();
+    }
+}
 
 return exports;
 

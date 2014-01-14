@@ -8,11 +8,11 @@ define([
 ], function($, 
     scaffold_specs, source_scaffold_specs, item_specs, source_item_specs){ 
 
-var selector = 'ck-card[type="list"]';
+var SEL = 'ck-card[type="list"]';
 
 return function(guard, parent){
-    guard.watch(parent && $(selector, parent) || selector);
-    guard.bond({
+    guard.watch($(SEL, parent));
+    guard.state({
         subtype: 'subtype',
         blankContent: 'blank-content',
         limit: 'limit', 
@@ -24,7 +24,7 @@ return function(guard, parent){
     guard.component(scaffold_specs);
     guard.component('item', function(guard){
         guard.watch('ck-part[type="item"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target',
             isAlone: 'alone-mode'
@@ -35,7 +35,7 @@ return function(guard, parent){
     guard.source().component(source_scaffold_specs);
     guard.source().component('item', function(source){
         source.watch('.ckd-item');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-title-link-extern') 

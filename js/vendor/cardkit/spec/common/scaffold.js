@@ -4,14 +4,14 @@ define([], function(){
 return {
     hd: function(guard){
         guard.watch('ck-part[type="hd"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target'
         });
     },
     hdLink: function(guard){
         guard.watch('ck-part[type="hdLink"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target'
         });

@@ -5,11 +5,11 @@ define([
     './common/source_scaffold'
 ], function($, scaffold_specs, source_scaffold_specs){ 
 
-var selector = 'ck-card[type="box"]';
+var SEL = 'ck-card[type="box"]';
 
 return function(guard, parent){
-    guard.watch(parent && $(selector, parent) || selector);
-    guard.bond({
+    guard.watch($(SEL, parent));
+    guard.state({
         subtype: 'subtype',
         paperStyle: 'paper-style',
         plainStyle: 'plain-style',

@@ -433,6 +433,13 @@ module.exports = function(grunt) {
                     'dev:asset',
                     'test'
                 ]
+            },
+            html: {
+                files: ['docs/**/*.html'],
+                tasks: [
+                    'dev:html',
+                    'test'
+                ]
             }
         }
 

@@ -1,15 +1,14 @@
-<ck-card type="page" firstpage="true" id="ckDefault">
+<ck-card type="page" id="ckDefault">
 
     <ck-part type="title">New style card</ck-part>
+
+    <ck-part type="nav" href="#ckNavdrawer"></ck-part>
 
     <ck-part type="actionbar">
         <button type="button" action-layout="auto">Reload</button>
         <button type="button" action-layout="overflow" class="switchstyle">切换界面风格</button>
         <button type="button" action-layout
             source-selector=".ckd-source.btn1"></button>
-    </ck-part>
-
-    <ck-part type="navdrawer">
     </ck-part>
 
     <p>This is normal text</p>

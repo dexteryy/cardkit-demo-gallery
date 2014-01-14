@@ -14,14 +14,14 @@ darkdom.initPlugins($);
 
 cardkit.init();
 
+$(tpl.convertTpl(tpl_page_source.template, {})).appendTo('body');
+
 describe("the page card", function(){
 
-    var page, page_source, dark_root, bright_root;
+    var page, dark_root, bright_root;
 
     beforeEach(function(){
         page = $(tpl.convertTpl(tpl_page.template, {
-        })).appendTo('body');
-        page_source = $(tpl.convertTpl(tpl_page_source.template, {
         })).appendTo('body');
         cardkit.openPage();
         dark_root = $('ck-card');
@@ -117,21 +117,20 @@ describe("the page card", function(){
     
         it("remove component", function(){
 
-            var actions = bright_root.find('.ck-action button');
+            var actions = bright_root.find('.ck-item button');
             var count = actions.length;
 
             dark_root.find('button[action-layout]').eq(count - 1).remove();
             expect(actions).to.length(count);
-
             dark_root.updateDarkDOM();
-            actions = bright_root.find('.ck-action button');
+            actions = bright_root.find('.ck-item button');
             expect(actions).to.length(count - 1);
 
         });
 
         it("add component", function(){
 
-            var actions = bright_root.find('.ck-action button');
+            var actions = bright_root.find('.ck-item button');
             var count = actions.length;
 
             dark_root.find('ck-part[type="actionbar"]')
@@ -139,7 +138,7 @@ describe("the page card", function(){
             expect(actions).to.length(count);
 
             dark_root.updateDarkDOM();
-            actions = bright_root.find('.ck-action button');
+            actions = bright_root.find('.ck-item button');
             expect(actions).to.length(count + 1);
             expect(actions.eq(actions.length - 1)).to.have.html('yy');
 
@@ -156,7 +155,7 @@ describe("the page card", function(){
 
             button1.html('aaaa');
             dark_root.updateDarkDOM();
-            var bright_button1 = bright_root.find('.ck-action button').eq(0);
+            var bright_button1 = bright_root.find('.ck-item button').eq(0);
             expect(bright_button1).to.have.html('aaaa');
 
         });
@@ -186,7 +185,7 @@ describe("the page card", function(){
         });
 
         it("component's source", function(){
-            var actions = bright_root.find('.ck-action');
+            var actions = bright_root.find('.ck-item');
             expect(actions).to.length(3);
             expect(box2.find('.ck-content')).to.length(3);
         });
@@ -227,16 +226,7 @@ describe("the page card", function(){
 
     });
 
-    //describe("event forward", function(){
-
-        //it("", function(){
-
-        //});
-
-    //});
-
     afterEach(function(){
-        page_source.remove();
         page.remove().updateDarkDOM();
     });
 

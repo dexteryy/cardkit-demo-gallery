@@ -4,7 +4,7 @@ define([], function(){
 return {
     title: function(guard){
         guard.watch('ck-part[type="title"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target',
             isAlone: 'alone-mode'
@@ -12,7 +12,7 @@ return {
     },
     titleLink: function(guard){
         guard.watch('ck-part[type="titleLink"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target',
             isAlone: 'alone-mode'
@@ -29,7 +29,7 @@ return {
     },
     icon: function(guard){
         guard.watch('ck-part[type="icon"]');
-        guard.bond({
+        guard.state({
             imgUrl: 'src'
         });
     },
@@ -50,14 +50,14 @@ return {
     },
     author: function(guard){
         guard.watch('ck-part[type="author"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target'
         });
     },
     authorLink: function(guard){
         guard.watch('ck-part[type="authorLink"]');
-        guard.bond({
+        guard.state({
             link: 'href',
             linkTarget: 'target'
         });
@@ -70,7 +70,7 @@ return {
     },
     avatar: function(guard){
         guard.watch('ck-part[type="avatar"]');
-        guard.bond({
+        guard.state({
             imgUrl: 'src'
         });
     },

@@ -2,29 +2,36 @@
 define(function(require){ 
 
 var $ = require('dollar'),
-    selector = 'ck-card[type="page"][active-page="true"]';
+    UNMOUNT_FLAG = '.unmount-page';
 
 var specs = {
     title: 'ck-part[type="title"]',
     actionbar: actionbar_spec,
-    navdrawer: navdrawer_spec,
+    nav: nav_spec,
+    footer: 'ck-part[type="footer"]',
     box: require('./box'),
     list: require('./list')
 };
 
-function navdrawer_spec(guard){
-    guard.watch('ck-part[type="navdrawer"]');
+function nav_spec(guard){
+    guard.watch('ck-part[type="nav"]');
+    guard.state({
+        link: 'href'
+    });
 }
 
 function actionbar_spec(guard){
     guard.watch('ck-part[type="actionbar"]');
+    guard.state({
+        limit: 'limit'
+    });
     guard.component('action', action_spec);
     guard.source().component('action', source_action_spec);
 }
 
 function action_spec(guard){
     guard.watch('[action-layout]');
-    guard.bond('forceOverflow', function(node){
+    guard.state('forceOverflow', function(node){
         return 'overflow' === 
             node.attr('action-layout');
     });
@@ -37,18 +44,26 @@ function source_action_spec(source){
 }
 
 function source_action_attr(source){
-    source.bond('forceOverflow', function(node){
+    source.state('forceOverflow', function(node){
         return node.hasClass('ckd-overflow-item');
     });
 }
 
-return function(guard, parent){
-    guard.watch($(selector, parent));
-    guard.bond({
-        isActive: 'active-page',
+function exports(guard, parent){
+    guard.watch($(exports.SELECTOR + UNMOUNT_FLAG, parent));
+    guard.state({
+        isPageActive: 'active-page',
+        isDeckActive: 'active-deck',
+        currentDeck: 'current-deck',
+        deck: 'deck',
         cardId: 'id'
     });
     guard.component(specs);
-};
+}
+
+exports.SELECTOR = 'ck-card[type="page"]';
+
+return exports;
 
 });
+

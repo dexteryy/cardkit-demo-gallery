@@ -6,7 +6,7 @@
         {% if (itemLink && !isItemLinkAlone) { %}
         <a href="{%= itemLink %}" 
             target="{%= (itemLinkTarget || '_self') %}"
-            class="ck-link-mask"></a>
+            class="ck-link-mask ck-link"></a>
         {% } %}
 
         <div class="ck-title-box">

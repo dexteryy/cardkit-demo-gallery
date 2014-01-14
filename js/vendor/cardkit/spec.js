@@ -2,9 +2,9 @@
 define(function(require){
 
     return {
-        page: [require('./card/page'), require('./spec/page')],
-        box: [require('./card/box'), require('./spec/box')],
-        list: [require('./card/list'), require('./spec/list')],
+        page: [require('./spec/page'), require('./card/page')],
+        box: [require('./spec/box'), require('./card/box')],
+        list: [require('./spec/list'), require('./card/list')],
     };
 
 });

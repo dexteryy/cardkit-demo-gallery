@@ -78,18 +78,6 @@
     padding:0;
     margin:$moui_space 0;
     border:none;
-
-    .ck-hd {
-      overflow-x:scroll;
-      -webkit-overflow-scrolling: touch;
-
-      body.no-overflowscroll & {
-        -webkit-overflow-scrolling: auto;
-        overflow:visible;
-      }
-
-    }
-
   }
 
   .ck-card-wrap > section {
@@ -277,17 +265,6 @@
     //opacity:.4;
     //z-index:$moui_z_item + $moui_z_step * 4;
   //}
-
-}
-
-.ck-card-wrap {
-  -webkit-overflow-scrolling: touch;
-  overflow:auto;
-
-  body.no-overflowscroll & {
-    -webkit-overflow-scrolling: auto;
-    overflow:visible;
-  }
 
 }
 

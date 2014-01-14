@@ -9,11 +9,66 @@
 <meta name="format-detection" content="telephone=no">
 
 <link href="static/css/main.css" rel="stylesheet">
+<link href="static/css/console.css" rel="stylesheet">
 <script src="static/js/main.js"></script>
 </head>
 <body>
 
+<div class="ck-card" id="ckNavdrawer" data-deck="navdrawer">
+
+    <div class="ck-list-unit" data-style="menu" data-cfg-plainhd="true">
+        <a class="ckd-item" href="#ckDefault"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+    </div>
+
+    <div class="ck-list-unit" data-style="menu" data-cfg-plainhd="true">
+        <a class="ckd-item" href="#ckDefault"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+        <a class="ckd-item" href="#consoleCard"></a>
+    </div>
+
+</div>
+
 <div class="ck-card" id="ckDefault">
+
+    <div class="ckcfg-card-title">Home</div>
+
+    <a class="ckcfg-card-nav" href="#ckNavdrawer"></a>
+
+    <div class="ckcfg-card-actions" data-cfg-limit="2">
+        <input type="button" class="ckd-overflow-item" value="btn1">
+        <a href="#" class="ckd-item">btn2</a>
+        <button type="button" class="ckd-item">btn3</button>
+    </div>
+
+    <div class="ckcfg-card-footer" data-source="ckcfg-page-footer"></div>
 
     <div class="ck-box-unit" data-cfg-plain="true">
         <h2 class="ckd-hd">CardKit</h2>
@@ -86,6 +141,12 @@
 
 <div class="ck-card" id="consoleCard">
 
+    <div class="ckcfg-card-title">Console</div>
+
+    <a class="ckcfg-card-nav" href="#ckDefault"></a>
+
+    <div class="ckcfg-card-footer" data-source="ckcfg-page-footer"></div>
+
     <div class="ck-box-unit" data-cfg-paper="true">
         <header class="ckd-hd">Console</header>
         <div id="console"></div>
@@ -102,6 +163,10 @@
     });
     </script>
 
+</div>
+
+<div class="ckcfg-page-footer">
+    <div class="copyright">© 2005－2012 douban.com, all rights reserved</div>
 </div>
 
 </body>

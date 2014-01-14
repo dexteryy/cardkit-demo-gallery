@@ -4,13 +4,13 @@ define([
     './common/scaffold'
 ], function($, scaffold_specs){ 
 
-var selector = '.ck-box-card',
-    selector_old = '.ck-box-unit';
+var SEL = '.ck-box-card',
+    SEL_OLD = '.ck-box-unit';
 
 return function(guard, parent){
-    guard.watch(parent && $(selector, parent) || selector);
-    guard.watch(parent && $(selector_old, parent) || selector_old);
-    guard.bond({
+    guard.watch($(SEL, parent));
+    guard.watch($(SEL_OLD, parent));
+    guard.state({
         subtype: 'data-style',
         paperStyle: 'data-cfg-paper',
         plainStyle: 'data-cfg-plain',

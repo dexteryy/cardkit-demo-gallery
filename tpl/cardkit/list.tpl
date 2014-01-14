@@ -8,13 +8,13 @@
         {%= state.col ? 'data-cfg-col="' + state.col + '" ' : '' %}>
 
     {% if (hasSplitHd) { %}
-        {%= hd_wrap(component) %}
+        {%= hdwrap %}
     {% } %}
 
     <article class="ck-card-wrap">
 
         {% if (!hasSplitHd) { %}
-            {%= hd_wrap(component) %}
+            {%= hdwrap %}
         {% } %}
         
         <div class="ck-list-wrap">
@@ -50,25 +50,4 @@
     </article>
 
 </div>
-
-{% function hd_wrap(component){ %}
-
-    {% if (!component.hd) { %}
-        {% return; %}
-    {% } %}
-
-    <header class="ck-hd-wrap">
-
-        {%= component.hd %}
-
-        {% if (component.hdOpt.length) { %}
-            <div class="ck-hdopt-wrap">
-                {%= component.hdOpt.join('') %}
-            </div>
-        {% } %}
-
-    </header>
-
-{% } %}
-
 

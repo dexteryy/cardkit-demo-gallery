@@ -4,11 +4,13 @@ define([
     'mo/template/micro',
     '../tpl/box',
     '../tpl/box/content',
+    '../tpl/scaffold/hdwrap',
     './common/scaffold'
 ], function(darkdom, tpl, 
-    tpl_box, tpl_content, scaffold_components){ 
+    tpl_box, tpl_content, tpl_hdwrap, scaffold_components){ 
 
 var convert = tpl.convertTpl,
+    render_hdwrap = convert(tpl_hdwrap.template),
     render_box = convert(tpl_box.template);
 
 var exports = {
@@ -16,7 +18,7 @@ var exports = {
     content: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_content.template)
         });
     },
@@ -27,6 +29,7 @@ var exports = {
             render: function(data){
                 data.hasSplitHd = data.state.plainStyle === 'true'
                     || data.state.plainHdStyle === 'true';
+                data.hdwrap = render_hdwrap(data);
                 return render_box(data);
             }
         });

@@ -56,7 +56,7 @@ var exports = {
     titlePrefix: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_title_prefix.template)
         });
     },
@@ -64,7 +64,7 @@ var exports = {
     titleSuffix: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_title_suffix.template)
         });
     },
@@ -87,7 +87,7 @@ var exports = {
     desc: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_desc.template)
         });
     },
@@ -95,7 +95,7 @@ var exports = {
     info: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_info.template)
         });
     },
@@ -103,7 +103,7 @@ var exports = {
     opt: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_opt.template)
         });
     },
@@ -111,7 +111,7 @@ var exports = {
     content: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_content.template)
         });
     },
@@ -119,7 +119,7 @@ var exports = {
     meta: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_meta.template)
         });
     },
@@ -145,7 +145,7 @@ var exports = {
     authorPrefix: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_author_prefix.template)
         });
     },
@@ -153,7 +153,7 @@ var exports = {
     authorSuffix: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_author_suffix.template)
         });
     },
@@ -169,7 +169,7 @@ var exports = {
     authorDesc: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_author_desc.template)
         });
     },
@@ -177,7 +177,7 @@ var exports = {
     authorInfo: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_author_info.template)
         });
     },
@@ -185,7 +185,7 @@ var exports = {
     authorMeta: function(){
         return darkdom({
             enableSource: true,
-            entireAsContent: true,
+            sourceAsContent: true,
             render: convert(tpl_author_meta.template)
         });
     },
