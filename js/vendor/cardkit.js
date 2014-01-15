@@ -213,14 +213,15 @@ var exports = {
             || page.is(old_spec.SELECTOR_OLD);
     },
 
-    openLink: function(href, target){
+    openLink: function(href, opt){
+        opt = opt || {};
         if (typeof href !== 'string') {
             var node = href;
             href = node.href;
-            target = node.target;
+            opt.target = node.target;
         }
-        if (target && target !== '_self') {
-            window.open(href, target);
+        if (opt.target && opt.target !== '_self') {
+            window.open(href, opt.target);
         } else {
             window.scrollTo(0, 0);
             location.href = href;
@@ -230,6 +231,8 @@ var exports = {
     event: bus
 
 };
+
+exports.openURL = exports.openLink;
 
 function open_page(page){
     if (page.getDarkState('isPageActive') === 'true') {

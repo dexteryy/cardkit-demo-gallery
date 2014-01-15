@@ -40,8 +40,6 @@
 
   &[data-deck="navdrawer"] {
     display:block;
-    background:#242424;
-    color:#fff;
     position:absolute;
     top:0;
     left:0;
@@ -94,6 +92,25 @@
     @include user-select(none);
   }
 
+}
+
+.ck-narrow-wrapper {
+  overflow:hidden;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:-1;
+  //pointer-events:none;
+}
+
+.ck-narrow-mask {
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  width:15%;
+  z-index:200;
 }
 
 .ck-header {
@@ -194,21 +211,3 @@
 
 }
 
-.ck-narrow-wrapper {
-  overflow:hidden;
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  z-index:-1;
-  //pointer-events:none;
-}
-
-.ck-narrow-mask {
-  position:absolute;
-  top:0;
-  bottom:0;
-  right:0;
-  width:15%;
-  z-index:200;
-}
