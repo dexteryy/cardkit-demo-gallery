@@ -2,13 +2,16 @@
 define('cardkit', [
     'mo/lang',
     'dollar',
-    'soviet',
     'darkdom',
+    'soviet',
+    'momo/base',
+    'momo/tap',
     'cardkit/spec',
     'cardkit/oldspec',
     'cardkit/supports',
     'cardkit/bus'
-], function(_, $, soviet, darkdom, 
+], function(_, $, darkdom, soviet, 
+    momoBase, momoTap,
     specs, oldspecs, supports, bus){
 
 var DEFAULT_DECK = 'main',
@@ -19,12 +22,43 @@ var DEFAULT_DECK = 'main',
     _specs = {},
     _guards = {},
     _decks = {},
-    _current_deck = DEFAULT_DECK,
+    _current_deck,
     _page_opening,
+    soviet_aliases = {},
     _defaults = {
         defaultPage: 'ckDefault',
         supportOldVer: false
     };
+
+_.mix(momoBase.Class.prototype, {
+    bind: function(ev, handler, elm){
+        $(elm || this.node).bind(ev, handler);
+        return this;
+    },
+    unbind: function(ev, handler, elm){
+        $(elm || this.node).unbind(ev, handler);
+        return this;
+    },
+    trigger: function(e, ev){
+        delete e.layerX;
+        delete e.layerY;
+        $(e.target).trigger(ev, e);
+        return this;
+    }
+});
+
+var tap_events = {
+
+    '.ck-link': link_handler,
+    '.ck-link *': link_handler,
+
+};
+
+function link_handler(){
+    exports.openLink(this);
+}
+
+function nothing(){}
 
 var exports = {
 
@@ -46,9 +80,21 @@ var exports = {
     },
 
     initView: function(){
-        //this.delegate = soviet(document, {
-            //matchesSelector: true
-        //});
+        var tapGesture = momoTap(document, {
+            tapThreshold: 20 
+        });
+        set_alias_events(tapGesture.event);
+        var prevent_click_events = {};
+        Object.keys(tap_events).forEach(function(selector){
+            this[selector] = nothing;
+        }, prevent_click_events);
+        this.delegate = soviet(document, {
+            aliasEvents: soviet_aliases,
+            autoOverride: true,
+            matchesSelector: true,
+            preventDefault: true
+        }).on('tap', tap_events)
+            .on('click', prevent_click_events);
         $(window).on('hashchange', function(){
             exports.openPage();
         });
@@ -147,7 +193,8 @@ var exports = {
                     && $.contains(body, last_decktop[0])) {
                 blur_page(last_decktop);
             }
-        } else if (decktop 
+        }
+        if (decktop 
                 && decktop[0] !== page[0] 
                 && $.contains(body, decktop[0])) {
             close_page(decktop);
@@ -164,6 +211,20 @@ var exports = {
         return page.is(spec.SELECTOR)
             || page.is(old_spec.SELECTOR)
             || page.is(old_spec.SELECTOR_OLD);
+    },
+
+    openLink: function(href, target){
+        if (typeof href !== 'string') {
+            var node = href;
+            href = node.href;
+            target = node.target;
+        }
+        if (target && target !== '_self') {
+            window.open(href, target);
+        } else {
+            window.scrollTo(0, 0);
+            location.href = href;
+        }
     },
 
     event: bus
@@ -218,6 +279,12 @@ function notify_deck(page){
     page.setDarkState('currentDeck', this, {
         update: true
     });
+}
+
+function set_alias_events(events) {
+    for (var ev in events) {
+        $.Event.aliases[ev] = soviet_aliases[ev] = 'ck_' + events[ev];
+    }
 }
 
 return exports;

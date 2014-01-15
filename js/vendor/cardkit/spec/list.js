@@ -39,7 +39,7 @@ return function(guard, parent){
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-title-link-extern') 
-                    && '_blank';
+                    && (node.attr('target') || '_blank');
             },
             isAlone: function(node){
                 return node.hasClass('ckd-title-link-alone');

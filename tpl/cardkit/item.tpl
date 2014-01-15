@@ -16,10 +16,10 @@
 
             <div class="ck-title-set">
 
-                {% if (component.title) { %}
+                {% if (itemContent) { %}
                 <div class="ck-title-line">
                     {%= component.titlePrefix.join('') %}
-                    {%= component.title %}
+                    {%= itemContent %}
                     {%= component.titleSuffix.join('') %}
                     {%= component.titleTag.join('') %}
                 </div>

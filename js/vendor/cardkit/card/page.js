@@ -101,7 +101,8 @@ function when_page_active(changes){
             changes.root.addClass('topbar-enabled');
         }, 100);
     } else {
-        changes.root.attr('data-page-active', false)
+        unwrap_deactive(changes.root)
+            .attr('data-page-active', false)
             .removeClass('topbar-enabled');
     }
     return false;
@@ -128,7 +129,10 @@ function when_deck_change(changes){
 }
 
 function wrap_deactive(node){
-    $('<div class="ck-narrow-wrapper"></div>').insertBefore(node).append(node);
+    $('<div class="ck-narrow-wrapper"><a class="ck-narrow-mask ck-link" href="#' 
+        + (node.attr('data-cardid') || '')
+        + '"></a></div>')
+            .insertBefore(node).append(node);
 }
 
 function unwrap_deactive(node){
@@ -136,6 +140,8 @@ function unwrap_deactive(node){
     if (p.hasClass('ck-narrow-wrapper')) {
         p.before(node).remove();
     }
+    window.scrollTo(0, 0);
+    return node;
 }
 
 return exports;

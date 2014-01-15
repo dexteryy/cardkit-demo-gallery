@@ -194,14 +194,19 @@ var exports = {
         var item = darkdom({
             enableSource: true,
             render: function(data){
+                var state = data.state;
                 var com = data.component;
                 var comdata = data.componentData;
                 var link_data = com.titleLink 
                     ? comdata.titleLink : comdata.title;
-                data.itemLinkTarget = read_state(link_data, 'linkTarget');
-                data.isItemLinkAlone = read_state(link_data, 'isAlone');
+                data.itemLinkTarget = read_state(link_data, 'linkTarget')
+                    || state.linkTarget;
+                data.isItemLinkAlone = read_state(link_data, 'isAlone')
+                    || state.isAlone;
                 data.itemLink = com.titleLink
-                    || read_state(comdata.title, 'link');
+                    || read_state(comdata.title, 'link')
+                    || state.link;
+                data.itemContent = com.title || data.content;
                 var author_data = com.authorLink 
                     ? comdata.authorLink : comdata.author;
                 data.authorLinkTarget = read_state(author_data, 'linkTarget');

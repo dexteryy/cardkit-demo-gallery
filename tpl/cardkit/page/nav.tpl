@@ -1,1 +1,1 @@
-<a class="ck-top-nav" href="{%= state.link %}"></a>
+<a class="ck-top-nav ck-link" href="{%= state.link %}"></a>

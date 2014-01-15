@@ -13,7 +13,7 @@ return {
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
-                    && '_blank';
+                    && (node.attr('target') || '_blank');
             },
             source: get_source
         });
@@ -24,7 +24,7 @@ return {
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
-                    && '_blank';
+                    && (node.attr('target') || '_blank');
             },
             source: get_source
         });
