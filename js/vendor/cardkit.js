@@ -54,12 +54,6 @@ var tap_events = {
 
 };
 
-function link_handler(){
-    exports.openLink(this);
-}
-
-function nothing(){}
-
 var exports = {
 
     init: function(opt){
@@ -289,6 +283,12 @@ function set_alias_events(events) {
         $.Event.aliases[ev] = soviet_aliases[ev] = 'ck_' + events[ev];
     }
 }
+
+function link_handler(){
+    exports.openLink(this);
+}
+
+function nothing(){}
 
 return exports;
 
