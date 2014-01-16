@@ -178,8 +178,13 @@
 
 .ck-top-nav {
   float:left;
-  background-image:inline-image('menu.png');
   position:relative;
+  background-image:none;
+
+  &.ck-link {
+    background-image:inline-image('menu.png');
+  }
+
 }
 
 .ck-top-overflow {
