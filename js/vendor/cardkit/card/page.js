@@ -101,8 +101,7 @@ function when_page_active(changes){
             changes.root.addClass('topbar-enabled');
         }, 100);
     } else {
-        unwrap_deactive(changes.root)
-            .attr('data-page-active', false)
+        changes.root.attr('data-page-active', false)
             .removeClass('topbar-enabled');
     }
     return false;
@@ -111,14 +110,11 @@ function when_page_active(changes){
 function when_deck_active(changes){
     if (changes.newValue === 'true') {
         changes.root.attr('data-deck-active', true);
-        setTimeout(function(){
-            unwrap_deactive(changes.root);
-        }, 400);
     } else {
         changes.root.attr('data-deck-active', false);
         setTimeout(function(){
-            wrap_deactive(changes.root);
-        }, 400);
+            window.scrollTo(0, 0);
+        }, 300);
     }
     return false;
 }
@@ -126,22 +122,6 @@ function when_deck_active(changes){
 function when_deck_change(changes){
     changes.root.attr('data-curdeck', changes.newValue);
     return false;
-}
-
-function wrap_deactive(node){
-    $('<div class="ck-narrow-wrapper"><a class="ck-narrow-mask ck-link" href="#' 
-        + (node.attr('data-cardid') || '')
-        + '"></a></div>')
-            .insertBefore(node).append(node);
-}
-
-function unwrap_deactive(node){
-    var p = node.parent();
-    if (p.hasClass('ck-narrow-wrapper')) {
-        p.before(node).remove();
-    }
-    window.scrollTo(0, 0);
-    return node;
 }
 
 return exports;

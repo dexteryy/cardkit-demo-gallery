@@ -23,5 +23,7 @@
     <div class="ck-footer">{%= component.footer %}</div>
     {% } %}
 
+    <a class="ck-page-link-mask ck-link" href="#{%= state.cardId %}"></a>
+
 </div>
 

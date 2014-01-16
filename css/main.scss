@@ -4,10 +4,7 @@
 @import 'navdrawer';
 @import 'console';
 
-body {
+.my-app {
+  width:100%;
+  overflow:hidden;
 }
-
-//.myapp {
-  //width:100%;
-  //overflow:hidden;
-//}
