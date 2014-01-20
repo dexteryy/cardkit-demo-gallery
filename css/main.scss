@@ -3,10 +3,15 @@
 @import 'cardkit';
 @import 'navdrawer';
 @import 'console';
+@import 'syntaxhighlighter/shCoreDefault';
 
 .my-app {
   width:100%;
   overflow:hidden;
+}
+
+.my-raw {
+  display:none;
 }
 
 .my-top-return {
@@ -17,4 +22,29 @@
   background-size:24px 24px;
   background-repeat:no-repeat;
   background-position:7px 7px;
+}
+
+.topbox {
+  padding:5px;
+  text-align:center;
+
+  a {
+    color:#8e8e8e;
+  }
+
+}
+
+.democode {
+  margin-left:-15px;
+  font-size:14px;
+}
+
+.syntaxhighlighter {
+  padding:0px;
+}
+
+#console {
+  height:5000px;
+  overflow-y:scroll;
+  -webkit-overflow-scrolling: touch;
 }

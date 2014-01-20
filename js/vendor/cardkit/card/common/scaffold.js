@@ -1,18 +1,12 @@
 
-define([
-    'darkdom',
-    'mo/template/micro',
-    '../../tpl/scaffold/hd',
-    '../../tpl/scaffold/hd_opt',
-    '../../tpl/scaffold/ft',
-], function(darkdom, tpl, 
-    tpl_hd, tpl_hd_opt, tpl_ft){ 
+define(function(require){
 
-var convert = tpl.convertTpl,
-    read_state = function(data, state){
-        return data && (data.state || {})[state];
-    },
-    render_hd = convert(tpl_hd.template);
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl,
+    helper = require('../../helper'),
+    render_hd = convert(require('../../tpl/scaffold/hd').template),
+    render_hdopt = convert(require('../../tpl/scaffold/hd_opt').template),
+    render_ft = convert(require('../../tpl/scaffold/ft').template);
 
 var exports = {
 
@@ -22,11 +16,11 @@ var exports = {
             enableSource: true,
             render: function(data){
                 var hdlink_data = data.context.componentData.hdLink;
-                var hd_link = read_state(hdlink_data, 'link');
+                var hd_link = helper.readState(hdlink_data, 'link');
                 data.hdLink = hd_link
                     || data.state.link;
                 data.hdLinkTarget = hd_link 
-                    ? read_state(hdlink_data, 'linkTarget')
+                    ? helper.readState(hdlink_data, 'linkTarget')
                     : data.state.linkTarget;
                 return render_hd(data);
             }
@@ -47,7 +41,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_hd_opt.template)
+            render: render_hdopt
         });
     },
 
@@ -55,7 +49,7 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_ft.template)
+            render: render_ft
         });
     }
 

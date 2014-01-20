@@ -1,14 +1,16 @@
 
-define([], function(){
+define([
+    '../../helper'
+], function(helper){
 
-var get_source = function(node){
-    var source = node.data('source');
-    return source && ('.' + source);
+var source_states = {
+    source: helper.readSource
 };
 
 return {
     title: function(guard){
         guard.watch('.ckd-title');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
@@ -17,12 +19,12 @@ return {
             },
             isAlone: function(node){
                 return node.hasClass('ckd-title-link-alone');
-            },
-            source: get_source
+            }
         });
     },
     titleLink: function(guard){
         guard.watch('.ckd-title-link');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
@@ -31,123 +33,96 @@ return {
             },
             isAlone: function(node){
                 return node.hasClass('ckd-title-link-alone');
-            },
-            source: get_source
+            }
         });
     },
     titlePrefix: function(guard){
         guard.watch('.ckd-title-prefix');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     titleSuffix: function(guard){
         guard.watch('.ckd-title-suffix');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     titleTag: function(guard){
         guard.watch('.ckd-title-tag');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     icon: function(guard){
         guard.watch('.ckd-icon');
+        guard.state(source_states);
         guard.state({
-            imgUrl: 'src',
-            source: get_source
+            imgUrl: 'src'
         });
     },
     info: function(guard){
         guard.watch('.ckd-info');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     opt: function(guard){
         guard.watch('.ckd-opt');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     desc: function(guard){
         guard.watch('.ckd-desc, .ckd-subtitle');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     content: function(guard){
         guard.watch('.ckd-content');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     meta: function(guard){
         guard.watch('.ckd-meta');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     author: function(guard){
         guard.watch('.ckd-author');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-author-link-extern') 
                     && (node.attr('target') || '_blank');
-            },
-            source: get_source
+            }
         });
     },
     authorLink: function(guard){
         guard.watch('.ckd-author-link');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-author-link-extern') 
                     && (node.attr('target') || '_blank');
-            },
-            source: get_source
+            }
         });
     },
     authorPrefix: function(guard){
         guard.watch('.ckd-author-prefix');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     authorSuffix: function(guard){
         guard.watch('.ckd-author-suffix');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     avatar: function(guard){
         guard.watch('.ckd-avatar');
+        guard.state(source_states);
         guard.state({
-            imgUrl: 'src',
-            source: get_source
+            imgUrl: 'src'
         });
     },
     authorInfo: function(guard){
         guard.watch('.ckd-author-info');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     authorDesc: function(guard){
         guard.watch('.ckd-author-desc');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     authorMeta: function(guard){
         guard.watch('.ckd-author-meta');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     }
 };
 

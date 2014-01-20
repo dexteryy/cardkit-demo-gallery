@@ -14,10 +14,8 @@
             {%= hdwrap %}
         {% } %}
 
-        {% if (content && new RegExp('\S', 'm').test(content)) { %}
-            <section>
-                {%= content %}
-            </section>
+        {% if (!isBlank) { %}
+            <section>{%= content %}</section>
         {% } %}
 
         {%= component.ft %}
@@ -25,4 +23,3 @@
     </article>
 
 </div>
-

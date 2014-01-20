@@ -1,37 +1,28 @@
 
-define([
-    'mo/lang/mix',
-    'darkdom',
-    'mo/template/micro',
-    '../tpl/item',
-    '../tpl/item/title',
-    '../tpl/item/title_prefix',
-    '../tpl/item/title_suffix',
-    '../tpl/item/title_tag',
-    '../tpl/item/icon',
-    '../tpl/item/desc',
-    '../tpl/item/info',
-    '../tpl/item/opt',
-    '../tpl/item/content',
-    '../tpl/item/meta',
-    '../tpl/item/author',
-    '../tpl/item/author_prefix',
-    '../tpl/item/author_suffix',
-    '../tpl/item/avatar',
-    '../tpl/item/author_desc',
-    '../tpl/item/author_info',
-    '../tpl/item/author_meta',
-], function(_, darkdom, tpl, 
-    tpl_item, tpl_title, tpl_title_prefix, tpl_title_suffix, tpl_title_tag, 
-    tpl_icon, tpl_desc, tpl_info, tpl_opt, tpl_content, tpl_meta,
-    tpl_author, tpl_author_prefix, tpl_author_suffix, 
-    tpl_avatar, tpl_author_desc, tpl_author_info, tpl_author_meta){ 
+define(function(require){
 
-var convert = tpl.convertTpl,
-    read_state = function(data, state){
-        return data && (data.state || {})[state];
-    },
-    render_item = convert(tpl_item.template);
+var darkdom = require('darkdom'),
+    _ = require('mo/lang/mix'),
+    convert = require('mo/template/micro').convertTpl,
+    helper = require('../helper'),
+    render_item = convert(require('../tpl/item').template),
+    render_title = convert(require('../tpl/item/title').template),
+    render_title_prefix = convert(require('../tpl/item/title_prefix').template),
+    render_title_suffix = convert(require('../tpl/item/title_suffix').template),
+    render_title_tag = convert(require('../tpl/item/title_tag').template),
+    render_icon = convert(require('../tpl/item/icon').template),
+    render_desc = convert(require('../tpl/item/desc').template),
+    render_info = convert(require('../tpl/item/info').template),
+    render_opt = convert(require('../tpl/item/opt').template),
+    render_content = convert(require('../tpl/item/content').template),
+    render_meta = convert(require('../tpl/item/meta').template),
+    render_author = convert(require('../tpl/item/author').template),
+    render_author_prefix = convert(require('../tpl/item/author_prefix').template),
+    render_author_suffix = convert(require('../tpl/item/author_suffix').template),
+    render_avatar = convert(require('../tpl/item/avatar').template),
+    render_author_desc = convert(require('../tpl/item/author_desc').template),
+    render_author_info = convert(require('../tpl/item/author_info').template),
+    render_author_meta = convert(require('../tpl/item/author_meta').template);
 
 var exports = {
 
@@ -39,7 +30,7 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_title.template)
+            render: render_title
         });
     },
 
@@ -57,7 +48,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_title_prefix.template)
+            render: render_title_prefix
         });
     },
 
@@ -65,14 +56,14 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_title_suffix.template)
+            render: render_title_suffix
         });
     },
 
     titleTag: function(){
         return darkdom({
             enableSource: true,
-            render: convert(tpl_title_tag.template)
+            render: render_title_tag
         });
     },
 
@@ -80,7 +71,7 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_icon.template)
+            render: render_icon
         });
     },
 
@@ -88,7 +79,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_desc.template)
+            render: render_desc
         });
     },
 
@@ -96,7 +87,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_info.template)
+            render: render_info
         });
     },
 
@@ -104,7 +95,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_opt.template)
+            render: render_opt
         });
     },
 
@@ -112,7 +103,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_content.template)
+            render: render_content
         });
     },
 
@@ -120,7 +111,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_meta.template)
+            render: render_meta
         });
     },
 
@@ -128,7 +119,7 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_author.template)
+            render: render_author
         });
     },
 
@@ -146,7 +137,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_author_prefix.template)
+            render: render_author_prefix
         });
     },
 
@@ -154,7 +145,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_author_suffix.template)
+            render: render_author_suffix
         });
     },
 
@@ -162,7 +153,7 @@ var exports = {
         return darkdom({
             unique: true,
             enableSource: true,
-            render: convert(tpl_avatar.template)
+            render: render_avatar
         });
     },
 
@@ -170,7 +161,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_author_desc.template)
+            render: render_author_desc
         });
     },
 
@@ -178,7 +169,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_author_info.template)
+            render: render_author_info
         });
     },
 
@@ -186,7 +177,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_author_meta.template)
+            render: render_author_meta
         });
     },
 
@@ -194,6 +185,7 @@ var exports = {
         var item = darkdom({
             enableSource: true,
             render: function(data){
+                var read_state = helper.readState;
                 var state = data.state;
                 var com = data.component;
                 var comdata = data.componentData;

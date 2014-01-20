@@ -1,0 +1,24 @@
+
+<div class="ck-card" id="consoleCard">
+
+    @@include("../common/subpage_parts.html", { 
+        "title": "Console"
+    })
+
+    <div class="ck-box-unit" data-cfg-paper="true">
+        <header class="ckd-hd">Console</header>
+        <div id="console"></div>
+    </div>
+
+    <script type="text/darkscript">
+    this.addEventListener('darkdom:mounted', function(){
+        require(['dollar', 'mo/console'], function($, console){
+            console.config({
+                record: false,
+                output: $(this).find('#console')[0]
+            });
+        });
+    });
+    </script>
+
+</div>

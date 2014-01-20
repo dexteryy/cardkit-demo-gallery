@@ -1,17 +1,13 @@
 
-define([
-    'darkdom',
-    'mo/template/micro',
-    '../tpl/box',
-    '../tpl/box/content',
-    '../tpl/scaffold/hdwrap',
-    './common/scaffold'
-], function(darkdom, tpl, 
-    tpl_box, tpl_content, tpl_hdwrap, scaffold_components){ 
+define(function(require){
 
-var convert = tpl.convertTpl,
-    render_hdwrap = convert(tpl_hdwrap.template),
-    render_box = convert(tpl_box.template);
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl,
+    helper = require('../helper'),
+    render_content = convert(require('../tpl/box/content').template),
+    render_hdwrap = convert(require('../tpl/scaffold/hdwrap').template),
+    render_box = convert(require('../tpl/box').template),
+    scaffold_components = require('./common/scaffold');
 
 var exports = {
 
@@ -19,7 +15,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             sourceAsContent: true,
-            render: convert(tpl_content.template)
+            render: render_content
         });
     },
 
@@ -27,6 +23,7 @@ var exports = {
         var box = darkdom({
             enableSource: true,
             render: function(data){
+                data.isBlank = helper.isBlank(data.content);
                 data.hasSplitHd = data.state.plainStyle === 'true'
                     || data.state.plainHdStyle === 'true';
                 data.hdwrap = render_hdwrap(data);

@@ -113,6 +113,17 @@ module.exports = function(grunt) {
                     src: ["**/*.js", "!**/Gruntfile.js"],
                     dest: "<%= meta.jsVendorDir %>/moui/"
                 }]
+            },
+            "syntaxhighlighter": {
+                use: [{
+                    cwd: "compass",
+                    src: ["**.scss"],
+                    dest: "<%= meta.cssVendorDir %>/syntaxhighlighter/"
+                }, {
+                    cwd: "scripts",
+                    src: ["XRegExp.js", "shCore.js", "shBrushJScript.js", "shBrushXml.js"],
+                    dest: "<%= meta.jsVendorDir %>/syntaxhighlighter/"
+                }]
             }
         },
 
@@ -198,7 +209,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'docs/',
-                    src: ['**/*.html'],
+                    src: ['**/*.html', '!common/**'],
                     dest: '<%= meta.pubDir %>/',
                     ext: '.orig.html'
                 }]

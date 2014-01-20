@@ -1,36 +1,48 @@
 
-define([
-    'darkdom',
-    'dollar',
-    'mo/lang/mix',
-    'mo/template/micro',
-    '../tpl/page/title',
-    '../tpl/page/actionbar/action',
-    '../tpl/page/actionbar',
-    '../tpl/page/nav',
-    '../tpl/page',
-    './box',
-    './list'
-], function(darkdom, $, _, tpl, 
-    tpl_title, tpl_action, tpl_actionbar, tpl_nav, tpl_page, 
-    box, list){ 
+define(function(require){
 
-var convert = tpl.convertTpl,
-    actionbar_render = convert(tpl_actionbar.template);
+var darkdom = require('darkdom'),
+    _ = require('mo/lang/mix'),
+    convert = require('mo/template/micro').convertTpl,
+    helper = require('../helper'),
+    render_title = convert(require('../tpl/page/title').template),
+    render_nav = convert(require('../tpl/page/nav').template),
+    render_banner = convert(require('../tpl/page/banner').template),
+    render_actionbar = convert(require('../tpl/page/actionbar').template),
+    render_action = convert(require('../tpl/page/actionbar/action').template),
+    render_page = convert(require('../tpl/page').template);
+
+var cards = {
+    box: require('./box').box,
+    list: require('./list').list, 
+};
 
 var exports = {
 
     title: function(){
         return darkdom({
             unique: true,
-            render: convert(tpl_title.template)
+            enableSource: true,
+            render: render_title
         });
     },
 
     nav: function(){
         return darkdom({
             unique: true,
-            render: convert(tpl_nav.template)
+            enableSource: true,
+            render: render_nav
+        });
+    },
+
+    banner: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                data.isBlank = helper.isBlank(data.content);
+                return render_banner(data);
+            }
         });
     },
 
@@ -38,7 +50,7 @@ var exports = {
         return darkdom({
             enableSource: true,
             entireAsContent: true,
-            render: convert(tpl_action.template)
+            render: render_action
         });
     },
 
@@ -59,9 +71,19 @@ var exports = {
                         data.overflowActions.push(action_html);
                     }
                 }, data.visibleActions);
-                return actionbar_render(data);
+                return render_actionbar(data);
             }
         }).contain('action', exports.action);
+    },
+
+    blank: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                return '<div>' + data.content + '</div>';
+            }
+        });
     },
 
     footer: function(){
@@ -69,22 +91,25 @@ var exports = {
             unique: true,
             enableSource: true,
             render: function(data){
-                return data.content;
+                return '<div>' + data.content + '</div>';
             }
         });
     },
 
     page: function(){
         var page = darkdom({
-            render: convert(tpl_page.template)
+            render: function(data){
+                var com = data.component;
+                data.hasHeader = com.title 
+                    || com.nav || com.actionbar;
+                data.isBlank = helper.isBlank(data.content);
+                return render_page(data);
+            } 
         });
         var parts = _.copy(exports);
         delete parts.page;
         page.contain(parts);
-        page.contain({
-            box: box.box,
-            list: list.list, 
-        }, { content: true });
+        page.contain(cards, { content: true });
         page.response('state:isPageActive', when_page_active);
         page.response('state:isDeckActive', when_deck_active);
         page.response('state:currentDeck', when_deck_change);

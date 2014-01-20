@@ -28,7 +28,7 @@ var DEFAULT_DECK = 'main',
     _soviet_aliases = {},
     _defaults = {
         defaultPage: 'ckDefault',
-        supportOldVer: false
+        supportOldVer: true 
     };
 
 _.mix(momoBase.Class.prototype, {

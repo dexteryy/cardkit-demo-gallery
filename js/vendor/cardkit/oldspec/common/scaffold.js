@@ -1,39 +1,38 @@
 
-define([], function(){
+define([
+    '../../helper'
+], function(helper){
 
-var get_source = function(node){
-    var source = node.data('source');
-    return source && ('.' + source);
+var source_states = {
+    source: helper.readSource
 };
 
 return {
     hd: function(guard){
         guard.watch('.ckd-hd');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
                     && (node.attr('target') || '_blank');
-            },
-            source: get_source
+            }
         });
     },
     hdLink: function(guard){
         guard.watch('.ckd-hd-link:not(.ckd-hd)');
+        guard.state(source_states);
         guard.state({
             link: 'href',
             linkTarget: function(node){
                 return node.hasClass('ckd-hd-link-extern') 
                     && (node.attr('target') || '_blank');
-            },
-            source: get_source
+            }
         });
     },
     hdOpt: function(guard){
         guard.watch('.ckd-hdopt');
-        guard.state({
-            source: get_source
-        });
+        guard.state(source_states);
     },
     ft: function(guard){
         guard.watch('.ckd-ft');

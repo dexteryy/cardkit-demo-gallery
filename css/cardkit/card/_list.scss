@@ -2,6 +2,10 @@
 .ck-list-card {
   @extend %list-parts;
 
+  &.no-blank {
+    display:none;
+  }
+
   &:not([data-cfg-paper="true"]):not([data-style="split"]) {
     @extend %ck-card;
     @extend %card-parts;

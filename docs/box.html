@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+@@include("common/header.html", { 
+    "title": "@@appname" 
+})
+</head>
+<body>
+
+@@include("common/actions.html")
+
+<div class="my-app">
+
+@@include("pagecard/navdrawer.html")
+
+<div class="ck-card" id="ckDefault">
+
+    @@include("common/page_parts.html", { 
+        "title": "Box Card"
+    })
+
+    <div class="ck-list-unit" data-style="menu">
+        <header class="ckd-hd">Source code</header>
+    </div>
+
+    <div class="ck-box-unit" data-cfg-paper="true">
+        <header class="ckd-hd">Usages</header>
+    </div>
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-cfg-paper="true" data-cfg-disable-reader="true">
+        <h2 class="ckd-hd">This is header. This is header. This is header.</h2>
+        <p class="classname-A">This is content text A.This is content text A.This is content text A.This is content text A.This is content text 
+        <p class="classname-A">This is content text A.This is content text A.This is content text A.This is content text A.This is content text 
+        <img class="ck-link-img" src="http://ww4.sinaimg.cn/bmiddle/681f611fjw1e4dw2bf1mqj20gh097gn5.jpg" alt=""> 
+        A.This is content text A.</p>
+        <p>This is content text B.This is content text B.This is content text B.This is content text B.This is content text B.</p>
+        <p>This is content text B.This is content text B.This is content text B.This is content text B.This is content text B.</p>
+        <div class="ckd-ft">This is footer</div>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <h2 class="ckd-hd">This is header</h2>
+        <a class="ckd-hdopt ck-modal-link" href="#" data-url="formcontent.html">Edit</a>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit">
+        <a class="ckd-hd" href="#hdLink">This is header YYY</a>
+        <a class="ckd-hdopt ck-modal-link" href="#" data-url="formcontent.html">Edit</a>
+        <a class="ckd-hdopt ck-modal-button" href="#" data-url="formcontent.html">Delete</a>
+        <p>yyyyyyyyyyyyyyyyyyy</p>
+        <p class="ckd-content classname-A">This is content text A. <a href="index.html" class="ck-link-extern">index.html</a></p>
+        <p>yyyyyyyyyyyyyyyyyyy</p>
+        <div>
+            <p class="ckd-content">This is content text B. <a href="tel:114" target="_top">tel:114</a></p>
+        </div>
+        <div class="ckd-ft">This is footer</div>
+        <p>yyyyyyyyyyyyyyyyyyy</p>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-cfg-plainhd="true">
+        <h2 class="ckd-hd">This is header</h2>
+        <button type="button" class="ckd-hdopt ck-select" data-title="This is filter">
+            <span>Filter</span>
+        </button>
+        <p class="classname-A">This is content text A.</p>
+        <p>This is content text B.</p>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <a class="ckd-hd" href="#hdLink">This is header</a>
+        <a class="ckd-hdopt ck-modal-link" href="#" data-url="formcontent.html">Edit</a>
+        <a class="ckd-hdopt ck-modal-link" href="#" data-url="formcontent.html">Delete</a>
+        <p class="classname-A">This is content text A.</p>
+        <p>This is content text B.</p>
+        <div class="ckd-ft">This is footer</div>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit">
+        <p class="classname-A">This is content text A.</p>
+        <p>This is content text B.</p>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <p class="classname-A">This is content text A.</p>
+        <p>This is content text B.</p>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-box-unit" data-source="ckData1">
+        <p class="classname-A">This is content text A.</p>
+        <p>This is content text B.</p>
+        <div class="ckd-ft">This is footer</div>
+    </div>
+    <!-- demo end -->
+
+</div>
+
+<div class="ck-card" id="hdLink" data-cfg-blank="Link of header">
+    @@include("common/subpage_parts.html", { 
+        "title": "Example"
+    })
+</div>
+
+<div class="ck-card" id="optionsCard">
+    @@include("common/subpage_parts.html", { 
+        "title": "Options"
+    })
+</div>
+
+@@include("pagecard/raw.html")
+
+@@include("pagecard/console.html")
+
+</div>
+
+<div class="my-raw" id="rawData1">
+
+    <div class="ckd-source ckData1">
+        <div class="ckd-hd">This is header from ckData1</div>
+            <p>yyyyyyyyyyyyyyyyyyy</p>
+            <p class="ckd-content classname-A">This is content text A. <a href="index.html" class="ck-link-extern">index.html</a></p>
+            <p>yyyyyyyyyyyyyyyyyyy</p>
+            <div>
+                <p class="ckd-content">This is content text B. <a href="tel:114" target="_top">tel:114</a></p>
+            </div>
+    </div>
+
+</div>
+
+@@include("common/footer.html")
+
+</body>
+</html>
+

@@ -14,7 +14,7 @@ return function(guard, parent){
     guard.watch($(SEL, parent));
     guard.state({
         subtype: 'subtype',
-        blankContent: 'blank-content',
+        blankText: 'blank-text',
         limit: 'limit', 
         col: 'col', 
         paperStyle: 'paper-style',

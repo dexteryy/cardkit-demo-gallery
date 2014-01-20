@@ -8,15 +8,28 @@ var specs = {
     title: 'ck-part[type="title"]',
     actionbar: actionbar_spec,
     nav: nav_spec,
+    banner: banner_spec,
     footer: 'ck-part[type="footer"]',
+    blank: blank_spec,
     box: require('./box'),
-    list: require('./list')
+    list: require('./list'),
 };
+
+function blank_spec(guard){
+    guard.watch('ck-part[type="blank"]');
+}
 
 function nav_spec(guard){
     guard.watch('ck-part[type="nav"]');
     guard.state({
         link: 'href'
+    });
+}
+
+function banner_spec(guard){
+    guard.watch('ck-part[type="banner"]');
+    guard.state({
+        plainStyle: 'plain-style'
     });
 }
 
@@ -52,10 +65,11 @@ function source_action_attr(source){
 function exports(guard, parent){
     guard.watch($(exports.SELECTOR + UNMOUNT_FLAG, parent));
     guard.state({
+        blankText: 'blank-text',
+        deck: 'deck',
         isPageActive: 'active-page',
         isDeckActive: 'active-deck',
         currentDeck: 'current-deck',
-        deck: 'deck',
         cardId: 'id'
     });
     guard.component(specs);

@@ -199,14 +199,48 @@
   background-image:inline-image('more.png');
 }
 
+
+.ck-top-banner {
+  display:none;
+  font-size:13px;
+  background:#fff;
+  padding-top:$moui_nav_h;
+  position:relative;
+  border-bottom:1px solid rgba(0,0,0,.2);
+  @include box-shadow(0 1px 2px rgba(0,0,0,.1));
+
+  .ck-in-webview &,
+  .no-header & {
+    padding-top:0;
+
+    .ck-top-banner-inner {
+      border-top:0;
+    }
+
+  }
+
+  .with-banner & {
+    display:block;
+  }
+
+}
+
+.ck-top-banner-inner {
+  padding: $moui_space/2;
+  border-top:1px dashed $moui_border_color;
+
+  [data-cfg-plain="true"] & {
+    padding:0;
+  }
+
+}
+
 .ck-article {
   padding-top:$moui_nav_h;
 
-  &:first-child {
-    padding-top:0;
-  }
-
-  .ck-in-webview & {
+  .ck-in-webview &,
+  .with-banner &,
+  .no-header & {
     padding-top:0;
   }
 

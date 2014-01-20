@@ -1,17 +1,12 @@
 
-define([
-    'darkdom',
-    'mo/template/micro',
-    '../tpl/list',
-    '../tpl/scaffold/hdwrap',
-    './common/scaffold',
-    './item'
-], function(darkdom, tpl, 
-    tpl_list, tpl_hdwrap, scaffold_components, item){ 
+define(function(require){
 
-var convert = tpl.convertTpl,
-    render_hdwrap = convert(tpl_hdwrap.template),
-    render_list = convert(tpl_list.template);
+var darkdom = require('darkdom'),
+    convert = require('mo/template/micro').convertTpl,
+    render_hdwrap = convert(require('../tpl/scaffold/hdwrap').template),
+    render_list = convert(require('../tpl/list').template),
+    item = require('./item'),
+    scaffold_components = require('./common/scaffold');
 
 var exports = {
 
