@@ -2,7 +2,7 @@
 define('cardkit', [
     'mo/lang',
     'dollar',
-    'darkdom',
+    'mo/browsers',
     'soviet',
     'momo/base',
     'momo/tap',
@@ -10,21 +10,22 @@ define('cardkit', [
     'cardkit/oldspec',
     'cardkit/supports',
     'cardkit/bus'
-], function(_, $, darkdom, soviet, 
+], function(_, $, browsers, soviet, 
     momoBase, momoTap,
     specs, oldspecs, supports, bus){
 
 var DEFAULT_DECK = 'main',
     UNMOUNT_FLAG = 'unmount-page',
     RE_HASH = /#(.+)$/,
-    body = document.body,
+    doc = document,
+    body = doc.body,
     _components = {},
     _specs = {},
     _guards = {},
     _decks = {},
     _current_deck,
     _page_opening,
-    soviet_aliases = {},
+    _soviet_aliases = {},
     _defaults = {
         defaultPage: 'ckDefault',
         supportOldVer: false
@@ -52,6 +53,8 @@ var tap_events = {
     '.ck-link': link_handler,
     '.ck-link *': link_handler,
 
+    '.ck-modal-link': function(){} 
+
 };
 
 var exports = {
@@ -59,7 +62,7 @@ var exports = {
     init: function(opt){
         this._config = _.config({}, opt, _defaults);
         this.initSpec();
-        this.initView();
+        this.initView(opt);
     },
 
     initSpec: function(){
@@ -73,8 +76,13 @@ var exports = {
         }, this);
     },
 
-    initView: function(){
-        var tapGesture = momoTap(document, {
+    initView: function(opt){
+        opt = opt || {};
+        this.wrapper = $(opt.appWrapper || body);
+        if (browsers.webview) {
+            this.wrapper.addClass('ck-in-webview');
+        }
+        var tapGesture = momoTap(doc, {
             tapThreshold: 20 
         });
         set_alias_events(tapGesture.event);
@@ -82,8 +90,8 @@ var exports = {
         Object.keys(tap_events).forEach(function(selector){
             this[selector] = nothing;
         }, prevent_click_events);
-        this.delegate = soviet(document, {
-            aliasEvents: soviet_aliases,
+        this.delegate = soviet(doc, {
+            aliasEvents: _soviet_aliases,
             autoOverride: true,
             matchesSelector: true,
             preventDefault: true
@@ -280,7 +288,7 @@ function notify_deck(page){
 
 function set_alias_events(events) {
     for (var ev in events) {
-        $.Event.aliases[ev] = soviet_aliases[ev] = 'ck_' + events[ev];
+        $.Event.aliases[ev] = _soviet_aliases[ev] = 'ck_' + events[ev];
     }
 }
 

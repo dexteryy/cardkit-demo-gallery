@@ -39,7 +39,6 @@
   }
 
   &[data-deck="navdrawer"] {
-    display:block;
     position:absolute;
     top:0;
     left:0;
@@ -52,8 +51,13 @@
     }
 
     &[data-deck-active="false"] {
+      display:block;
       z-index:-1;
       bottom:0;
+    }
+
+    &[data-page-active="false"] {
+      display:none;
     }
 
   }
@@ -121,6 +125,11 @@
   z-index:$moui_z_item + $moui_z_step;
   @include transition(transform 0.3s);
   @include transform(translateY(-$moui_nav_h));
+
+  .ck-in-webview & {
+    position:relative;
+  }
+
 }
 
 .ck-top-title {
@@ -194,6 +203,10 @@
   padding-top:$moui_nav_h;
 
   &:first-child {
+    padding-top:0;
+  }
+
+  .ck-in-webview & {
     padding-top:0;
   }
 

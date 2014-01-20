@@ -15,6 +15,7 @@ require([
 ], function(_, $, cardkit){
 
     cardkit.init({
+        appWrapper: '.my-app',
         supportOldVer: true
     });
     cardkit.openPage();
