@@ -73,6 +73,15 @@
 
     .ck-header {
       position:static;
+      @include transform(translateY(0));
+    }
+
+    .ck-top-banner {
+      padding-top:0;
+    }
+
+    .ck-top-banner-inner {
+      border-top:0;
     }
 
     .ck-article {
@@ -128,6 +137,7 @@
 
   .ck-in-webview & {
     position:relative;
+    @include transform(translateY(0));
   }
 
 }
