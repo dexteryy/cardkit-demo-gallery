@@ -3,16 +3,16 @@ define('cardkit', [
     'mo/lang',
     'dollar',
     'mo/browsers',
-    'soviet',
     'momo/base',
     'momo/tap',
     'cardkit/spec',
     'cardkit/oldspec',
+    'cardkit/ui',
     'cardkit/supports',
     'cardkit/bus'
-], function(_, $, browsers, soviet, 
+], function(_, $, browsers,
     momoBase, momoTap,
-    specs, oldspecs, supports, bus){
+    specs, oldspecs, ui, supports, bus){
 
 var DEFAULT_DECK = 'main',
     UNMOUNT_FLAG = 'unmount-page',
@@ -25,44 +25,17 @@ var DEFAULT_DECK = 'main',
     _decks = {},
     _current_deck,
     _page_opening,
-    _soviet_aliases = {},
     _defaults = {
         defaultPage: 'ckDefault',
         supportOldVer: true 
     };
-
-_.mix(momoBase.Class.prototype, {
-    bind: function(ev, handler, elm){
-        $(elm || this.node).bind(ev, handler);
-        return this;
-    },
-    unbind: function(ev, handler, elm){
-        $(elm || this.node).unbind(ev, handler);
-        return this;
-    },
-    trigger: function(e, ev){
-        delete e.layerX;
-        delete e.layerY;
-        $(e.target).trigger(ev, e);
-        return this;
-    }
-});
-
-var tap_events = {
-
-    '.ck-link': link_handler,
-    '.ck-link *': link_handler,
-
-    '.ck-modal-link': function(){} 
-
-};
 
 var exports = {
 
     init: function(opt){
         this._config = _.config({}, opt, _defaults);
         this.initSpec();
-        this.initView(opt);
+        this.initView();
     },
 
     initSpec: function(){
@@ -76,30 +49,15 @@ var exports = {
         }, this);
     },
 
-    initView: function(opt){
-        opt = opt || {};
-        this.wrapper = $(opt.appWrapper || body);
+    initView: function(){
+        this.wrapper = $(this._config.appWrapper || body);
         if (browsers.webview) {
             this.wrapper.addClass('ck-in-webview');
         }
-        var tapGesture = momoTap(doc, {
-            tapThreshold: 20 
-        });
-        set_alias_events(tapGesture.event);
-        var prevent_click_events = {};
-        Object.keys(tap_events).forEach(function(selector){
-            this[selector] = nothing;
-        }, prevent_click_events);
-        this.delegate = soviet(doc, {
-            aliasEvents: _soviet_aliases,
-            autoOverride: true,
-            matchesSelector: true,
-            preventDefault: true
-        }).on('tap', tap_events)
-            .on('click', prevent_click_events);
         $(window).on('hashchange', function(){
             exports.openPage();
         });
+        ui.init(this._config);
     },
 
     component: function(name, component){
@@ -170,6 +128,7 @@ var exports = {
                 || !this.isPage(page)) {
             return false;
         }
+        window.scrollTo(0, 0);
         var last_decktop = _decks[DEFAULT_DECK];
         if (!last_decktop) {
             last_decktop = $('#' + this._config.defaultPage);
@@ -215,26 +174,19 @@ var exports = {
             || page.is(old_spec.SELECTOR_OLD);
     },
 
-    openLink: function(href, opt){
-        opt = opt || {};
-        if (typeof href !== 'string') {
-            var node = href;
-            href = node.href;
-            opt.target = node.target;
-        }
-        if (opt.target && opt.target !== '_self') {
-            window.open(href, opt.target);
-        } else {
-            window.scrollTo(0, 0);
-            location.href = href;
-        }
-    },
+    openLink: ui.openLink,
+
+    ui: ui,
 
     event: bus
 
 };
 
-exports.openURL = exports.openLink;
+_.each(ui.component, function(component, name){
+    this[name] = component;
+}, exports);
+
+exports.openURL = exports.openLink; // @deprecated
 
 function open_page(page){
     if (page.getDarkState('isPageActive') === 'true') {
@@ -285,18 +237,6 @@ function notify_deck(page){
         update: true
     });
 }
-
-function set_alias_events(events) {
-    for (var ev in events) {
-        $.Event.aliases[ev] = _soviet_aliases[ev] = 'ck_' + events[ev];
-    }
-}
-
-function link_handler(){
-    exports.openLink(this);
-}
-
-function nothing(){}
 
 return exports;
 

@@ -124,6 +124,7 @@ function when_page_active(changes){
             .attr('data-page-active', true);
         setTimeout(function(){
             changes.root.addClass('topbar-enabled');
+            window.scrollTo(0, 0);
         }, 100);
     } else {
         changes.root.attr('data-page-active', false)
