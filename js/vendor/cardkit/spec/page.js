@@ -2,6 +2,8 @@
 define(function(require){ 
 
 var $ = require('dollar'),
+    darkdom = require('darkdom'),
+    helper = require('../helper'),
     UNMOUNT_FLAG = '.unmount-page';
 
 var specs = {
@@ -44,11 +46,16 @@ function actionbar_spec(guard){
 
 function action_spec(guard){
     guard.watch('[action-layout]');
-    guard.state('forceOverflow', function(node){
-        return 'overflow' === 
-            node.attr('action-layout');
+    guard.state({
+        label: helper.readLabel,
+        customId: 'id',
+        forceOverflow: function(node){
+            return 'overflow' === 
+                node.attr('action-layout');
+        }
     });
     source_action_attr(guard.source());
+    exports.forwardActionbar(guard);
 }
 
 function source_action_spec(source){
@@ -57,8 +64,15 @@ function source_action_spec(source){
 }
 
 function source_action_attr(source){
-    source.state('forceOverflow', function(node){
-        return node.hasClass('ckd-overflow-item');
+    if (!source) {
+        return;
+    }
+    source.state({
+        label: helper.readLabel,
+        customId: 'id',
+        forceOverflow: function(node){
+            return node.hasClass('ckd-overflow-item');
+        }
     });
 }
 
@@ -76,6 +90,21 @@ function exports(guard, parent){
 }
 
 exports.SELECTOR = 'ck-card[type="page"]';
+
+exports.initOldStyleActionState = source_action_attr;
+
+exports.forwardActionbar = function(guard){
+    guard.forward('overflows:confirm', function(e){
+        var aid = e.component.val();
+        var target;
+        if (/^\#/.test(aid)) {
+            target = $(aid);
+        } else {
+            target = darkdom.getDarkById(aid);
+        }
+        target.trigger('tap');
+    });
+};
 
 return exports;
 

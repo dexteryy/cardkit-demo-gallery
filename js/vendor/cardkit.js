@@ -3,15 +3,12 @@ define('cardkit', [
     'mo/lang',
     'dollar',
     'mo/browsers',
-    'momo/base',
-    'momo/tap',
     'cardkit/spec',
     'cardkit/oldspec',
     'cardkit/ui',
     'cardkit/supports',
     'cardkit/bus'
 ], function(_, $, browsers,
-    momoBase, momoTap,
     specs, oldspecs, ui, supports, bus){
 
 var DEFAULT_DECK = 'main',
@@ -26,6 +23,7 @@ var DEFAULT_DECK = 'main',
     _current_deck,
     _page_opening,
     _defaults = {
+        appWrapper: null,
         defaultPage: 'ckDefault',
         supportOldVer: true 
     };
@@ -174,10 +172,11 @@ var exports = {
             || page.is(old_spec.SELECTOR_OLD);
     },
 
+    alert: ui.alert,
+    confirm: ui.confirm,
+    notify: ui.notify,
     openLink: ui.openLink,
-
     ui: ui,
-
     event: bus
 
 };

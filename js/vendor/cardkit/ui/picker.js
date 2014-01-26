@@ -10,10 +10,11 @@ return util.singleton({
     flag: '_ckPickerUid',
 
     factory: function(elm, opt){
-        opt = _.mix({
-            options: '.ck-option'
-        }, opt);
         return picker(elm, opt);
+    },
+
+    defaultOptions: {
+        options: '.ck-option'
     },
 
     config: function(o, opt){

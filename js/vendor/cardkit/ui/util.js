@@ -6,6 +6,8 @@ define([
 
 var _default_steps = {
     flag: '_ckViewUid',
+    forceOptions: {},
+    defaultOptions: {},
     config: function(){},
     extend: function(){}
 };
@@ -33,11 +35,16 @@ var exports = {
                 if (elm) {
                     id = elm[0][steps.flag] = ++uid;
                 }
-                re = lib[id] = steps.factory(elm, opt || {});
+                opt = _.merge(_.mix(opt || {}, 
+                        factory.forceOptions, steps.forceOptions), 
+                    steps.defaultOptions, factory.defaultOptions);
+                re = lib[id] = steps.factory(elm, opt);
                 steps.extend(re, elm);
             }
             return re;
         }
+        factory.forceOptions = {};
+        factory.defaultOptions = {};
         factory.gc = function(check){
             for (var i in lib) {
                 if (check(lib[i])) {

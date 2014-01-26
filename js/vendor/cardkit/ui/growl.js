@@ -25,12 +25,15 @@ function exports(elm, opt){
         opt = _.mix(defaults, elm);
     }
     opt.className = 'ck-growl';
+    _.mix(opt, exports.forceOptions);
     var g = growl(opt);
     if (id) {
         lib[id] = g;
     }
     return g;
 }
+
+exports.forceOptions = {};
 
 return exports;
 

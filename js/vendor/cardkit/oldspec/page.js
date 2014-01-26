@@ -2,7 +2,9 @@
 define(function(require){ 
 
 var $ = require('dollar'),
+    newspec = require('../spec/page'),
     helper = require('../helper'),
+    action_attr = newspec.initOldStyleActionState,
     UNMOUNT_FLAG = '.unmount-page';
 
 var specs = {
@@ -43,6 +45,7 @@ function actionbar_spec(guard){
     });
     guard.component('action', action_spec);
     guard.source().component('action', action_spec);
+    newspec.forwardActionbar(guard);
 }
 
 function footer_spec(guard){
@@ -55,15 +58,6 @@ function action_spec(guard){
     guard.state('source', helper.readSource);
     action_attr(guard);
     action_attr(guard.source());
-}
-
-function action_attr(guard){
-    if (!guard) {
-        return;
-    }
-    guard.state('forceOverflow', function(node){
-        return node.hasClass('ckd-overflow-item');
-    });
 }
 
 function exports(guard, parent){

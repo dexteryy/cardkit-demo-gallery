@@ -1,17 +1,16 @@
 <div class="ck-top-actions">
 
     {% if (overflowActions.length) { %}
-    <button type="button" class="ck-top-overflow"></button>
+    <span class="ck-top-overflow"
+            data-title="More actions...">
+        {% overflowActions.forEach(function(action){ %}
+            {%= action %}
+        {% }); %}
+    </span>
     {% } %}
 
     {% visibleActions.forEach(function(action){ %}
         {%= action %}
     {% }); %}
-
-    <div class="ck-top-overflow-items">
-        {% overflowActions.forEach(function(action){ %}
-            {%= action %}
-        {% }); %}
-    </div>
 
 </div>

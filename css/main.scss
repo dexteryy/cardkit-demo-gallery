@@ -8,6 +8,7 @@
 .my-app {
   width:100%;
   overflow:hidden;
+  position:relative;
 }
 
 .my-raw {
@@ -37,6 +38,7 @@
 .democode {
   margin-left:-15px;
   font-size:14px;
+  min-height:50px;
 }
 
 .syntaxhighlighter {

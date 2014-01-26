@@ -8,8 +8,11 @@ var exports = util.singleton({
 
     flag: '_ckActionViewUid',
 
+    forceOptions: {
+        className: 'ck-actionview'
+    },
+
     factory: function(elm, opt){
-        opt.className = 'ck-actionview';
         return actionView(opt);
     },
 
@@ -43,16 +46,10 @@ var exports = util.singleton({
             if (source) {
                 source.trigger('actionView:cancel', eprops);
             }
-        }).bind('confirm', function(o, picker){
+        }).bind('confirm', function(o){
             bus.fire('actionView:confirmOnThis', [o]);
             if (source) {
                 source.trigger('actionView:confirm', eprops);
-            }
-            if (picker && picker._lastSelected) {
-                var target = picker._lastSelected._node.attr('target');
-                if (target) {
-                    bus.fire('actionView:jump', [o, picker.val(), target]);
-                }
             }
         });
     }

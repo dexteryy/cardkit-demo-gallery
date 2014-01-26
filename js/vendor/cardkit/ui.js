@@ -3,6 +3,7 @@ define([
     'mo/lang',
     'dollar',
     'mo/browsers',
+    'mo/template',
     'soviet',
     'momo/base',
     'momo/tap',
@@ -15,9 +16,10 @@ define([
     './ui/growl',
     './supports',
     './bus'
-], function(_, $, browsers, soviet, 
+], function(_, $, browsers, tpl, soviet, 
     momoBase, momoTap,
-    control, picker, ranger, stars, modalCard, actionView, growl){
+    control, picker, ranger, stars, 
+    modalCard, actionView, growl, supports, bus){
 
 var doc = document,
     _soviet_aliases = {},
@@ -67,6 +69,48 @@ var tap_events = {
 
     // picker
 
+    '.ck-segment .ck-option, .ck-segment .ck-option span': function(){
+        var btn = $(this);
+        if (!btn.hasClass('ck-option')) {
+            btn = btn.closest('.ck-option');
+        }
+        var p = picker(btn.parent());
+        p.select(btn);
+    },
+
+    '.ck-select, .ck-select span, .ck-select .enabled': function(){
+        var me = $(this);
+        if (!me.hasClass('ck-select')) {
+            me = me.parent();
+        }
+        var p = picker(me);
+        show_actions(me);
+        bus.bind('actionView:confirmOnThis', function(actions){
+            p.select(actions.val());
+        });
+    },
+
+    '.ck-tagselector .ck-option': function(){
+        var p = picker(this.parentNode);
+        p.select(this);
+    },
+
+    '.ck-actions .ck-option': function(){
+        var actions = $(this).closest('.ck-actions');
+        var p = picker(actions, {
+            ignoreStatus: actions.data("ignoreStatus") !== 'false' && true
+        });
+        p.select(this);
+    },
+
+    '.ck-actions-button, .ck-actions-button span': function(){
+        var me = $(this);
+        if (!me.hasClass('ck-actions-button')) {
+            me = me.parent();
+        }
+        show_actions(me);
+    },
+
     // ranger
 
     // modalView
@@ -75,7 +119,31 @@ var tap_events = {
 
     // actionView
 
+    '.ck-actionview article > .ck-option, .ck-actionview article > .ck-option > *': function(){
+        var me = $(this);
+        if (!me.hasClass('ck-option')) {
+            me = me.parent();
+        }
+        actionView.current.select(me);
+    },
+
+    '.ck-actionview > footer .confirm': function(){
+        actionView.current.confirm();
+    },
+
+    '.ck-actionview > footer .cancel': function(){
+        actionView.current.cancel();
+    },
+
+    '.ck-top-overflow': function(){
+        show_actions($(this));
+    },
+
     // growl 
+
+    '.ck-growl-button': function(){
+        growl(this).open();
+    }
 
 };
 
@@ -83,6 +151,12 @@ var exports = {
 
     init: function(opt){
         opt = opt || {};
+        var wrapper = $(opt.appWrapper);
+        actionView.forceOptions.parent = wrapper;
+        growl.forceOptions.parent = wrapper;
+        modalCard.set({
+            parent: wrapper
+        });
         var tapGesture = momoTap(doc, {
             tapThreshold: 20 
         });
@@ -98,6 +172,32 @@ var exports = {
             preventDefault: true
         }).on('tap', tap_events)
             .on('click', prevent_click_events);
+    },
+
+    alert: function(text, opt) {
+        actionView('ckAlert', _.mix({
+            title: '提示',
+            content: text || '',
+            cancelText: '关闭',
+            multiselect: false
+        }, opt)).open();
+    },
+
+    confirm: function(text, cb, opt) {
+        actionView('ckAlert', _.mix({
+            title: '提示',
+            content: text || '',
+            confirmText: '确认',
+            cancelText: '取消',
+            multiselect: true
+        }, opt)).open();
+        bus.bind('actionView:confirmOnThis', cb);
+    },
+
+    notify: function(content, opt) {
+        growl(_.mix({
+            content: content
+        }, opt)).open();
     },
 
     openLink: function(href, opt){
@@ -123,9 +223,7 @@ function link_handler(){
 }
 
 function handle_control(){
-    var controller = control(this, {
-            disableRequest: check_voodoo(this, handle_control)
-        }),
+    var controller = control(this),
         cfg = controller.data();
     if (cfg.disableUrl || cfg.disableJsonUrl) {
         controller.toggle();
@@ -135,9 +233,7 @@ function handle_control(){
 } 
 
 function toggle_control(){
-    control(this, {
-        disableRequest: check_voodoo(this, toggle_control)
-    }).toggle();
+    control(this).toggle();
 } 
 
 function tap_ck_post(){
@@ -154,21 +250,14 @@ function tap_ck_switch(){
     toggle_control.call(this);
 }
 
-function check_voodoo(me, handler){
-    var me = $(me);
-    if (me.hasClass('ck-overflow-item')
-            || me.hasClass('ck-item')) {
-        var voodoo = me.data('voodoo');
-        if (voodoo) {
-            $(voodoo).forEach(function(elm){
-                if (elm !== this) {
-                    handler.call(elm);
-                }
-            }, me[0]);
-            return true;
-        }
-    }
-    return false;
+function show_actions(me){
+    var opt = _.mix({
+        confirmText: '确认',
+        cancelText: '取消',
+        multiselect: false
+    }, me.data());
+    opt.options = $(opt.options || '.ck-option', me);
+    return actionView(me, opt).open();
 }
 
 function set_alias_events(events) {

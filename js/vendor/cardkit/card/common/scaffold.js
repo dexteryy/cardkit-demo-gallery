@@ -40,7 +40,7 @@ var exports = {
     hdOpt: function(){
         return darkdom({
             enableSource: true,
-            sourceAsContent: true,
+            entireAsContent: true,
             render: render_hdopt
         });
     },

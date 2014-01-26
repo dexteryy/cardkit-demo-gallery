@@ -25,3 +25,10 @@
 
 }
 
+%ck-btn {
+  @extend %moui-button;
+}
+
+%ck-mainbtn {
+  @extend %moui-main-button;
+}

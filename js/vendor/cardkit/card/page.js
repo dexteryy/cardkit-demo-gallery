@@ -73,7 +73,9 @@ var exports = {
                 }, data.visibleActions);
                 return render_actionbar(data);
             }
-        }).contain('action', exports.action);
+        }).contain('action', exports.action)
+            .forward('actionView:confirm .ck-top-overflow', 
+                'overflows:confirm');
     },
 
     blank: function(){

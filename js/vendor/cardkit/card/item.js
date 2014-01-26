@@ -94,7 +94,7 @@ var exports = {
     opt: function(){
         return darkdom({
             enableSource: true,
-            sourceAsContent: true,
+            entireAsContent: true,
             render: render_opt
         });
     },
