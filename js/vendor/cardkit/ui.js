@@ -10,28 +10,19 @@ define([
     './ui/control',
     './ui/picker',
     './ui/ranger',
-    './ui/stars',
-    './ui/modalcard',
+    './ui/modalview',
     './ui/actionview',
     './ui/growl',
     './supports',
     './bus'
 ], function(_, $, browsers, tpl, soviet, 
     momoBase, momoTap,
-    control, picker, ranger, stars, 
-    modalCard, actionView, growl, supports, bus){
+    control, picker, ranger, 
+    modalView, actionView, growl, supports, bus){
 
 var doc = document,
-    _soviet_aliases = {},
-    components = {
-        control: control,
-        picker: picker,
-        ranger: ranger,
-        stars: stars,
-        modalCard: modalCard,
-        actionView: actionView, 
-        growl: growl
-    };
+    modalCard = modalView(),
+    _soviet_aliases = {};
 
 _.mix(momoBase.Class.prototype, {
     bind: function(ev, handler, elm){
@@ -45,6 +36,7 @@ _.mix(momoBase.Class.prototype, {
     trigger: function(e, ev){
         delete e.layerX;
         delete e.layerY;
+        delete e.returnValue;
         $(e.target).trigger(ev, e);
         return this;
     }
@@ -52,8 +44,23 @@ _.mix(momoBase.Class.prototype, {
 
 var tap_events = {
 
-    '.ck-link': link_handler,
-    '.ck-link *': link_handler,
+    '.ck-link, .ck-link *': function(){
+        actions.openLink(this);
+    },
+
+    '.ck-link-direct, .ck-link-direct *': function(){ // @deprecated
+        actions.openLink(this);
+    },
+
+    '.ck-link-extern, ck-link-extern *': function(){
+        actions.openLink(this, {
+            target: this.target || '_blank'
+        });
+    },
+
+    '.ck-link-img': function(){
+        actions.openImage(this.href);
+    },
 
     // control
 
@@ -85,7 +92,7 @@ var tap_events = {
         }
         var p = picker(me);
         show_actions(me);
-        bus.bind('actionView:confirmOnThis', function(actions){
+        bus.on('actionView:confirmOnThis', function(actions){
             p.select(actions.val());
         });
     },
@@ -111,15 +118,35 @@ var tap_events = {
         show_actions(me);
     },
 
-    // ranger
-
     // modalView
 
-    '.ck-modal-link': function(){},
+    '.ck-modal-button, .ck-modal-button *': function(){
+        var me = $(this);
+        if (!me.hasClass('ck-modal-button')) {
+            me = me.closest('.ck-modal-button');
+        }
+        actions.openModal(me.data());
+    },
+
+    '.ck-modal-link, .ck-modal-link *': function(){
+        var me = $(this);
+        if (!me.hasClass('ck-modal-link')) {
+            me = me.closest('.ck-modal-link');
+        }
+        actions.openModal(me.data());
+    },
+
+    '.ck-modalview .wrapper > header .confirm': function(){
+        modalCard.confirm();
+    },
+
+    '.ck-modalview .wrapper > header .cancel': function(){
+        modalCard.cancel();
+    },
 
     // actionView
 
-    '.ck-actionview article > .ck-option, .ck-actionview article > .ck-option > *': function(){
+    '.ck-actionview .ck-option, .ck-actionview .ck-option > *': function(){
         var me = $(this);
         if (!me.hasClass('ck-option')) {
             me = me.parent();
@@ -139,6 +166,16 @@ var tap_events = {
         show_actions($(this));
     },
 
+    '.ck-confirm-link': function(){
+        var me = this;
+        if (!me.href) {
+            me = me.parentNode;
+        }
+        actions.confirm('', function(){
+            actions.openLink(me.href, me.target);
+        }, $(me).data());
+    },
+
     // growl 
 
     '.ck-growl-button': function(){
@@ -147,32 +184,31 @@ var tap_events = {
 
 };
 
-var exports = {
+bus.on('ranger:changed', function(ranger, url){
+    if (url) {
+        actions.openLink(tpl.format(url, {
+            value: ranger.val()
+        }));
+    }
+});
 
-    init: function(opt){
-        opt = opt || {};
-        var wrapper = $(opt.appWrapper);
-        actionView.forceOptions.parent = wrapper;
-        growl.forceOptions.parent = wrapper;
-        modalCard.set({
-            parent: wrapper
-        });
-        var tapGesture = momoTap(doc, {
-            tapThreshold: 20 
-        });
-        set_alias_events(tapGesture.event);
-        var prevent_click_events = {};
-        Object.keys(tap_events).forEach(function(selector){
-            this[selector] = nothing;
-        }, prevent_click_events);
-        this.delegate = soviet(doc, {
-            aliasEvents: _soviet_aliases,
-            autoOverride: true,
-            matchesSelector: true,
-            preventDefault: true
-        }).on('tap', tap_events)
-            .on('click', prevent_click_events);
-    },
+bus.on('actionView:jump', function(actionCard, href, target){
+    actions.openLink(href, {
+        target: target
+    });
+});
+
+var components = {
+    control: control,
+    picker: picker,
+    ranger: ranger,
+    modalCard: modalCard,
+    modalView: modalView,
+    actionView: actionView, 
+    growl: growl
+};
+
+var actions = {
 
     alert: function(text, opt) {
         actionView('ckAlert', _.mix({
@@ -191,7 +227,22 @@ var exports = {
             cancelText: '取消',
             multiselect: true
         }, opt)).open();
-        bus.bind('actionView:confirmOnThis', cb);
+        bus.on('actionView:confirmOnThis', cb);
+    },
+
+    openModal: function(opt){
+        modalCard.set(opt).open();
+    },
+
+    closeModal: function(){
+        modalCard.cancel();
+        return modalCard.event.promise('close');
+    },
+
+    openImage: function(src){
+        actions.openLink(src, {
+            target: '_blank'
+        });
     },
 
     notify: function(content, opt) {
@@ -200,30 +251,107 @@ var exports = {
         }, opt)).open();
     },
 
+    showLoading: function(text){
+        if (!this.loadingTips) {
+            this.loadingTips = growl({
+                expires: -1,
+                keepalive: true,
+                corner: 'center'
+            });
+        }
+        this.loadingTips.set({
+            content: text || '正在加载...'
+        }).open();
+        this._loadingStart = +new Date();
+    },
+
+    hideLoading: function(opt){
+        opt = _.mix({ duration: 800 }, opt);
+        var d = +new Date() - this._loadingStart;
+        if (d < opt.duration) {
+            setTimeout(function(){
+                actions.hideLoading(opt);
+            }, opt.duration - d);
+        } else {
+            if (this.loadingTips) {
+                this.loadingTips.close();
+            }
+        }
+    },
+
     openLink: function(href, opt){
         opt = opt || {};
         if (typeof href !== 'string') {
             var node = href;
             href = node.href;
-            opt.target = node.target;
+            opt.target = opt.target || node.target;
         }
         if (opt.target && opt.target !== '_self') {
             window.open(href, opt.target);
         } else {
             location.href = href;
         }
+    }
+
+};
+
+var exports = {
+
+    init: function(opt){
+        opt = opt || {};
+        var wrapper = $(opt.appWrapper);
+        actionView.forceOptions.parent = wrapper;
+        growl.forceOptions.parent = wrapper;
+        modalCard.set({
+            oldStylePage: opt.oldStyle,
+            parent: wrapper
+        });
+        var tapGesture = momoTap(doc, {
+            tapThreshold: 20 
+        });
+        set_alias_events(tapGesture.event);
+        var prevent_click_events = {};
+        Object.keys(tap_events).forEach(function(selector){
+            this[selector] = nothing;
+        }, prevent_click_events);
+        this.delegate.on('tap', tap_events)
+            .on('click', prevent_click_events)
+            .on('change', {
+                '.ck-ranger': function(e){
+                    ranger(this).val(e.target.value);
+                    return true;
+                }
+            }).on('touchstart', {
+                '.ck-ranger': function(e){
+                    ranger(this).val(e.target.value);
+                    ranger(this).changeStart();
+                    return true;
+                }
+            }).on('touchend', {
+                '.ck-ranger': function(){
+                    ranger(this).changeEnd();
+                    return true;
+                }
+            });
     },
 
+    delegate: soviet(doc, {
+        aliasEvents: _soviet_aliases,
+        autoOverride: true,
+        matchesSelector: true,
+        preventDefault: true
+    }),
+
+    action: actions,
     component: components
 
 };
 
-function link_handler(){
-    exports.openLink(this);
-}
 
 function handle_control(){
-    var controller = control(this),
+    var controller = control(this, {
+            disableRequest: this.isMountedDarkDOM
+        }),
         cfg = controller.data();
     if (cfg.disableUrl || cfg.disableJsonUrl) {
         controller.toggle();
@@ -233,7 +361,9 @@ function handle_control(){
 } 
 
 function toggle_control(){
-    control(this).toggle();
+    control(this, {
+        disableRequest: this.isMountedDarkDOM
+    }).toggle();
 } 
 
 function tap_ck_post(){

@@ -18,36 +18,22 @@ return {
             isAlone: 'alone-mode'
         });
     },
-    titlePrefix: function(guard){
-        guard.watch('ck-part[type="titlePrefix"]');
-    },
-    titleSuffix: function(guard){
-        guard.watch('ck-part[type="titleSuffix"]');
-    },
-    titleTag: function(guard){
-        guard.watch('ck-part[type="titleTag"]');
-    },
+    titlePrefix: 'ck-part[type="titlePrefix"]',
+    titleSuffix: 'ck-part[type="titleSuffix"]',
+    titleTag: 'ck-part[type="titleTag"]',
     icon: function(guard){
         guard.watch('ck-part[type="icon"]');
         guard.state({
             imgUrl: 'src'
         });
     },
-    info: function(guard){
-        guard.watch('ck-part[type="info"]');
-    },
+    info: 'ck-part[type="info"]',
     opt: function(guard){
         guard.watch('ck-part[type="opt"]');
     },
-    desc: function(guard){
-        guard.watch('ck-part[type="desc"]');
-    },
-    content: function(guard){
-        guard.watch('ck-part[type="content"]');
-    },
-    meta: function(guard){
-        guard.watch('ck-part[type="meta"]');
-    },
+    desc: 'ck-part[type="desc"]',
+    content: 'ck-part[type="content"]',
+    meta: 'ck-part[type="meta"]',
     author: function(guard){
         guard.watch('ck-part[type="author"]');
         guard.state({
@@ -62,27 +48,17 @@ return {
             linkTarget: 'target'
         });
     },
-    authorPrefix: function(guard){
-        guard.watch('ck-part[type="authorPrefix"]');
-    },
-    authorSuffix: function(guard){
-        guard.watch('ck-part[type="authorSuffix"]');
-    },
+    authorPrefix: 'ck-part[type="authorPrefix"]',
+    authorSuffix: 'ck-part[type="authorSuffix"]',
     avatar: function(guard){
         guard.watch('ck-part[type="avatar"]');
         guard.state({
             imgUrl: 'src'
         });
     },
-    authorInfo: function(guard){
-        guard.watch('ck-part[type="authorInfo"]');
-    },
-    authorDesc: function(guard){
-        guard.watch('ck-part[type="authorDesc"]');
-    },
-    authorMeta: function(guard){
-        guard.watch('ck-part[type="authorMeta"]');
-    }
+    authorInfo: 'ck-part[type="authorInfo"]',
+    authorDesc: 'ck-part[type="authorDesc"]',
+    authorMeta: 'ck-part[type="authorMeta"]'
 };
 
 });

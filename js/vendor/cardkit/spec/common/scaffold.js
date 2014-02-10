@@ -21,6 +21,9 @@ return {
     },
     ft: function(guard){
         guard.watch('ck-part[type="ft"]');
+    },
+    blank: function(guard){
+        guard.watch('ck-part[type="blank"]');
     }
 };
 

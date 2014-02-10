@@ -48,41 +48,48 @@ var _defaults = {
 
 var dom_ext = {
 
+    darkGuard: function(){
+        return _guards[this.getAttribute(MY_BRIGHT)];
+    },
+
     mountDarkDOM: function(){
-        var me = $(this),
-            guard = _guards[me.attr(MY_BRIGHT)];
+        var guard = this.darkGuard();
         if (guard) {
-            guard.mountRoot(me);
+            guard.mountRoot(this);
         }
     },
 
     unmountDarkDOM: function(){
-        var me = $(this),
-            guard = _guards[me.attr(MY_BRIGHT)];
+        var guard = this.darkGuard();
         if (guard) {
-            guard.unmountRoot(me);
+            guard.unmountRoot(this);
+        }
+    },
+
+    resetDarkDOM: function(){
+        var guard = this.darkGuard();
+        if (guard) {
+            guard.unmountRoot(this);
+            guard.unregisterRoot(this);
         }
     },
 
     getDarkState: function(name){
-        var me = $(this),
-            guard = _guards[me.attr(MY_BRIGHT)];
+        var guard = this.darkGuard();
         return guard
-            && read_state(me, guard.stateGetter(name))
+            && read_state($(this), guard.stateGetter(name))
             || null;
     },
 
     setDarkState: function(name, value, opt){
         opt = opt || {};
-        var me = $(this),
-            guard = _guards[me.attr(MY_BRIGHT)];
-        if (!guard) {
-            return;
-        }
-        var setter = guard.stateSetter(name);
-        write_state(me, setter, value);
-        if (opt.update) {
-            this.updateDarkStates();
+        var guard = this.darkGuard();
+        if (guard) {
+            var setter = guard.stateSetter(name);
+            write_state($(this), setter, value);
+            if (opt.update) {
+                this.updateDarkStates();
+            }
         }
     },
 
@@ -342,7 +349,13 @@ DarkGuard.prototype = {
     unmountRoot: function(target){
         target = $(target);
         var bright_id = target.attr(MY_BRIGHT);
+        target.find('[' + MY_BRIGHT + ']').forEach(function(child){
+            var child_id = $(child).attr(MY_BRIGHT);
+            var guard = _guards[child_id];
+            guard.unregisterRoot(child);
+        }, _darkdata);
         $('#' + bright_id).remove();
+        delete target[0].isMountedDarkDOM;
         delete _darkdata[bright_id];
     },
 
@@ -957,14 +970,15 @@ function merge_source_states(data, source_data, context){
 }
 
 function merge_source_components(dataset, name){
+    var context = this;
     var origin = this.componentData;
     if (_is_array(dataset)) {
         dataset.forEach(function(source_data){
-            this.push(source_data);
+            this.push(merge_source({}, source_data, context));
         }, origin[name] || (origin[name] = []));
     } else {
         merge_source(origin[name] || (origin[name] = {}),
-            dataset, this);
+            dataset, context);
     }
 }
 

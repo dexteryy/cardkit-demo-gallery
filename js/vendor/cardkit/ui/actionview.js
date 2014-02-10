@@ -26,10 +26,8 @@ var exports = util.singleton({
         };
         o.event.bind('prepareOpen', function(o){
             exports.current = o;
-            bus.fire('actionView:prepareOpen', [o]);
-        }).bind('cancelOpen', function(o){
+        }).bind('cancelOpen', function(){
             exports.current = null;
-            bus.fire('actionView:cancelOpen', [o]);
         }).bind('open', function(o){
             bus.fire('actionView:open', [o]);
             if (source) {
@@ -43,13 +41,21 @@ var exports = util.singleton({
                 source.trigger('actionView:close', eprops);
             }
         }).bind('cancel', function(){
+            bus.fire('actionView:cancel', [o]);
             if (source) {
                 source.trigger('actionView:cancel', eprops);
             }
-        }).bind('confirm', function(o){
-            bus.fire('actionView:confirmOnThis', [o]);
+        }).bind('confirm', function(o, picker){
+            bus.fire('actionView:confirmOnThis', [o])
+                .fire('actionView:confirm', [o]);
             if (source) {
                 source.trigger('actionView:confirm', eprops);
+            }
+            if (picker && picker._lastSelected) {
+                var elm = picker._lastSelected._node[0];
+                if (elm.nodeName === 'A') {
+                    bus.fire('actionView:jump', [o, elm.href, elm.target]);
+                }
             }
         });
     }

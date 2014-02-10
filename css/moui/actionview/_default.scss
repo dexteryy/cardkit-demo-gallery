@@ -118,6 +118,8 @@
 
       &:active {
         @include box-shadow(none);
+        border-color:#101010;
+        background:#343434;
       }
 
     }

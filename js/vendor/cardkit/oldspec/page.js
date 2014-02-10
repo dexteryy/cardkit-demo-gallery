@@ -16,6 +16,8 @@ var specs = {
     blank: blank_spec,
     box: require('./box'),
     list: require('./list'),
+    mini: require('./mini'),
+    form: require('./form'),
 };
 
 function blank_spec(guard){
@@ -74,7 +76,7 @@ function exports(guard, parent){
     guard.component(specs);
 }
 
-exports.SELECTOR = '.ck-page-card';
+exports.SELECTOR = '.ckd-page-card';
 exports.SELECTOR_OLD = '.ck-card'; // @deprecated
 
 return exports;

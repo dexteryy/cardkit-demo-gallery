@@ -51,6 +51,16 @@ var exports = {
             enableSource: true,
             render: render_ft
         });
+    },
+
+    blank: function(){
+        return darkdom({
+            unique: true,
+            enableSource: true,
+            render: function(data){
+                return '<div>' + data.content + '</div>';
+            }
+        });
     }
 
 };

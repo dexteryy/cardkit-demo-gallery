@@ -36,6 +36,9 @@ return {
     },
     ft: function(guard){
         guard.watch('.ckd-ft');
+    },
+    blank: function(guard){
+        guard.watch('.ckd-blank');
     }
 };
 

@@ -15,6 +15,8 @@ var specs = {
     blank: blank_spec,
     box: require('./box'),
     list: require('./list'),
+    mini: require('./mini'),
+    form: require('./form'),
 };
 
 function blank_spec(guard){
@@ -48,7 +50,6 @@ function action_spec(guard){
     guard.watch('[action-layout]');
     guard.state({
         label: helper.readLabel,
-        customId: 'id',
         forceOverflow: function(node){
             return 'overflow' === 
                 node.attr('action-layout');
@@ -69,11 +70,17 @@ function source_action_attr(source){
     }
     source.state({
         label: helper.readLabel,
-        customId: 'id',
         forceOverflow: function(node){
             return node.hasClass('ckd-overflow-item');
         }
     });
+}
+
+function forward_control(e){
+    var target = darkdom.getDarkById(e.target.parentNode.id);
+    if (target) {
+        target.trigger('tap').updateDarkDOM();
+    }
 }
 
 function exports(guard, parent){
@@ -94,15 +101,14 @@ exports.SELECTOR = 'ck-card[type="page"]';
 exports.initOldStyleActionState = source_action_attr;
 
 exports.forwardActionbar = function(guard){
-    guard.forward('overflows:confirm', function(e){
-        var aid = e.component.val();
-        var target;
-        if (/^\#/.test(aid)) {
-            target = $(aid);
-        } else {
-            target = darkdom.getDarkById(aid);
-        }
-        target.trigger('tap');
+    guard.forward({
+        'overflows:confirm': function(e){
+            var aid = e.component.val();
+            var target = $('#' + aid).children();
+            target.trigger('tap');
+        },
+        'control:enable': forward_control,
+        'control:disable': forward_control
     });
 };
 

@@ -1,40 +1,38 @@
 
 define([
-    'mo/lang',
     'dollar',
-    '../card/form',
+    '../helper',
+    '../spec/form',
     './common/scaffold'
-], function(_, $, component, scaffold_components){
+], function($, helper, form_spec, scaffold_specs){ 
 
-    return function(){
+var source_states = {
+        source: helper.readSource
+    },
+    source_item_spec = form_spec.sourceItemSpec,
+    SEL = '.ckd-form-card',
+    SEL_OLD = '.ck-form-unit'; // @deprecated
 
-        return component.register($('.ck-form-unit'), {
-            configures: {
-                subtype: 'data-style',
-                blankContent: 'data-cfg-blank',
-                plainHdStyle: 'data-cfg-plainhd'
-            },
-            components: _.mix({
-                item: function(component){
-                    component.register('.ckd-item', {
-                        configures: {
-                            raw: 'data-source'
-                        },
-                        components: {
-                            content: function(component){
-                                component.register('.ckd-content', {
-                                    configures: {
-                                        raw: 'data-source'
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }, scaffold_components)
+return function(guard, parent){
+    guard.watch($(SEL, parent));
+    guard.watch($(SEL_OLD, parent));
+    guard.state({
+        subtype: 'data-style',
+        blankText: 'data-cfg-blank',
+        plainHdStyle: 'data-cfg-plainhd'
+    });
+    guard.component(scaffold_specs);
+    guard.component('item', function(guard){
+        guard.watch('.ckd-item');
+        guard.component('content', function(guard){
+            guard.watch('.ckd-content');
+            guard.state(source_states);
         });
-
-    };
+        guard.source().component('content', '.ckd-content');
+    });
+    guard.source().component(scaffold_specs);
+    guard.source().component('item', source_item_spec);
+};
 
 });
 

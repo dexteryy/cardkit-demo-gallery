@@ -15,6 +15,8 @@ var darkdom = require('darkdom'),
 var cards = {
     box: require('./box').box,
     list: require('./list').list, 
+    mini: require('./mini').mini, 
+    form: require('./form').form,
 };
 
 var exports = {
@@ -74,6 +76,10 @@ var exports = {
                 return render_actionbar(data);
             }
         }).contain('action', exports.action)
+            .forward('control:enable .ck-item > *', 
+                'control:enable')
+            .forward('control:disable .ck-item > *', 
+                'control:disable')
             .forward('actionView:confirm .ck-top-overflow', 
                 'overflows:confirm');
     },

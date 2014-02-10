@@ -1,15 +1,11 @@
-<div class="ck-list-card{%= (state.blankText === 'false' ? ' no-blank' : '') %}"
-        data-style="{%= state.subtype %}"
-        {%= state.col ? 'data-cfg-col="' + state.col + '" ' : '' %}
-        {%= state.paperStyle ? 'data-cfg-paper="true" ' : '' %}
-        {%= state.plainStyle ? 'data-cfg-plain="true" ' : '' %}
-        {%= state.plainHdStyle ? 'data-cfg-plainhd="true" ' : '' %}>
+<div class="ck-mini-card{%= (state.blankText === 'false' ? ' no-blank' : '') %}"
+        data-style="{%= state.subtype %}">
 
     {% if (hasSplitHd) { %}
         {%= hdwrap %}
     {% } %}
 
-    <article class="ck-card-wrap">
+    <article class="ck-card-wrap {%= (component.item.length > 1 ? 'slide' : '') %}">
 
         {% if (!hasSplitHd) { %}
             {%= hdwrap %}
@@ -19,15 +15,11 @@
 
             {% if (component.item.length) { %}
 
-                <div class="ck-list">
-                {% component.item.forEach(function(item, i){ %}
-
-                    {% if (i && (i % state.col === 0)) { %}
-                    </div><div class="ck-list">
-                    {% } %}
-
-                    {%= item %}
-
+                <div class="ck-list" style="width:{%= listWidth %};">
+                {% component.item.forEach(function(item){ %}
+                    <div class="ck-col" style="width:{%= itemWidth %};">
+                        {%= item %}
+                    </div>
                 {% }); %}
                 </div>
 

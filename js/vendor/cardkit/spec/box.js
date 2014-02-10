@@ -16,13 +16,9 @@ return function(guard, parent){
         plainHdStyle: 'plain-hd-style'
     });
     guard.component(scaffold_specs);
-    guard.component('content', function(guard){
-        guard.watch('ck-part[type="content"]');
-    });
+    guard.component('content', 'ck-part[type="content"]');
     guard.source().component(source_scaffold_specs);
-    guard.source().component('content', function(source){
-        source.watch('.ckd-content');
-    });
+    guard.source().component('content', '.ckd-content');
 };
 
 });

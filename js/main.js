@@ -14,6 +14,25 @@ define('sh/core', ['syntaxhighlighter/shCore'], function(){
 define('sh/js', ['sh/core']);
 define('sh/xml', ['sh/core']);
 
+// @deprecated
+define('cardkit/app', ['cardkit'], function(cardkit){
+    return cardkit;
+});
+
+// @deprecated
+define('cardkit/pageready', [
+    'dollar', 
+    'cardkit', 
+    'finish'
+], function($, cardkit, finish){
+    var default_page = $('#ckDefault');
+    if (default_page[0].isMountedDarkDOM) {
+        finish();
+    } else {
+        default_page.once('pageCard:opened', finish);
+    }
+});
+
 require([
     'mo/lang',
     'dollar',
@@ -30,7 +49,7 @@ require([
     cardkit.init({
         appWrapper: '.my-app',
         defaultPage: 'ckDefault',
-        supportOldVer: true
+        oldStyle: true
     });
     cardkit.openPage();
 

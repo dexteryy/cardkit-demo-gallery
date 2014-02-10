@@ -22,24 +22,3 @@
   padding: 10px 0;
 }
 
-.ck-stars {
-  @extend .moui-slider;
-  height:25px;
-  width:125px;
-  background-image:inline-image('star_gray_50.png');
-  background-size:25px;
-  background-repeat:repeat-x;
-  .slider-selected,
-  .slider-hover {
-    height:25px;
-    background-repeat:repeat-x;
-    background-size:25px;
-  }
-  .slider-selected {
-    background-image:inline-image('star_50.png');
-  }
-  .slider-hover {
-    background-image:inline-image('star_50.png');
-  }
-}
-

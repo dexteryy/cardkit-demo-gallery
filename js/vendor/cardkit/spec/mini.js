@@ -1,37 +1,15 @@
 
 define([
-    'mo/lang',
     'dollar',
-    '../card/mini',
-    './common/item',
-    './common/scaffold'
-], function(_, $, component, item_components, scaffold_components){
+    './list'
+], function($, list_spec){ 
 
-    return function(){
+var SEL = 'ck-card[type="mini"]';
 
-        return component.register($('ck-card[type="mini"]'), {
-            configures: {
-                subtype: 'subtype',
-                blankContent: 'blank-content',
-                limit: 'limit', 
-                col: 'col', 
-                paperStyle: 'paper-style',
-                plainStyle: 'plain-style',
-                plainHdStyle: 'plain-hd-style'
-            },
-            components: _.mix({
-                item: function(component){
-                    component.register('ck-part[type="item"]', {
-                        configures: {
-                            raw: 'raw'
-                        },
-                        components: item_components
-                    });
-                }
-            }, scaffold_components)
-        });
-
-    };
+return function(guard, parent){
+    guard.watch($(SEL, parent));
+    list_spec.initList(guard);
+};
 
 });
 

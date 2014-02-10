@@ -10,7 +10,7 @@ require([
     tpl_page, tpl_page_source, cardkit){
 
 var $ = window.jQuery;
-var TOP_ACTIONS = '.ck-top-actions .ck-item, .ck-top-actions .ck-option';
+var TOP_ACTIONS = '.ck-top-actions .ck-item';
 
 
 darkdom.initPlugins($);
@@ -123,7 +123,7 @@ describe("the page card", function(){
             var actions = bright_root.find(TOP_ACTIONS);
             var count = actions.length;
 
-            dark_root.find('button[action-layout]').eq(count - 1).remove();
+            dark_root.find('[action-layout]').eq(count - 1).remove();
             expect(actions).to.length(count);
             dark_root.updateDarkDOM();
             actions = bright_root.find(TOP_ACTIONS);
@@ -149,7 +149,7 @@ describe("the page card", function(){
 
         it("custom updater", function(){
 
-            var button1 = dark_root.find('button[action-layout]').eq(0);
+            var button1 = dark_root.find('[action-layout]').eq(0);
 
             button1.responseDarkDOM('content', function(changes){
                 $(changes.root).html(changes.newValue);

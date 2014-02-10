@@ -8,7 +8,7 @@ define([
 var source_states = {
         source: helper.readSource
     },
-    SEL = '.ck-box-card',
+    SEL = '.ckd-box-card',
     SEL_OLD = '.ck-box-unit'; // @deprecated
 
 return function(guard, parent){
@@ -26,9 +26,7 @@ return function(guard, parent){
         guard.state(source_states);
     });
     guard.source().component(scaffold_specs);
-    guard.source().component('content', function(source){
-        source.watch('.ckd-content');
-    });
+    guard.source().component('content', '.ckd-content');
 };
 
 });

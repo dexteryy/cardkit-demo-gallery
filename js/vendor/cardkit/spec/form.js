@@ -1,40 +1,37 @@
 
 define([
-    'mo/lang',
     'dollar',
-    '../card/form',
-    './common/scaffold'
-], function(_, $, component, scaffold_components){
+    './common/scaffold',
+    './common/source_scaffold'
+], function($, scaffold_specs, source_scaffold_specs){ 
 
-    return function(){
+var SEL = 'ck-card[type="form"]';
 
-        return component.register($('ck-card[type="form"]'), {
-            configures: {
-                subtype: 'subtype',
-                blankContent: 'blank-content',
-                plainHdStyle: 'plain-hd-style'
-            },
-            components: _.mix({
-                item: function(component){
-                    component.register('ck-part[type="item"]', {
-                        configures: {
-                            raw: 'raw'
-                        },
-                        components: {
-                            content: function(component){
-                                component.register('ck-part[type="content"]', {
-                                    configures: {
-                                        raw: 'raw'
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }, scaffold_components)
-        });
+function source_item_spec(guard){
+    guard.watch('.ckd-item');
+    guard.component('content', '.ckd-content');
+}
 
-    };
+function exports(guard, parent){
+    guard.watch($(SEL, parent));
+    guard.state({
+        subtype: 'subtype',
+        blankText: 'blank-text',
+        plainHdStyle: 'plain-hd-style'
+    });
+    guard.component(scaffold_specs);
+    guard.component('item', function(guard){
+        guard.watch('ck-part[type="item"]');
+        guard.component('content', 'ck-part[type="content"]');
+        guard.source().component('content', '.ckd-content');
+    });
+    guard.source().component(source_scaffold_specs);
+    guard.source().component('item', source_item_spec);
+}
+
+exports.sourceItemSpec = source_item_spec;
+
+return exports;
 
 });
 
