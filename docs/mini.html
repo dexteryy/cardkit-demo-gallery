@@ -13,22 +13,22 @@
 
 @@include("pagecard/navdrawer.html")
 
-<div class="ck-card" id="ckDefault">
+<div class="ckd-page-card" id="ckDefault">
 
     @@include("common/page_parts.html", { 
         "title": "Mini Card"
     })
 
-    <div class="ck-list-unit" data-style="menu">
+    <div class="ckd-list-card" data-style="menu">
         <header class="ckd-hd">Source code</header>
     </div>
 
-    <div class="ck-box-unit" data-cfg-paper="true">
+    <div class="ckd-box-card" data-cfg-paper="true">
         <header class="ckd-hd">Usages</header>
     </div>
 
     <!--demo-->
-    <div class="ck-mini-unit" 
+    <div class="ckd-mini-card" 
             data-style="slide">
         <a class="ckd-hd" href="#hdLink">Mini ("slide" style)</a>
         <span class="ckd-hdopt" data-source="ckdSelectA"></span>
@@ -64,7 +64,7 @@
     <!--demo end-->
 
     <!--demo-->
-    <div class="ck-mini-unit" 
+    <div class="ckd-mini-card" 
             data-style="slide" 
             data-source="ckdListA">
         <a class="ckd-hd" href="#hdLink">Mini ("slide" style, contain pictures)</a>
@@ -72,14 +72,14 @@
     <!--demo end-->
 
     <!--demo-->
-    <div class="ck-mini-unit" 
+    <div class="ckd-mini-card" 
             data-style="slide">
         <a class="ckd-hd" href="#hdLink">Blank Mini ("slide" style)</a>
     </div>
     <!--demo end-->
 
     <!--demo-->
-    <div class="ck-mini-unit" 
+    <div class="ckd-mini-card" 
             data-style="slide">
         <a class="ckd-hd" href="#hdLink">Mini ("slide" style)</a>
         <div class="ckd-item" data-source="ckdItemC"></div>
@@ -88,25 +88,25 @@
 
 </div>
 
-<div class="ck-card" id="hdLink" data-cfg-blank="Link of header">
+<div class="ckd-page-card" id="hdLink" data-cfg-blank="Link of header">
     @@include("common/subpage_parts.html", { 
         "title": "Example"
     })
 </div>
 
-<div class="ck-card" id="titleLink" data-cfg-blank="Link of title">
+<div class="ckd-page-card" id="titleLink" data-cfg-blank="Link of title">
     @@include("common/subpage_parts.html", { 
         "title": "Example"
     })
 </div>
 
-<div class="ck-card" id="authorLink" data-cfg-blank="Link of author">
+<div class="ckd-page-card" id="authorLink" data-cfg-blank="Link of author">
     @@include("common/subpage_parts.html", { 
         "title": "Example"
     })
 </div>
 
-<div class="ck-card" id="optionsCard">
+<div class="ckd-page-card" id="optionsCard">
     @@include("common/subpage_parts.html", { 
         "title": "Options"
     })

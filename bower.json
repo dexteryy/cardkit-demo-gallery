@@ -6,13 +6,14 @@
   "devDependencies": {
     "mo": "~1.6.6",
     "dollar": "~1.4.1",
+    "cardkit": "~2.0.0-alpha.2",
     "darkdom": "~0.7.0",
     "eventmaster": "~2.1.0",
     "nerv": "~0.3.0",
     "soviet": "~1.0.0",
     "choreo": "~1.1.0",
     "momo": "~1.2.0-alpha.1",
-    "moui": "~2.3.0-alpha.1",
+    "moui": "~2.3.0",
     "syntaxhighlighter": "alexgorbatchev/syntaxhighlighter#3.0.83"
   },
   "ignore": []
