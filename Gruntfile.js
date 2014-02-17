@@ -45,9 +45,9 @@ module.exports = function(grunt) {
             target_pics: ["<%= meta.targetDir %>/pics"],
             dist: ["<%= meta.distDir %>"],
             pub_static: {
-                options: {
-                    force: true
-                },
+                //options: {
+                    //force: true
+                //},
                 src: [
                     "<%= meta.jsStaticDir %>/*", 
                     "<%= meta.cssStaticDir %>/*", 
@@ -112,6 +112,23 @@ module.exports = function(grunt) {
                 }, {
                     src: ["**/*.js", "!**/Gruntfile.js"],
                     dest: "<%= meta.jsVendorDir %>/moui/"
+                }]
+            },
+            "cardkit": {
+                use: [{
+                    src: ["**/*.js", "!**/Gruntfile.js"],
+                    dest: "<%= meta.jsVendorDir %>/"
+                }, {
+                    cwd: "tpl/cardkit",
+                    src: ["**/*.tpl"],
+                    dest: "<%= meta.jsVendorDir %>/cardkit/tpl/"
+                }, {
+                    cwd: "scss/cardkit",
+                    src: ["**"],
+                    dest: "<%= meta.cssVendorDir %>/cardkit/"
+                }, {
+                    src: ["asset"],
+                    dest: "pics/"
                 }]
             },
             "syntaxhighlighter": {
@@ -477,8 +494,8 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('update', [
-        //'clean:js_vendor',
-        //'clean:css_vendor',
+        'clean:js_vendor',
+        'clean:css_vendor',
         'clean:origin',
         'dispatch',
         'build_components'
