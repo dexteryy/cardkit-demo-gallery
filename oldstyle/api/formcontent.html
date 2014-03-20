@@ -1,0 +1,19 @@
+<form action="api/post_result.html" id="ajaxForm1"><div class="ck-form-unit"><div class="ckd-item"><label class="ck-title">章节名</label><input type="text" value="" name="a" id="ajaxForm1_a" placeholder="章节名"></div><div class="ckd-item"><label class="ck-title">笔记内容</label><textarea name="b" id="ajaxForm1_b" placeholder="笔记内容"></textarea><label><em><a href="index.html" target="_self">测试链接</a></em></label></div></div></form><script type="text/darkscript">console.info('ajax loaded');
+var me = this;
+var $ = require('dollar');
+var net = require('mo/network');
+var ck = require('cardkit');
+ck.modalCard.event.bind('confirmOnThis', function(modal){
+    modal.showLoading();
+    net.ajax({
+        url: 'api/post_result.html',
+        type: 'post',
+        data: new FormData($('#ajaxForm1')[0]),
+        processData: false,
+        contentType: false,
+        success: function(){
+            modal.hideLoading();
+            modal.ok();
+        }
+    });
+});</script>

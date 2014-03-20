@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>cardkit-demo-gallery</title>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+
+<link href="static/css/main.css" rel="stylesheet">
+<script src="static/js/main.js"></script>
+
+<style>
+.note {
+    color:#ccc;
+    font-size:10px;
+    font-weight:normal;
+    display:inline;
+    margin:0 10px;
+}
+</style>
+</head>
+<body>
+
+
+<!--demo-->
+<div class="myglobal-page-actions">
+    <a href="index.html" action-layout="overflow" class="ck-link">index.html</a>
+    <a href="index.html" action-layout="overflow" class="ck-link" target="_blank">new window</a>
+    <button type="button"  action-layout="overflow"
+            class="ck-switch"
+            id="myGlobalVote"
+            data-label=".text"
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (global)">
+        <span class="text">Press me! (global)</span>
+    </button>
+</div>
+<!--demo end-->
+
+
+<div class="my-app">
+
+
+<!--demo-->
+<ck-card type="page" id="ckNavdrawer" deck="navdrawer">
+
+    <div class="my-navdrawer-mask"></div>
+    <div class="my-navdrawer">
+
+        <header>
+            <h2>CardKit Reference</h2>
+        </header>
+
+        <article>
+            <div class="my-nav-wrap">
+                <div class="my-nav-content"><div class="my-content">
+                    <div class="search">
+                        <a class="ck-modal-link" href="#" data-url="api/formcontent.html">search</a>
+                    </div>
+                    <ul>
+                        <li><a class="ck-link" href="index.html">Home</a></li>
+                    </ul>
+                    <h6>Card Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="page.html">Page</a></li>
+                        <li><a class="ck-link" href="box.html">Box</a></li>
+                        <li><a class="ck-link" href="list.html">List</a></li>
+                        <li><a class="ck-link" href="mini.html">Mini</a></li>
+                        <li><a class="ck-link" href="form.html">Form</a></li>
+                    </ul>
+                    <h6>UI Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="control.html">Control</a></li>
+                        <li><a class="ck-link" href="picker.html">Picker</a></li>
+                        <li><a class="ck-link" href="overlay.html">Overlay</a></li>
+                    </ul>
+                    <h6>Cross-platform</h6>
+                    <ul>
+                        <li><a class="ck-link" href="browsers.html">Compatibility Testing</a></li>
+                        <li><a class="ck-link" href="#consoleCard">Console</a></li>
+                    </ul>
+                </div></div>
+                <div class="my-footer" style="padding-top: 0px;"></div>
+            </div>
+        </article>
+
+    </div>
+
+</ck-card>
+<!--demo end-->
+
+
+
+<ck-card type="page" id="ckDefault">
+
+    <ck-part type="title">Home</ck-part>
+    <ck-part type="footer" source-selector="myglobal-page-footer"></ck-part>
+    <ck-part type="actionbar" source-selector="myglobal-page-actions"></ck-part>
+    <ck-part type="nav" href="#ckNavdrawer"></ck-part>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">CardKit Components Gallery</ck-part>
+        <blockquote>
+            <p><a href="https://github.com/douban-f2e/CardKit" target="_blank">CardKit</a> is a mobile UI library provides a series of building blocks to help you build mobile web apps quickly and simply, or transfer entire website to mobile-first web app for touch devices. </p>
+            <p>CardKit building blocks are all <em>use-html-as-configure-style</em> (like Custom Elements, directive...) components built on <a href="https://github.com/dexteryy/DarkDOM" target="_blank">DarkDOM</a> and <a href="https://github.com/dexteryy/moui" target="_blank">Moui</a>.</p>
+        </blockquote>
+    </ck-card>
+
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">Card Component<span class="note">DarkDOM-style</span></ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="page.html">Page</ck-part>
+            <ck-part type="info">视图</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="box.html">Box</ck-part>
+            <ck-part type="info">容器</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="list.html">List</ck-part>
+            <ck-part type="info">列表</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="mini.html">Mini</ck-part>
+            <ck-part type="info">摘要</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="form.html">Form</ck-part>
+            <ck-part type="info">表单</ck-part>
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">UI Component<span class="note">Moui-style</span></ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="control.html">Control</ck-part>
+            <ck-part type="info">状态控件</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="picker.html">Picker</ck-part>
+            <ck-part type="info">选择器</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="overlay.html">Overlay</ck-part>
+            <ck-part type="info">浮层控件</ck-part>
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="list" subtype="menu" plain-hd-style="true">
+        <ck-part type="hd">Debug</ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="browsers.html">Compatibility testing</ck-part>
+            <ck-part type="info">浏览器测试</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="#consoleCard">Console</ck-part>
+            <ck-part type="info">调出控制台</ck-part>
+        </ck-part>
+    </ck-card>
+
+</ck-card>
+
+
+<ck-card type="page" id="consoleCard">
+
+    
+<!--demo-->
+<ck-part type="title">Console</ck-part>
+<ck-part type="footer" source-selector="myglobal-page-footer"></ck-part>
+<ck-part type="actionbar" source-selector="myglobal-page-actions"></ck-part>
+<ck-part type="nav">
+    <a href="#ckDefault" class="my-top-return ck-link"></a>
+</ck-part>
+<!--demo end-->
+
+<!--demo-->
+<ck-part type="banner" plain-style="true">
+    <div class="topbox">
+        <a href="index.html" class="ck-link">Return to home</a>
+    </div>
+</ck-part>
+<!--demo end-->
+
+<ck-part type="blank">Coming soon...</ck-part>
+
+
+
+    <ck-card type="box" paper-style="true">
+        <ck-part type="hd">Console</ck-part>
+        <div id="console"></div>
+    </ck-card>
+
+    <!--demo-->
+    <script type="text/darkscript">
+    require(['dollar', 'mo/console'], function($, console){
+        console.config({
+            record: false,
+            output: $(this).find('#console')[0]
+        });
+    });
+    </script>
+    <!--demo end-->
+
+</ck-card>
+
+
+</div>
+
+
+<!--demo-->
+<div class="myglobal-page-footer">
+    <div class="copyright">Last update: 2014-03-20T11:21:53.277Z</div>
+</div>
+<!--demo end-->
+
+
+</body>
+</html>
+
