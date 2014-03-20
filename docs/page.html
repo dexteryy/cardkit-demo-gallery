@@ -13,39 +13,49 @@
 
 @@include("pagecard/navdrawer.html")
 
-<div class="ckd-page-card" id="ckDefault">
+<ck-card type="page" id="ckDefault">
 
     @@include("common/page_parts.html", { 
         "title": "Page Card"
     })
 
-    <div class="ckd-list-card" data-style="menu">
-        <header class="ckd-hd">Source code</header>
-    </div>
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">Source code</ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/tree/master/cardkit/card/page.js" target="_blank">cardkit/card/page</ck-part>
+            <ck-part type="desc">DarkComponent</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/tree/master/cardkit/spec/page.js" target="_blank">cardkit/spec/page</ck-part>
+            <ck-part type="desc">DarkGuard</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/card/_page.scss" target="_blank">scss/cardkit/card/_page.scss</ck-part>
+            <ck-part type="desc">Skin</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/page.html" target="_blank">cardkit-demo-gallery/docs/page.html</ck-part>
+            <ck-part type="desc">The current page</ck-part>
+        </ck-part>
+    </ck-card>
 
-    <div class="ckd-box-card" data-cfg-paper="true">
-        <header class="ckd-hd">Usages</header>
-    </div>
+    <ck-card type="box" paper-style="true">
+        <ck-part type="hd"><span id="usages">Usages</span></ck-part>
+    </ck-card>
 
-    <!-- demo -->
-    <div class="ckd-list-card" data-cfg-blank="Coming soon..."></div>
-    <!-- demo end -->
+    <ck-card type="list">
+        <ck-part type="blank">Coming soon!</ck-part>
+    </ck-card>
 
-</div>
+    @@include("common/default_page_footer.html")
 
-<div class="ckd-page-card" id="hdLink" data-cfg-blank="Link of header">
-    @@include("common/subpage_parts.html", { 
-        "title": "Example"
-    })
-</div>
+</ck-card>
 
-<div class="ckd-page-card" id="optionsCard">
+<ck-card type="page" id="optionsCard">
     @@include("common/subpage_parts.html", { 
         "title": "Options"
     })
-</div>
-
-@@include("pagecard/raw.html")
+</ck-card>
 
 @@include("pagecard/console.html")
 
@@ -55,3 +65,4 @@
 
 </body>
 </html>
+

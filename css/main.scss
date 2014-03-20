@@ -3,9 +3,58 @@
 @import 'cardkit';
 @import 'navdrawer';
 @import 'console';
-@import 'syntaxhighlighter/shCoreDefault';
 
 .my-app {
+
+  blockquote {
+    padding:8px 0;
+    background-image: inline-image('openquote.png');
+    background-position: top left;
+    background-repeat: no-repeat;
+    text-indent: 30px;
+
+    p {
+      margin:0 0 8px 0;
+    }
+
+  }
+
+  .top-tips {
+    text-align:center;
+
+    .ck-link {
+      @extend %moui-button;
+      color:#333;
+    }
+
+  }
+
+  .topbox {
+    padding:5px;
+    text-align:center;
+
+    a {
+      color:#8e8e8e;
+    }
+
+  }
+
+  .democode {
+    margin-left:-15px;
+    font-size:14px;
+    min-height:50px;
+  }
+
+  .syntaxhighlighter {
+    padding:0px;
+  }
+
+  #console {
+    height:5000px;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
 }
 
 .my-raw {
@@ -27,28 +76,3 @@
   display:none;
 }
 
-.topbox {
-  padding:5px;
-  text-align:center;
-
-  a {
-    color:#8e8e8e;
-  }
-
-}
-
-.democode {
-  margin-left:-15px;
-  font-size:14px;
-  min-height:50px;
-}
-
-.syntaxhighlighter {
-  padding:0px;
-}
-
-#console {
-  height:5000px;
-  overflow-y:scroll;
-  -webkit-overflow-scrolling: touch;
-}

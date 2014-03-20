@@ -130,17 +130,6 @@ module.exports = function(grunt) {
                     src: ["asset"],
                     dest: "pics/"
                 }]
-            },
-            "syntaxhighlighter": {
-                use: [{
-                    cwd: "compass",
-                    src: ["**.scss"],
-                    dest: "<%= meta.cssVendorDir %>/syntaxhighlighter/"
-                }, {
-                    cwd: "scripts",
-                    src: ["XRegExp.js", "shCore.js", "shBrushJScript.js", "shBrushXml.js"],
-                    dest: "<%= meta.jsVendorDir %>/syntaxhighlighter/"
-                }]
             }
         },
 
@@ -220,6 +209,7 @@ module.exports = function(grunt) {
             html: {
                 options: {
                     globals: {
+                        lastupdate: new Date().toISOString(),
                         appname: '<%= pkg.name %>'
                     }
                 },

@@ -22,82 +22,74 @@
 
 @@include("pagecard/navdrawer.html")
 
-<div class="ckd-page-card" id="ckDefault">
+<ck-card type="page" id="ckDefault">
 
-    <div class="ckd-page-title">Home</div>
-    <div class="ckd-page-footer" data-source="myglobal-page-footer"></div>
-    <div class="ckd-page-actions" data-source="myglobal-page-actions"></div>
-    <a class="ckd-page-nav" href="#ckNavdrawer"></a>
+    <ck-part type="title">Home</ck-part>
+    <ck-part type="footer" source-selector="myglobal-page-footer"></ck-part>
+    <ck-part type="actionbar" source-selector="myglobal-page-actions"></ck-part>
+    <ck-part type="nav" href="#ckNavdrawer"></ck-part>
 
-    <div class="ckd-box-card" data-cfg-plain="true">
-        <h2 class="ckd-hd">CardKit</h2>
-        <div>CardKit is a mobile UI library provides a series of building blocks to help you build mobile web apps quickly and simply, or transfer entire website to mobile-first web app for touch devices. These building blocks are all use-html-as-configure components built on DarkDOM and Moui.</div>
-        <div class="ckd-ft"></div>
-    </div>
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">CardKit Components Gallery</ck-part>
+        <blockquote>
+            <p><a href="https://github.com/douban-f2e/CardKit" target="_blank">CardKit</a> is a mobile UI library provides a series of building blocks to help you build mobile web apps quickly and simply, or transfer entire website to mobile-first web app for touch devices. </p>
+            <p>CardKit building blocks are all <em>use-html-as-configure-style</em> (like Custom Elements, directive...) components built on <a href="https://github.com/dexteryy/DarkDOM" target="_blank">DarkDOM</a> and <a href="https://github.com/dexteryy/moui" target="_blank">Moui</a>.</p>
+        </blockquote>
+    </ck-card>
 
-    <div class="ckd-box-card" data-cfg-plain="true">
-        <h2 class="ckd-hd">Building Blocks</h2>
-    </div>
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">Card Component<span class="note">DarkDOM-style</span></ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="page.html">Page</ck-part>
+            <ck-part type="info">视图</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="box.html">Box</ck-part>
+            <ck-part type="info">容器</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="list.html">List</ck-part>
+            <ck-part type="info">列表</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="mini.html">Mini</ck-part>
+            <ck-part type="info">摘要</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="form.html">Form</ck-part>
+            <ck-part type="info">表单</ck-part>
+        </ck-part>
+    </ck-card>
 
-    <div class="ckd-list-card" data-style="menu">
-        <h2 class="ckd-hd">Card Component<span class="note">DarkDOM-style</span></h2>
-        
-        <div class="ckd-item">
-            <a class="ckd-title" href="Page.html">Page</a>
-            <p class="ckd-info">视图</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="box.html">Box</a>
-            <p class="ckd-info">容器</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="list.html">List</a>
-            <p class="ckd-info">列表</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="mini.html">Mini</a>
-            <p class="ckd-info">摘要</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="form.html">Form</a>
-            <p class="ckd-info">表单</p>
-        </div>
-    </div>
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">UI Component<span class="note">Moui-style</span></ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="control.html">Control</ck-part>
+            <ck-part type="info">状态控件</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="picker.html">Picker</ck-part>
+            <ck-part type="info">选择器</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="overlay.html">Overlay</ck-part>
+            <ck-part type="info">浮层控件</ck-part>
+        </ck-part>
+    </ck-card>
 
-    <div class="ckd-list-card" data-style="menu">
-        <h2 class="ckd-hd">UI Component<span class="note">Moui-style</span></h2>
-        <div class="ckd-item">
-            <a class="ckd-title" href="control.html">Control</a>
-            <p class="ckd-info">状态控件</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="picker.html">Picker</a>
-            <p class="ckd-info">选择器</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="overlay.html">Overlay</a>
-            <p class="ckd-info">浮层控件</p>
-        </div>
-    </div>
+    <ck-card type="list" subtype="menu" plain-hd-style="true">
+        <ck-part type="hd">Debug</ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="browsers.html">Compatibility testing</ck-part>
+            <ck-part type="info">浏览器测试</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="#consoleCard">Console</ck-part>
+            <ck-part type="info">调出控制台</ck-part>
+        </ck-part>
+    </ck-card>
 
-    <div class="ckd-box-card" data-cfg-plain="true">
-        <h2 class="ckd-hd">Extra</h2>
-    </div>
-
-    <div class="ckd-list-card" data-style="menu">
-        <h2 class="ckd-hd">Debug</h2>
-        <div class="ckd-item">
-            <a class="ckd-title" href="browsers.html">Compatibility testing</a>
-            <p class="ckd-info">浏览器测试</p>
-        </div>
-        <div class="ckd-item">
-            <a class="ckd-title" href="#consoleCard">Console</a>
-            <p class="ckd-info">调出控制台</p>
-        </div>
-    </div>
-
-
-</div>
+</ck-card>
 
 @@include("pagecard/console.html")
 

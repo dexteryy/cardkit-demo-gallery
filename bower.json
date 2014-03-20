@@ -12,8 +12,7 @@
     "nerv": "~0.3.0",
     "soviet": "~1.0.0",
     "momo": "~1.2.0-alpha.1",
-    "moui": "~2.3.1",
-    "syntaxhighlighter": "alexgorbatchev/syntaxhighlighter#3.0.83"
+    "moui": "~2.3.1"
   },
   "ignore": [],
   "resolutions": {

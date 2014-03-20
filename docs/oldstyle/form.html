@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+@@include("common/header.html", { 
+    "title": "@@appname" 
+})
+</head>
+<body>
+
+@@include("common/actions.html")
+
+<div class="my-app">
+
+@@include("pagecard/navdrawer.html")
+
+<div class="ckd-page-card" id="ckDefault">
+
+    @@include("common/page_parts.html", { 
+        "title": "Form Card"
+    })
+
+    <div class="ckd-list-card" data-style="menu">
+        <header class="ckd-hd">Source code</header>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/CardKit/tree/master/cardkit/card/form.js" target="_blank">cardkit/card/form.js</a>
+            <span class="ckd-desc">DarkComponent</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/CardKit/tree/master/cardkit/spec/form.js" target="_blank">cardkit/oldspec/form.js</a>
+            <span class="ckd-desc">DarkGuard</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/card/_form.scss" target="_blank">scss/cardkit/card/_form.scss</a>
+            <span class="ckd-desc">Skin</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/form.html" target="_blank">cardkit-demo-gallery/docs/form.html</a>
+            <span class="ckd-desc">The current page</span>
+        </div>
+    </div>
+
+    <div class="ckd-box-card" data-cfg-paper="true">
+        <header class="ckd-hd"><span id="usages">Usages</span></header>
+    </div>
+
+    <!-- demo -->
+    <div class="ck-form-unit">
+        <div class="ckd-item">
+            <label for="feedback-username">Name</label>
+            <input id="feedback-username" type="text" name="username" placeholder="How do we call you" value="" />
+        </div>
+        <div class="ckd-item">
+            <label for="feedback-email">Email</label>
+            <input id="feedback-email" type="text" name="email" placeholder="Your email address" value="" />
+            <p>
+                <input id="remember" checked type="checkbox" name="remember">
+                <label for="remember">remember me</label>
+            </p>
+        </div>
+        <div class="ckd-item">
+            <label for="feedback-comment">Feedback</label>
+            <textarea id="feedback-comment" name="comment"></textarea>
+            <label><em>Any advice is more than welcome.</em></label>
+        </div>
+    </div>
+    <!-- demo end -->
+
+    <!-- demo -->
+    <div class="ck-form-unit" data-cfg-blank="More coming soon...">
+    </div>
+    <!-- demo end -->
+
+</div>
+
+<div class="ckd-page-card" id="hdLink" data-cfg-blank="Link of header">
+    @@include("common/subpage_parts.html", { 
+        "title": "Example"
+    })
+</div>
+
+<div class="ckd-page-card" id="optionsCard">
+    @@include("common/subpage_parts.html", { 
+        "title": "Options"
+    })
+</div>
+
+@@include("common/common_pages.html")
+
+</div>
+
+@@include("common/footer.html")
+
+</body>
+</html>

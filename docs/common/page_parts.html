@@ -1,29 +1,32 @@
 
 <!--demo-->
-<div class="ckd-page-title">@@title</div>
-<div class="ckd-page-footer" data-source="myglobal-page-footer"></div>
-<div class="ckd-page-actions" data-source="myglobal-page-actions">
-    <button type="button" class="ckd-item ck-modal-button" 
+<ck-part type="title">@@title</ck-part>
+<ck-part type="footer" source-selector="myglobal-page-footer"></ck-part>
+<ck-part type="actionbar" source-selector="myglobal-page-actions">
+    <button type="button" action-layout="auto"
+        class="ck-modal-button" 
         data-title="动作3"
         data-url="api/formcontent.html">动作3</button>
-    <button type="button" class="ckd-item ck-switch"
+    <button type="button" action-layout="auto"
+            class="ck-switch"
             data-label=".text"
             value="0"
             data-enable-value="1"
             data-enable-label="Cancel me! (local)">
         <span class="text">Press me! (local)</span>
     </button>
-</div>
-<a class="ckd-page-nav" href="#ckNavdrawer"></a>
+</ck-part>
+<ck-part type="nav" href="#ckNavdrawer"></ck-part>
 <!--demo end-->
 @@include("banner.html")
 
-<div class="ckd-box-card" data-cfg-paper="true">
-    <header class="ckd-hd">@@title</header>
-</div>
+<ck-card type="box" paper-style="true">
+    <ck-part type="hd">@@title</ck-part>
+</ck-card>
 
-<div class="ckd-list-card" data-style="more" data-cfg-paper="true">
-    <a href="#optionsCard" class="ckd-item">Configure</a>
-    <a href="#consoleCard" class="ckd-item">Console</a>
-</div>
+<ck-card type="list" subtype="more" paper-style="true">
+    <ck-part type="item" href="#usages">Usages</ck-part>
+    <ck-part type="item" href="#optionsCard">Configure</ck-part>
+    <ck-part type="item" href="#consoleCard">Console</ck-part>
+</ck-card>
 

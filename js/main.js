@@ -4,16 +4,6 @@ require.config({
     distUrl: 'static/js/vendor/'
 });
 
-define('mo/easing/functions', [], function(){});
-define('mo/mainloop', [], function(){});
-
-define('syntaxhighlighter/shCore', ['syntaxhighlighter/XRegExp']);
-define('sh/core', ['syntaxhighlighter/shCore'], function(){
-    return window.SyntaxHighlighter;
-});
-define('sh/js', ['sh/core']);
-define('sh/xml', ['sh/core']);
-
 // @deprecated
 define('cardkit/app', ['cardkit'], function(cardkit){
     return cardkit;
@@ -21,16 +11,16 @@ define('cardkit/app', ['cardkit'], function(cardkit){
 
 // @deprecated
 define('cardkit/pageready', [
-    'dollar', 
     'cardkit', 
     'finish'
-], function($, cardkit, finish){
-    var default_page = $('#ckDefault');
-    if (default_page[0].isMountedDarkDOM) {
-        finish();
-    } else {
-        default_page.once('pageCard:opened', finish);
-    }
+], function(cardkit, finish){
+    cardkit.event.once('ready', finish);
+});
+
+define('env', [], function(){
+    return {
+        oldStyle: false
+    };
 });
 
 require([
@@ -38,9 +28,9 @@ require([
     'dollar',
     'cardkit',
     'mo/console',
-    'sh/core',
+    'env',
     'mo/domready'
-], function(_, $, cardkit, console, SyntaxHighlighter){
+], function(_, $, cardkit, console, env){
 
     if (false) {
         require(['mo/cookie', 'mo/console'], function(){});
@@ -49,7 +39,7 @@ require([
     cardkit.init({
         appWrapper: '.my-app',
         defaultPage: 'ckDefault',
-        oldStyle: true
+        oldStyle: env.oldStyle
     });
     cardkit.openPage();
 
@@ -57,8 +47,5 @@ require([
         record: true
     });
     console.enable();
-
-    SyntaxHighlighter.defaults['toolbar'] = false;
-    SyntaxHighlighter.all();
 
 });
