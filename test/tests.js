@@ -10,7 +10,7 @@ require([
     tpl_page, tpl_page_source, cardkit){
 
 var $ = window.jQuery;
-var TOP_ACTIONS = '.ck-top-actions .ck-item';
+var TOP_ACTIONS = '.ck-top-actions .ck-top-act';
 
 
 darkdom.initPlugins($);
@@ -37,28 +37,28 @@ describe("the page card", function(){
             expect(dark_root).to.hide;
         });
 
-        it("content can NOT be accessed by ID", function(){
+        it("content can be accessed by ID", function(){
             var accessible_elm = document.getElementById('elmInBox');
             var my_elm = dark_root.find('.elm-in-box');
             expect($('#elmInBox')).to.length(1);
             expect(my_elm).to.exist;
-            expect(my_elm).to.not.be(accessible_elm);
+            expect(my_elm).to.be(accessible_elm);
         });
 
     });
 
     describe("the visible root", function(){
 
-        it("is above to the hidden root", function(){
-            expect(bright_root.next()).to.be(dark_root);
+        it("is below to the hidden root", function(){
+            expect(bright_root.prev()).to.be(dark_root);
         });
 
-        it("content can be accessed by ID", function(){
+        it("content can NOT be accessed by ID", function(){
             var accessible_elm = document.getElementById('elmInBox');
             var my_elm = bright_root.find('.elm-in-box');
             expect($('#elmInBox')).to.length(1);
             expect(my_elm).to.exist;
-            expect(my_elm).to.be(accessible_elm);
+            expect(my_elm).to.not.be(accessible_elm);
         });
 
     });

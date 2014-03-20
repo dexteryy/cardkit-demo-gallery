@@ -5,14 +5,14 @@
 <div class="ckd-page-actions" data-source="myglobal-page-actions">
     <button type="button" class="ckd-item ck-modal-button" 
         data-title="动作3"
-        data-url="formcontent.html">动作3</button>
-    <span class="ckd-item ck-post-button"
+        data-url="api/formcontent.html">动作3</button>
+    <button type="button" class="ckd-item ck-switch"
             data-label=".text"
-            data-enable-label="Cancel vote"
-            data-enable-url="data/enable.html"
-            data-disable-url="data/disable.html">
-        <span class="text">Vote!</span>
-    </span>
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (local)">
+        <span class="text">Press me! (local)</span>
+    </button>
 </div>
 <a class="ckd-page-nav" href="#ckNavdrawer"></a>
 <!--demo end-->
@@ -23,8 +23,7 @@
 </div>
 
 <div class="ckd-list-card" data-style="more" data-cfg-paper="true">
+    <a href="#optionsCard" class="ckd-item">Configure</a>
     <a href="#consoleCard" class="ckd-item">Console</a>
-    <a href="#rawCard" class="ckd-item">Raw source</a>
-    <a href="#optionsCard" class="ckd-item">Configure options</a>
 </div>
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+@@include("common/header.html", { 
+    "title": "@@appname" 
+})
+</head>
+<body>
+
+@@include("common/actions.html")
+
+<div class="my-app">
+
+@@include("pagecard/navdrawer.html")
+
+<div class="ckd-page-card" id="ckDefault">
+
+    @@include("common/page_parts.html", { 
+        "title": "Page Card"
+    })
+
+    <div class="ckd-list-card" data-style="menu">
+        <header class="ckd-hd">Source code</header>
+    </div>
+
+    <div class="ckd-box-card" data-cfg-paper="true">
+        <header class="ckd-hd">Usages</header>
+    </div>
+
+    <!-- demo -->
+    <div class="ckd-list-card" data-cfg-blank="Coming soon..."></div>
+    <!-- demo end -->
+
+</div>
+
+<div class="ckd-page-card" id="hdLink" data-cfg-blank="Link of header">
+    @@include("common/subpage_parts.html", { 
+        "title": "Example"
+    })
+</div>
+
+<div class="ckd-page-card" id="optionsCard">
+    @@include("common/subpage_parts.html", { 
+        "title": "Options"
+    })
+</div>
+
+@@include("pagecard/raw.html")
+
+@@include("pagecard/console.html")
+
+</div>
+
+@@include("common/footer.html")
+
+</body>
+</html>

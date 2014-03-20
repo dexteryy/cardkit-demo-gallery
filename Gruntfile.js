@@ -116,16 +116,16 @@ module.exports = function(grunt) {
             },
             "cardkit": {
                 use: [{
-                    src: ["**/*.js", "!**/Gruntfile.js"],
+                    src: ["cardkit.js", "cardkit/**/*js", "!**/Gruntfile.js"],
                     dest: "<%= meta.jsVendorDir %>/"
                 }, {
                     cwd: "tpl/cardkit",
                     src: ["**/*.tpl"],
-                    dest: "<%= meta.jsVendorDir %>/cardkit/tpl/"
+                    dest: "tpl/cardkit/"
                 }, {
-                    cwd: "scss/cardkit",
-                    src: ["**"],
-                    dest: "<%= meta.cssVendorDir %>/cardkit/"
+                    cwd: "scss",
+                    src: ["cardkit/**", "cardkit.scss"],
+                    dest: "<%= meta.cssVendorDir %>/"
                 }, {
                     src: ["asset"],
                     dest: "pics/"
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
         },
 
         includereplace: {
-            main: {
+            html: {
                 options: {
                     globals: {
                         appname: '<%= pkg.name %>'
@@ -226,9 +226,17 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'docs/',
-                    src: ['**/*.html', '!common/**'],
+                    src: ['**/*.html', '!common/**', '!pagecard/**', '!api/**'],
                     dest: '<%= meta.pubDir %>/',
                     ext: '.orig.html'
+                }]
+            },
+            api: {
+                files: [{
+                    expand: true,
+                    cwd: 'docs/api/',
+                    src: ['**/*'],
+                    dest: '<%= meta.pubDir %>/api/'
                 }]
             }
         },
@@ -463,7 +471,7 @@ module.exports = function(grunt) {
                 ]
             },
             html: {
-                files: ['docs/**/*.html'],
+                files: ['docs/**'],
                 tasks: [
                     'dev:html',
                     'test'
