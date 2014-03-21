@@ -216,17 +216,14 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'docs/',
-                    src: ['**/*.html', '!common/**', '!pagecard/**', '!api/**'],
+                    src: ['*.html', 'oldstyle/*.html'],
                     dest: '<%= meta.pubDir %>/',
                     ext: '.orig.html'
-                }]
-            },
-            api: {
-                files: [{
+                }, {
                     expand: true,
-                    cwd: 'docs/api/',
-                    src: ['**/*'],
-                    dest: '<%= meta.pubDir %>/api/'
+                    cwd: 'docs/',
+                    src: ['**/api/**/*'],
+                    dest: '<%= meta.pubDir %>/'
                 }]
             }
         },

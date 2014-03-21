@@ -4,3 +4,26 @@
     <div class="copyright">Last update: @@lastupdate</div>
 </div>
 <!--demo end-->
+
+<script src="static/js/main.js"></script>
+<script>
+require([
+    'dollar',
+    'cardkit',
+    'mo/console',
+    'mo/domready'
+], function($, cardkit, console){
+
+    cardkit.init({
+        appWrapper: '.my-app',
+        defaultPage: 'ckDefault'
+    });
+    cardkit.openPage();
+
+    console.config({
+        record: true
+    });
+    console.enable();
+
+});
+</script>

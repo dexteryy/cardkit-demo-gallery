@@ -17,35 +17,14 @@ define('cardkit/pageready', [
     cardkit.event.once('ready', finish);
 });
 
-define('env', [], function(){
-    return {
-        oldStyle: false
-    };
-});
-
 require([
-    'mo/lang',
-    'dollar',
     'cardkit',
     'mo/console',
-    'env',
     'mo/domready'
-], function(_, $, cardkit, console, env){
+], function(){
 
     if (false) {
-        require(['mo/cookie', 'mo/console'], function(){});
+        require(['mo/cookie'], function(){});
     }
-
-    cardkit.init({
-        appWrapper: '.my-app',
-        defaultPage: 'ckDefault',
-        oldStyle: env.oldStyle
-    });
-    cardkit.openPage();
-
-    console.config({
-        record: true
-    });
-    console.enable();
 
 });
