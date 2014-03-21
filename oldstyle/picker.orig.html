@@ -8,14 +8,6 @@
 <meta name="format-detection" content="telephone=no">
 
 <link href="../static/css/main.css" rel="stylesheet">
-<script src="../static/js/main.js"></script>
-<script>
-define('env', [], function(){
-    return {
-        oldStyle: true
-    };
-});
-</script>
 
 <style>
 .rangerbox {
@@ -181,13 +173,13 @@ define('env', [], function(){
         data-ignore-repeat="true">
     <button type="button" class="ck-option" value="1"
         data-enable-method="get"
-        data-enable-url="api/enable.txt">Option 1</button>
+        data-enable-url="api/enable.html">Option 1</button>
     <button type="button" class="ck-option enabled" value="2"
         data-enable-method="get"
-        data-enable-url="api/enable.txt">Option 2</button>
+        data-enable-url="api/enable.html">Option 2</button>
     <button type="button" class="ck-option" value="3"
         data-enable-method="get"
-        data-enable-url="api/enable.txt">Option 3</button>
+        data-enable-url="api/enable.html">Option 3</button>
 </div>
 <script type="text/darkscript">
 var me = this;
@@ -224,14 +216,14 @@ require([
             value="up"
             data-num-field=".op-num span"
             data-enable-method="get"
-            data-enable-url="api/enable.txt">Up
+            data-enable-url="api/enable.html">Up
         <span class="op-num">(<span>100</span>)</span>
     </button>
     <button type="button" class="ck-option"
             value="down"
             data-num-field=".op-num span"
             data-enable-method="get"
-            data-enable-url="api/disable.txt">Down
+            data-enable-url="api/disable.html">Down
         <span class="op-num">(<span>6</span>)</span>
     </button>
 </div>
@@ -546,9 +538,33 @@ location.replace(location.href.replace(/oldstyle\//, ''));
 
 <!--demo-->
 <div class="myglobal-page-footer">
-    <div class="copyright">Last update: 2014-03-20T11:21:53.277Z</div>
+    <div class="copyright">Last update: 2014-03-21T08:29:00.487Z</div>
 </div>
 <!--demo end-->
+
+<script src="../static/js/main.js"></script>
+<script>
+require([
+    'dollar',
+    'cardkit',
+    'mo/console',
+    'mo/domready'
+], function($, cardkit, console){
+
+    cardkit.init({
+        appWrapper: '.my-app',
+        defaultPage: 'ckDefault',
+        oldStyle: true
+    });
+    cardkit.openPage();
+
+    console.config({
+        record: true
+    });
+    console.enable();
+
+});
+</script>
 
 
 <script id="jsForAllDemo">

@@ -10235,7 +10235,10 @@ var exports = {
             outer_page = node.closest(spec.SELECTOR_OLD);
         }
         if (outer_page[0]) {
-            this.openPage(outer_page);
+            var last_decktop = _decks[_current_deck];
+            if (!last_decktop || last_decktop[0] !== outer_page[0]) {
+                this.openPage(outer_page);
+            }
         }
         return outer_page;
     },
@@ -10440,35 +10443,14 @@ define('cardkit/pageready', [
     cardkit.event.once('ready', finish);
 });
 
-define('env', [], function(){
-    return {
-        oldStyle: false
-    };
-});
-
 require([
-    'mo/lang',
-    'dollar',
     'cardkit',
     'mo/console',
-    'env',
     'mo/domready'
-], function(_, $, cardkit, console, env){
+], function(){
 
     if (false) {
-        require(['mo/cookie', 'mo/console'], function(){});
+        require(['mo/cookie'], function(){});
     }
-
-    cardkit.init({
-        appWrapper: '.my-app',
-        defaultPage: 'ckDefault',
-        oldStyle: env.oldStyle
-    });
-    cardkit.openPage();
-
-    console.config({
-        record: true
-    });
-    console.enable();
 
 });

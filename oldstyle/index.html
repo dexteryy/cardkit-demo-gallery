@@ -1,8 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>cardkit-demo-gallery</title><meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="format-detection" content="telephone=no"><link href="../static/css/main.css" rel="stylesheet"><script src="../static/js/main.js"></script><script>define('env', [], function(){
-    return {
-        oldStyle: true
-    };
-});</script><style>.note {
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>cardkit-demo-gallery</title><meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="format-detection" content="telephone=no"><link href="../static/css/main.css" rel="stylesheet"><style>.note {
     color:#ccc;
     font-size:10px;
     font-weight:normal;
@@ -13,4 +9,23 @@
             record: false,
             output: $(this).find('#console')[0]
         });
-    });</script></div><div class="ckd-page-card" id="toNewVersion"><script type="text/darkscript">location.replace(location.href.replace(/oldstyle\//, ''));</script></div></div><div class="myglobal-page-footer"><div class="copyright">Last update: 2014-03-20T11:21:53.277Z</div></div></body></html>
+    });</script></div><div class="ckd-page-card" id="toNewVersion"><script type="text/darkscript">location.replace(location.href.replace(/oldstyle\//, ''));</script></div></div><div class="myglobal-page-footer"><div class="copyright">Last update: 2014-03-21T08:29:00.487Z</div></div><script src="../static/js/main.js"></script><script>require([
+    'dollar',
+    'cardkit',
+    'mo/console',
+    'mo/domready'
+], function($, cardkit, console){
+
+    cardkit.init({
+        appWrapper: '.my-app',
+        defaultPage: 'ckDefault',
+        oldStyle: true
+    });
+    cardkit.openPage();
+
+    console.config({
+        record: true
+    });
+    console.enable();
+
+});</script></body></html>

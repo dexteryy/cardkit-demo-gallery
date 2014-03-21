@@ -8,14 +8,6 @@
 <meta name="format-detection" content="telephone=no">
 
 <link href="../static/css/main.css" rel="stylesheet">
-<script src="../static/js/main.js"></script>
-<script>
-define('env', [], function(){
-    return {
-        oldStyle: true
-    };
-});
-</script>
 
 <style>
 #post1 {
@@ -179,7 +171,7 @@ define('env', [], function(){
 <!--demo-->
 <button type="button" class="ck-switch demo" id="switch1" 
         value="0" 
-        data-enable-url="api/enable.txt"
+        data-enable-url="api/enable.html"
         data-enable-method="get"
         data-enable-val="1"
         data-label="false">
@@ -217,7 +209,7 @@ define('env', [], function(){
 <input type="button" class="ck-post-button demo" id="post1"
     value="Get JSON data" 
     data-request-method="get"
-    data-enable-json-url="api/form.json"
+    data-enable-json-url="api/form_json.html"
     data-enable-method="get"
     data-enable-label="Get JSON (success!)">
 <!--demo end-->
@@ -244,7 +236,7 @@ define('env', [], function(){
 <button type="button" class="ck-post-button demo" id="post2"
         data-style="big"
         data-fluid="true"
-        data-enable-url="api/enable.txt"
+        data-enable-url="api/enable.html"
         data-enable-method="get"
         data-enable-label="Thanks!" 
         data-label="span">
@@ -275,8 +267,8 @@ define('env', [], function(){
         data-label=".text"
         data-num-field=".num span"
         data-enable-label="Cancel vote"
-        data-enable-url="api/enable.txt"
-        data-disable-url="api/disable.txt"
+        data-enable-url="api/enable.html"
+        data-disable-url="api/disable.html"
         data-enable-method="get"
         data-disable-method="get"
         data-fluid="true"
@@ -342,7 +334,7 @@ require([
 <a href="#" class="ck-post-link demo" id="link1"
     data-enable-label="Post Link (clicked)" 
     data-enable-method="get"
-    data-enable-url="api/enable.txt"
+    data-enable-url="api/enable.html"
 >Post Link</a>
 <!--demo end-->
             text text text text text text text text text text text text text text text</p>
@@ -476,9 +468,33 @@ location.replace(location.href.replace(/oldstyle\//, ''));
 
 <!--demo-->
 <div class="myglobal-page-footer">
-    <div class="copyright">Last update: 2014-03-20T11:21:53.277Z</div>
+    <div class="copyright">Last update: 2014-03-21T08:29:00.487Z</div>
 </div>
 <!--demo end-->
+
+<script src="../static/js/main.js"></script>
+<script>
+require([
+    'dollar',
+    'cardkit',
+    'mo/console',
+    'mo/domready'
+], function($, cardkit, console){
+
+    cardkit.init({
+        appWrapper: '.my-app',
+        defaultPage: 'ckDefault',
+        oldStyle: true
+    });
+    cardkit.openPage();
+
+    console.config({
+        record: true
+    });
+    console.enable();
+
+});
+</script>
 
 
 <script id="jsForAllDemo">
