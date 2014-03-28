@@ -6,13 +6,16 @@
 <!--demo end-->
 
 <script src="../static/js/main.js"></script>
+<script src="../static/js/vendor/prism.js" data-manual></script>
 <script>
 require([
     'dollar',
     'cardkit',
     'mo/console',
+    'galleryapp/component/codebox',
+    'galleryapp/oldspec/codebox',
     'mo/domready'
-], function($, cardkit, console){
+], function($, cardkit, console, codebox_component, codebox_spec){
 
     cardkit.init({
         appWrapper: '.my-app',
@@ -20,6 +23,22 @@ require([
         oldStyle: true
     });
     cardkit.openPage();
+
+    cardkit.component('page')
+        .component('form')
+        .component('item')
+        .contain('codebox', codebox_component, {
+            content: true
+        });
+    cardkit.guard('page')
+        .component('form', function(guard, parent, orig_spec){
+            orig_spec(guard);
+            guard.component('item', function(guard, parent, orig_spec){
+                orig_spec(guard);
+                guard.component('codebox', codebox_spec);
+            });
+        });
+    cardkit.updatePage();
 
     console.config({
         record: true

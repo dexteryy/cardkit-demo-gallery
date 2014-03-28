@@ -2,15 +2,17 @@
   "name": "cardkit-demo-gallery",
   "description": "",
   "version": "2.0.1",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "mo": "~1.6.7",
     "dollar": "~1.4.1",
-    "cardkit": "~2.0.0-alpha.5"
+    "cardkit": "~2.0.0-alpha.6",
+    "prism": "gh-pages"
   },
+  "devDependencies": {},
   "ignore": [],
   "resolutions": {
     "dollar": "~1.4.1",
-    "mo": "~1.6.2"
+    "mo": "~1.6.2",
+    "darkdom": "~0.13.0"
   }
 }

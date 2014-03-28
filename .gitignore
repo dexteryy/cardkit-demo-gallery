@@ -14,16 +14,16 @@ bower_components/
 
 js/**/Gruntfile.js
 js/vendor/
+js/galleryapp/tpl/
 css/**/Gruntfile.js
 css/moui/
 css/cardkit/
 css/cardkit.scss
-css/syntaxhighlighter/
+css/prism/
 tpl/cardkit/
 config.js
+origin/
 dist/
 target/
 public/
 report/
-
-js/vendor/cardkit/tpl/

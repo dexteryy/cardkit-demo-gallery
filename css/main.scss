@@ -1,6 +1,7 @@
 
 @import 'cardkit/include';
 @import 'cardkit';
+@import 'prism/prism-okaidia';
 @import 'navdrawer';
 @import 'console';
 
@@ -40,9 +41,20 @@
   }
 
   .democode {
-    margin-left:-15px;
-    font-size:14px;
-    min-height:50px;
+    background:#272822;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+
+    pre {
+      width:1500px;
+    }
+
+    code {
+      font-size:10px;
+      line-height:normal;
+    }
+
   }
 
   .syntaxhighlighter {

@@ -14,7 +14,9 @@ module.exports = function(grunt) {
     var pkg = grunt.file.readJSON('package.json');
 
     grunt.initConfig({
-        pkg: pkg,
+        pkg: {
+            name: 'galleryapp'
+        },
         meta: {
             pubDir: config.pubDir,
             jsStaticDir: config.jsStaticDir || (config.staticDir + '/js'),
@@ -130,6 +132,16 @@ module.exports = function(grunt) {
                     src: ["asset"],
                     dest: "pics/"
                 }]
+            },
+            "prism": {
+                use: [{
+                    src: ["prism.js"],
+                    dest: "<%= meta.jsVendorDir %>/"
+                }, {
+                    cwd: "themes",
+                    src: ["prism-okaidia.css"],
+                    dest: "<%= meta.originDir %>/prism/",
+                }]
             }
         },
 
@@ -143,7 +155,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: '<%= meta.tplDir %>',
                     src: ['**/*.tpl'],
-                    dest: '<%= meta.jsTtplDir %>',
+                    dest: '<%= meta.jsTplDir %>',
                     ext: '.js'
                 }]
             },
@@ -306,6 +318,15 @@ module.exports = function(grunt) {
         },
 
         copy: {
+            origin_to_scss: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= meta.originDir %>',
+                    src: ['**/*.css'],
+                    dest: '<%= meta.cssVendorDir %>',
+                    ext: '.scss'
+                }]
+            },
             asset_to_target: {
                 files: [{
                     expand: true,
@@ -486,6 +507,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('build_components', [
+        "copy:origin_to_scss"
     ]);
 
     grunt.registerTask('update', [

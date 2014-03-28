@@ -57,7 +57,7 @@
         <header class="ckd-hd">Examples</header>
         <div class="ckd-item">
 <!--demo-->
-<div class="ck-segment demo" id="picker1"
+<div class="ck-segment" id="picker1"
         data-ignore-repeat="true">
     <button type="button" class="ck-option" value="1"
         data-enable-method="get"
@@ -112,7 +112,7 @@ require([
 <!--demo end-->
             @@include("common/show_html.html")
             @@include("common/show_js.html", {
-                "source": "jsForAllDemo" 
+                "source": "#jsForAllDemo" 
             })
         </div>
     </div>
@@ -140,7 +140,7 @@ require([
 <!--demo end-->
             @@include("common/show_html.html")
             @@include("common/show_js.html", {
-                "source": "jsForAllDemo" 
+                "source": "#jsForAllDemo" 
             })
         </div>
         <div class="ckd-item">
@@ -161,7 +161,7 @@ require([
 <!--demo end-->
             @@include("common/show_html.html")
             @@include("common/show_js.html", {
-                "source": "jsForAllDemo" 
+                "source": "#jsForAllDemo" 
             })
         </div>
     </div>
@@ -174,7 +174,7 @@ require([
         <header class="ckd-hd">Examples</header>
         <div class="ckd-item">
 <!--demo-->
-<ul class="ck-actions demo" id="actions1">
+<ul class="ck-actions" id="actions1">
     <li><a href="#on" class="ck-option">Select All</a></li>
     <li><a href="#off" class="ck-option">Unselect All</a></li>
     <li><a href="#invert" class="ck-option">Select Invert</a></li>
@@ -251,7 +251,7 @@ require([
         <div class="ckd-item">
 <!--demo-->
 <div class="rangerbox">
-    <input class="ck-ranger demo" id="ranger1"
+    <input class="ck-ranger" id="ranger1"
         type="range" min="0.5" max="45" step="0.2">
 </div>
 <script type="text/darkscript">
@@ -278,12 +278,6 @@ $('#ranger1').on('ranger:changed', function(e){
         </div>
     </div>
 
-</div>
-
-<div class="ckd-page-card" id="optionsCard">
-    @@include("common/subpage_parts.html", { 
-        "title": "Options"
-    })
 </div>
 
 @@include("common/common_pages.html")

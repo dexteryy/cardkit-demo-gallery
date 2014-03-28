@@ -147,7 +147,7 @@ data-title="inline html">Open</button>
 <!--demo end-->
             @@include("common/show_html.html")
             @@include("common/show_js.html", {
-                "source": "jsForSelect" 
+                "source": "#jsForSelect" 
             })
         </div>
         <div class="ckd-item">
@@ -167,7 +167,7 @@ data-title="inline html">Open</button>
 <!--demo end-->
             @@include("common/show_html.html")
             @@include("common/show_js.html", {
-                "source": "jsForSelect" 
+                "source": "#jsForSelect" 
             })
         </div>
         <div class="ckd-item">
@@ -203,7 +203,7 @@ data-title="inline html">Open</button>
         </div>
         <div class="ckd-item">
 <!--demo-->
-<button type="button" class="my-actions-button ckbase-btn demo"
+<button type="button" class="my-actions-button ckbase-btn"
     data-fluid="true">
 <span>Generated Action menu</span>
 </button>
@@ -251,7 +251,7 @@ function init_events(){
         </div>
         <div class="ckd-item">
 <!--demo-->
-<button type="button" class="my-confirm-button ckbase-btn demo"
+<button type="button" class="my-confirm-button ckbase-btn"
     data-fluid="true">
 <span>Confirm/Alert (No Options)</span>
 </button>
@@ -330,22 +330,16 @@ data-content="测试！">Tips B</button>
 
 </div>
 
-<div class="ckd-page-card" id="optionsCard">
-    @@include("common/subpage_parts.html", { 
-        "title": "Options"
-    })
-</div>
-
 @@include("common/common_pages.html")
 
 </div>
 
 <div class="my-raw">
 
-    <div class="ckdActionbar">
-        <button type="button" class="ckd-overflow-item ck-modal-button ckdActionbarItem1" data-url="api/formcontent.html" data-title="动作1">动作1</button>
-        <button type="button" class="ckd-item ck-modal-button" data-url="api/formcontent.html" data-title="动作2">动作2</button>
-    </div>
+<div class="ckdActionbar">
+    <button type="button" class="ckd-overflow-item ck-modal-button ckdActionbarItem1" data-url="api/formcontent.html" data-title="动作1">动作1</button>
+    <button type="button" class="ckd-item ck-modal-button" data-url="api/formcontent.html" data-title="动作2">动作2</button>
+</div>
 
 <script type="text/modalview-html" class="formBox">
 <form action="api/post_result_json.html" class="inlineForm1">

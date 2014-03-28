@@ -4,6 +4,11 @@
 @@include("common/header.html", { 
     "title": "@@appname" 
 })
+<style>
+#post1 {
+    width:160px;
+}
+</style>
 </head>
 <body>
 
@@ -43,26 +48,200 @@
         <ck-part type="hd"><span id="usages">Usages</span></ck-part>
     </ck-card>
 
-    <ck-card type="list">
-        <ck-part type="blank">Coming soon!</ck-part>
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Switch</ck-part>
     </ck-card>
 
-    @@include("common/tmp_page_footer.html")
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+            <p>
+<!--demo-->
+<button type="button" class="ck-switch demo" id="switch1" 
+        value="0" 
+        data-enable-url="api/enable.html"
+        data-enable-method="get"
+        data-enable-val="1"
+        data-label="false">
+    <span class="enable-text">开启</span>
+    <span class="disable-text">关闭</span>
+    <span class="block"></span>
+</button>
+<!--demo end-->
+            </p>
+            @@include("common/show_html.html")
+            @@include("common/show_js.html", {
+                "source": "#jsForAllDemo" 
+            })
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Post button</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<input type="button" class="ck-post-button demo" id="post1"
+    value="Get JSON data" 
+    data-request-method="get"
+    data-enable-json-url="api/form_json.html"
+    data-enable-method="get"
+    data-enable-label="Get JSON (success!)">
+<!--demo end-->
+            <p>
+                <label><em>fixed width, json response</em></label>
+            </p>
+            @@include("common/show_html.html")
+            @@include("common/show_js.html", {
+                "source": "#jsForAllDemo" 
+            })
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-post-button demo" id="post2"
+        data-style="big"
+        data-fluid="true"
+        data-enable-url="api/enable.html"
+        data-enable-method="get"
+        data-enable-label="Thanks!" 
+        data-label="span">
+    <span>Favor!</span>
+</button>
+<!--demo end-->
+            <p>
+                <label><em>default width</em></label>
+            </p>
+            @@include("common/show_html.html")
+            @@include("common/show_js.html", {
+                "source": "#jsForAllDemo" 
+            })
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<span class="ck-post-button" id="post3"
+        data-label=".text"
+        data-num-field=".num span"
+        data-enable-label="Cancel vote"
+        data-enable-url="api/enable.html"
+        data-disable-url="api/disable.html"
+        data-enable-method="get"
+        data-disable-method="get"
+        data-fluid="true"
+        data-is-default="true">
+    <span class="text">Vote!</span>
+    <span class="num">(<span>7</span>)</span>
+</span>
+<script type="text/darkscript">
+var me = this;
+require([
+    'dollar', 
+    'show-result'
+], function($, show_result){
+    $(me).on('darkdom:rendered', init_events);
+    init_events();
+    function init_events(){
+        $('#post3').on('control:enable', show_result)
+            .on('control:disable', show_result);
+    }
+});
+</script>
+<!--demo end-->
+            <p>
+                <label><em>fluid width, with number, can disable</em></label>
+            </p>
+            @@include("common/show_html.html")
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<a href="#" class="ck-post-button demo" id="post4"
+    data-enable-label="Button Link (clicked)" 
+    data-is-danger="true"
+    data-fluid="true">Button Link</a>
+<!--demo end-->
+            <p>
+                <label><em>fluid width, link element</em></label>
+            </p>
+            @@include("common/show_html.html")
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Post Link</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+            <p>text text text text text text text 
+<!--demo-->
+<a href="#" class="ck-post-link demo" id="link1"
+    data-enable-label="Post Link (clicked)" 
+    data-enable-method="get"
+    data-enable-url="api/enable.html"
+>Post Link</a>
+<!--demo end-->
+            text text text text text text text text text text text text text text text</p>
+            @@include("common/show_html.html")
+            @@include("common/show_js.html", {
+                "source": "#jsForAllDemo" 
+            })
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Folder</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<div class="ck-folder demo" id="folder1"
+        data-enable-label="Fold me!" 
+        data-label="header">
+    <header>Unfold me!</header>
+    <div class="content">Hidden content. Hidden content. Hidden content. Hidden content.</div>
+</div>
+<!--demo end-->
+            @@include("common/show_html.html")
+        </ck-part>
+    </ck-card>
+
+    @@include("common/default_page_footer.html")
 
 </ck-card>
 
-<ck-card type="page" id="optionsCard">
-    @@include("common/subpage_parts.html", { 
-        "title": "Options"
-    })
-</ck-card>
-
-@@include("pagecard/console.html")
+@@include("common/common_pages.html")
 
 </div>
 
 @@include("common/footer.html")
 
+<script id="jsForAllDemo">
+define('show-result', ['cardkit'], function(ck){
+    return function(e){
+        var result = e.component.responseData;
+        console.info('response: ', result);
+        ck.notify('response: ' + result);
+    };
+});
+
+require([
+    'dollar',
+    'cardkit',
+    'show-result'
+], function($, ck, show_result){
+    ck.darkDelegate.on('control:enable', {
+        '#switch1': show_result,
+        '#post1': show_result,
+        '#post2': show_result,
+        '#link1': show_result
+    });
+});
+</script>
 </body>
 </html>
 
