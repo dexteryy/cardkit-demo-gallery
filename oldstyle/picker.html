@@ -1,6 +1,182 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>galleryapp</title><meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="format-detection" content="telephone=no"><link href="../static/css/main.css" rel="stylesheet"><style>.rangerbox {
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>galleryapp</title>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+
+<link href="../static/css/main.css" rel="stylesheet">
+
+<style>
+.rangerbox {
     position:relative;
-}</style></head><body><div class="myglobal-page-actions"><a href="index.html" class="ckd-overflow-item ck-link">index.html</a> <a href="index.html" class="ckd-overflow-item ck-link" target="_blank">new window</a> <button type="button" class="ckd-overflow-item ck-switch" id="myGlobalVote" data-label=".text" value="0" data-enable-value="1" data-enable-label="Cancel me! (global)"><span class="text">Press me! (global)</span></button></div><div class="my-app"><div class="ckd-page-card" id="ckNavdrawer" data-cfg-deck="navdrawer"><div class="my-navdrawer-mask"></div><div class="my-navdrawer"><header><h2>CardKit Reference</h2></header><article><div class="my-nav-wrap"><div class="my-nav-content"><div class="my-content"><div class="search"><a class="ck-modal-link" href="#" data-url="api/formcontent.html">search</a></div><ul><li><a class="ck-link" href="index.html">Home</a></li></ul><h6>Card Component</h6><ul><li><a class="ck-link" href="page.html">Page</a></li><li><a class="ck-link" href="box.html">Box</a></li><li><a class="ck-link" href="list.html">List</a></li><li><a class="ck-link" href="mini.html">Mini</a></li><li><a class="ck-link" href="form.html">Form</a></li></ul><h6>UI Component</h6><ul><li><a class="ck-link" href="control.html">Control</a></li><li><a class="ck-link" href="picker.html">Picker</a></li><li><a class="ck-link" href="overlay.html">Overlay</a></li></ul><h6>Debug</h6><ul><li><a class="ck-link" href="browsers.html">Compatibility Testing</a></li><li><a class="ck-link" href="#consoleCard">Console</a></li></ul></div></div><div class="my-footer" style="padding-top: 0px"></div></div></article></div></div><div class="ckd-page-card" id="ckDefault"><div class="ckd-page-title">Picker</div><div class="ckd-page-footer" data-source="myglobal-page-footer"></div><div class="ckd-page-actions" data-source="myglobal-page-actions"><button type="button" class="ckd-item ck-modal-button" data-title="动作3" data-url="api/formcontent.html">动作3</button> <button type="button" class="ckd-item ck-switch" data-label=".text" value="0" data-enable-value="1" data-enable-label="Cancel me! (local)"><span class="text">Press me! (local)</span></button></div><a class="ckd-page-nav" href="#ckNavdrawer"></a>  <div class="ckd-page-banner" data-cfg-plain="true"><div class="topbox"><a href="index.html" class="ck-link">Return to home</a></div></div><div class="ckd-box-card" data-cfg-paper="true"><header class="ckd-hd">Picker</header></div><div class="ckd-list-card" data-style="more" data-cfg-paper="true"><a href="#usages" class="ckd-item">Usages</a> <a href="#toNewVersion" class="ckd-item">Switch to v2 style</a> <a href="#consoleCard" class="ckd-item">Console</a></div><div class="ckd-list-card" data-style="menu"><header class="ckd-hd">Source code</header><div class="ckd-item"><a class="ckd-title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/picker.js" target="_blank">cardkit/ui/picker</a> <span class="ckd-desc">`require('cardkit').picker`</span></div><div class="ckd-item"><a class="ckd-title" href="https://github.com/dexteryy/moui/blob/master/picker.js" target="_blank">moui/picker</a> <span class="ckd-desc">The original class</span></div><div class="ckd-item"><a class="ckd-title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_picker.scss" target="_blank">scss/cardkit/active/_picker.scss</a> <span class="ckd-desc">Skin</span></div><div class="ckd-item"><a class="ckd-title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/picker.html" target="_blank">cardkit-demo-gallery/docs/picker.html</a> <span class="ckd-desc">The current page</span></div></div><div class="ckd-box-card" data-cfg-paper="true"><header class="ckd-hd"><span id="usages">Usages</span></header></div><div class="ck-box-unit" data-cfg-plain="true"><header class="ckd-hd">Segmented selector</header></div><div class="ck-form-unit"><header class="ckd-hd">Examples</header><div class="ckd-item"><div class="ck-segment" id="picker1" data-ignore-repeat="true"><button type="button" class="ck-option" value="1" data-enable-method="get" data-enable-url="api/enable.html">Option 1</button> <button type="button" class="ck-option enabled" value="2" data-enable-method="get" data-enable-url="api/enable.html">Option 2</button> <button type="button" class="ck-option" value="3" data-enable-method="get" data-enable-url="api/enable.html">Option 3</button></div><script type="text/darkscript">var me = this;
+}
+</style>
+</head>
+<body>
+
+
+<!--demo-->
+<div class="myglobal-page-actions">
+    <a href="index.html" class="ckd-overflow-item ck-link">index.html</a>
+    <a href="index.html" class="ckd-overflow-item ck-link" target="_blank">new window</a>
+    <button type="button" class="ckd-overflow-item ck-switch"
+            id="myGlobalVote"
+            data-label=".text"
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (global)">
+        <span class="text">Press me! (global)</span>
+    </button>
+</div>
+<!--demo end-->
+
+
+<div class="my-app">
+
+
+<!--demo-->
+<div class="ckd-page-card" id="ckNavdrawer" data-cfg-deck="navdrawer">
+
+    <div class="my-navdrawer-mask"></div>
+    <div class="my-navdrawer">
+
+        <header>
+            <h2>CardKit Reference</h2>
+        </header>
+
+        <article>
+            <div class="my-nav-wrap">
+                <div class="my-nav-content"><div class="my-content">
+                    <div class="search">
+                        <a class="ck-modal-link" href="#" data-url="api/formcontent.html">search</a>
+                    </div>
+                    <ul>
+                        <li><a class="ck-link" href="index.html">Home</a></li>
+                    </ul>
+                    <h6>Card Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="page.html">Page</a></li>
+                        <li><a class="ck-link" href="box.html">Box</a></li>
+                        <li><a class="ck-link" href="list.html">List</a></li>
+                        <li><a class="ck-link" href="mini.html">Mini</a></li>
+                        <li><a class="ck-link" href="form.html">Form</a></li>
+                    </ul>
+                    <h6>UI Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="control.html">Control</a></li>
+                        <li><a class="ck-link" href="picker.html">Picker</a></li>
+                        <li><a class="ck-link" href="overlay.html">Overlay</a></li>
+                    </ul>
+                    <h6>Debug</h6>
+                    <ul>
+                        <li><a class="ck-link" href="browsers.html">Compatibility Testing</a></li>
+                        <li><a class="ck-link" href="#consoleCard">Console</a></li>
+                    </ul>
+                </div></div>
+                <div class="my-footer" style="padding-top: 0px;"></div>
+            </div>
+        </article>
+
+    </div>
+
+</div>
+<!--demo end-->
+
+
+
+<div class="ckd-page-card" id="ckDefault">
+
+    
+<!--demo-->
+<div class="ckd-page-title">Picker</div>
+<div class="ckd-page-footer" data-source="myglobal-page-footer"></div>
+<div class="ckd-page-actions" data-source="myglobal-page-actions">
+    <button type="button" class="ckd-item ck-modal-button" 
+        data-title="动作3"
+        data-url="api/formcontent.html">动作3</button>
+    <button type="button" class="ckd-item ck-switch"
+            data-label=".text"
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (local)">
+        <span class="text">Press me! (local)</span>
+    </button>
+</div>
+<a class="ckd-page-nav" href="#ckNavdrawer"></a>
+<!--demo end-->
+
+<!--demo-->
+<div class="ckd-page-banner"
+        data-cfg-plain="true">
+    <div class="topbox">
+        <a href="index.html" class="ck-link">Return to home</a>
+    </div>
+</div>
+<!--demo end-->
+
+
+<div class="ckd-box-card" data-cfg-paper="true">
+    <header class="ckd-hd">Picker</header>
+</div>
+
+<div class="ckd-list-card" data-style="more" data-cfg-paper="true">
+    <a href="#usages" class="ckd-item">Usages</a>
+    <a href="#toNewVersion" class="ckd-item">Switch to v2 style</a>
+    <a href="#consoleCard" class="ckd-item">Console</a>
+</div>
+
+
+
+    <div class="ckd-list-card" data-style="menu">
+        <header class="ckd-hd">Source code</header>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/picker.js" target="_blank">cardkit/ui/picker</a>
+            <span class="ckd-desc">`require('cardkit').picker`</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/dexteryy/moui/blob/master/picker.js" target="_blank">moui/picker</a>
+            <span class="ckd-desc">The original class</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_picker.scss" target="_blank">scss/cardkit/active/_picker.scss</a>
+            <span class="ckd-desc">Skin</span>
+        </div>
+        <div class="ckd-item">
+            <a class="ckd-title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/picker.html" target="_blank">cardkit-demo-gallery/docs/picker.html</a>
+            <span class="ckd-desc">The current page</span>
+        </div>
+    </div>
+
+    <div class="ckd-box-card" data-cfg-paper="true">
+        <header class="ckd-hd"><span id="usages">Usages</span></header>
+    </div>
+
+
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <header class="ckd-hd">Segmented selector</header>
+    </div>
+
+    <div class="ck-form-unit">
+        <header class="ckd-hd">Examples</header>
+        <div class="ckd-item">
+<!--demo-->
+<div class="ck-segment" id="picker1"
+        data-ignore-repeat="true">
+    <button type="button" class="ck-option" value="1"
+        data-enable-method="get"
+        data-enable-url="api/enable.html">Option 1</button>
+    <button type="button" class="ck-option enabled" value="2"
+        data-enable-method="get"
+        data-enable-url="api/enable.html">Option 2</button>
+    <button type="button" class="ck-option" value="3"
+        data-enable-method="get"
+        data-enable-url="api/enable.html">Option 3</button>
+</div>
+<script type="text/darkscript">
+var me = this;
 require([
     'dollar', 
     'cardkit', 
@@ -15,7 +191,139 @@ require([
                 expires: 1400
             });
         });
-});</script><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div></div><div class="ckd-item"><div class="ck-segment picker1-2 demo" data-label="false"><button type="button" class="ck-option" value="up" data-num-field=".op-num span" data-enable-method="get" data-enable-url="api/enable.html">Up <span class="op-num">(<span>100</span>)</span></button> <button type="button" class="ck-option" value="down" data-num-field=".op-num span" data-enable-method="get" data-enable-url="api/disable.html">Down <span class="op-num">(<span>6</span>)</span></button></div><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div><div class="my-codebox" lang="JS" only-content="true" code-selector="#jsForAllDemo">Show the source code</div></div></div><div class="ck-box-unit" data-cfg-plain="true"><header class="ckd-hd">Tag selector</header></div><div class="ck-form-unit"><header class="ckd-hd">Examples</header><div class="ckd-item"><label class="ckd-title">Single Select</label><div class="ck-tagselector demo" id="picker2"><input type="hidden" value=""><input class="ck-option" type="button" value="linux"><input class="ck-option" type="button" value="CSS"><input class="ck-option" type="button" value="奇幻"><input class="ck-option" type="button" value="史诗"><input class="ck-option" type="button" value="ajax"><input class="ck-option" type="button" value="RubyOnRails"><input class="ck-option" type="button" value="javascript"><input class="ck-option" type="button" value="OPENGL"></div><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div><div class="my-codebox" lang="JS" only-content="true" code-selector="#jsForAllDemo">Show the source code</div></div><div class="ckd-item"><label class="ckd-title">Multiple Select</label><div class="ck-tagselector demo" id="picker3" data-multiselect="true"><input type="hidden" value=""><input class="ck-option" type="button" value="linux"><input class="ck-option" type="button" value="CSS"><input class="ck-option" type="button" value="奇幻"><input class="ck-option" type="button" value="史诗"><input class="ck-option" type="button" value="ajax"><input class="ck-option" type="button" value="RubyOnRails"><input class="ck-option" type="button" value="javascript"><input class="ck-option" type="button" value="OPENGL"></div><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div><div class="my-codebox" lang="JS" only-content="true" code-selector="#jsForAllDemo">Show the source code</div></div></div><div class="ck-box-unit" data-cfg-plain="true"><header class="ckd-hd">Actions</header></div><div class="ck-form-unit"><header class="ckd-hd">Examples</header><div class="ckd-item"><ul class="ck-actions" id="actions1"><li><a href="#on" class="ck-option">Select All</a></li><li><a href="#off" class="ck-option">Unselect All</a></li><li><a href="#invert" class="ck-option">Select Invert</a></li><li><a href="#undo" class="ck-option">Undo</a></li></ul><p><div class="ck-tagselector" id="actions1_1" data-multiselect="true"><input type="hidden" value=""><input class="ck-option" type="button" value="linux"><input class="ck-option" type="button" value="CSS"><input class="ck-option" type="button" value="奇幻"><input class="ck-option" type="button" value="史诗"><input class="ck-option" type="button" value="ajax"><input class="ck-option" type="button" value="RubyOnRails"><input class="ck-option" type="button" value="javascript"><input class="ck-option" type="button" value="OPENGL"></div></p><script type="text/darkscript">var me = this;
+});
+</script>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+        </div>
+        <div class="ckd-item">
+<!--demo-->
+<div class="ck-segment picker1-2 demo" 
+        data-label="false">
+    <button type="button" class="ck-option" 
+            value="up"
+            data-num-field=".op-num span"
+            data-enable-method="get"
+            data-enable-url="api/enable.html">Up
+        <span class="op-num">(<span>100</span>)</span>
+    </button>
+    <button type="button" class="ck-option"
+            value="down"
+            data-num-field=".op-num span"
+            data-enable-method="get"
+            data-enable-url="api/disable.html">Down
+        <span class="op-num">(<span>6</span>)</span>
+    </button>
+</div>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+            <div class="my-codebox" 
+    lang="JS"
+    only-content="true"
+    code-selector="#jsForAllDemo">Show the source code</div>
+
+        </div>
+    </div>
+
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <header class="ckd-hd">Tag selector</header>
+    </div>
+
+    <div class="ck-form-unit">
+        <header class="ckd-hd">Examples</header>
+        <div class="ckd-item">
+            <label class="ckd-title">Single Select</label>
+<!--demo-->
+<div class="ck-tagselector demo" id="picker2">
+    <input type="hidden" value="">
+    <input class="ck-option" type="button" value="linux">
+    <input class="ck-option" type="button" value="CSS">
+    <input class="ck-option" type="button" value="奇幻">
+    <input class="ck-option" type="button" value="史诗">
+    <input class="ck-option" type="button" value="ajax">
+    <input class="ck-option" type="button" value="RubyOnRails">
+    <input class="ck-option" type="button" value="javascript">
+    <input class="ck-option" type="button" value="OPENGL">
+</div>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+            <div class="my-codebox" 
+    lang="JS"
+    only-content="true"
+    code-selector="#jsForAllDemo">Show the source code</div>
+
+        </div>
+        <div class="ckd-item">
+            <label class="ckd-title">Multiple Select</label>
+<!--demo-->
+<div class="ck-tagselector demo" id="picker3"
+        data-multiselect="true">
+    <input type="hidden" value="">
+    <input class="ck-option" type="button" value="linux">
+    <input class="ck-option" type="button" value="CSS">
+    <input class="ck-option" type="button" value="奇幻">
+    <input class="ck-option" type="button" value="史诗">
+    <input class="ck-option" type="button" value="ajax">
+    <input class="ck-option" type="button" value="RubyOnRails">
+    <input class="ck-option" type="button" value="javascript">
+    <input class="ck-option" type="button" value="OPENGL">
+</div>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+            <div class="my-codebox" 
+    lang="JS"
+    only-content="true"
+    code-selector="#jsForAllDemo">Show the source code</div>
+
+        </div>
+    </div>
+
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <header class="ckd-hd">Actions</header>
+    </div>
+
+    <div class="ck-form-unit">
+        <header class="ckd-hd">Examples</header>
+        <div class="ckd-item">
+<!--demo-->
+<ul class="ck-actions" id="actions1">
+    <li><a href="#on" class="ck-option">Select All</a></li>
+    <li><a href="#off" class="ck-option">Unselect All</a></li>
+    <li><a href="#invert" class="ck-option">Select Invert</a></li>
+    <li><a href="#undo" class="ck-option">Undo</a></li>
+</ul>
+<p>
+<div class="ck-tagselector" id="actions1_1"
+        data-multiselect="true">
+    <input type="hidden" value="">
+    <input class="ck-option" type="button" value="linux">
+    <input class="ck-option" type="button" value="CSS">
+    <input class="ck-option" type="button" value="奇幻">
+    <input class="ck-option" type="button" value="史诗">
+    <input class="ck-option" type="button" value="ajax">
+    <input class="ck-option" type="button" value="RubyOnRails">
+    <input class="ck-option" type="button" value="javascript">
+    <input class="ck-option" type="button" value="OPENGL">
+</div>
+</p>
+<script type="text/darkscript">
+var me = this;
 require([
     'dollar', 
     'cardkit', 
@@ -45,18 +353,146 @@ require([
         me.updateDarkDOM();
     });
     $('#actions1_1').on('picker:change', show_result);
-});</script><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div></div></div><div class="ck-box-unit" data-cfg-plain="true"><header class="ckd-hd">Slider</header></div><div class="ck-form-unit"><header class="ckd-hd">Examples</header><div class="ckd-item"><div class="rangerbox"><input class="ck-ranger demo" data-url="picker.html?page={{value}}00" type="range" min="1" max="13" step="1"></div><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div></div><div class="ckd-item"><div class="rangerbox"><input class="ck-ranger" id="ranger1" type="range" min="0.5" max="45" step="0.2"></div><script type="text/darkscript">var $ = require('dollar'); 
+});
+</script>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+        </div>
+    </div>
+
+    <div class="ck-box-unit" data-cfg-plain="true">
+        <header class="ckd-hd">Slider</header>
+    </div>
+
+    <div class="ck-form-unit">
+        <header class="ckd-hd">Examples</header>
+        <div class="ckd-item">
+<!--demo-->
+<div class="rangerbox">
+    <input class="ck-ranger demo"
+        data-url="picker.html?page={{value}}00"
+        type="range" min="1" max="13" step="1">
+</div>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+        </div>
+        <div class="ckd-item">
+<!--demo-->
+<div class="rangerbox">
+    <input class="ck-ranger" id="ranger1"
+        type="range" min="0.5" max="45" step="0.2">
+</div>
+<script type="text/darkscript">
+var $ = require('dollar'); 
 var ck = require('cardkit');
 $('#ranger1').on('ranger:changed', function(e){
     ck.notify(e.component.val(), {
         corner: 'center'
     });
-});</script><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div></div><div class="ckd-item"><div class="ck-stars demo-rating demo"><input class="slider-field" id="rating" type="range" min="0" max="5" step="1" value="2"><div class="slider-selected" style="width:50px;display:block"></div><div class="slider-hover"></div></div><div class="my-codebox" lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</div></div></div></div><div class="ckd-page-card" id="consoleCard"><div class="ckd-page-title">Console</div><div class="ckd-page-footer" data-source="myglobal-page-footer"></div><div class="ckd-page-actions" data-source="myglobal-page-actions"></div><div class="ckd-page-nav"><a href="#ckDefault" class="my-top-return ck-link"></a></div><div class="ckd-page-banner" data-cfg-plain="true"><div class="topbox"><a href="index.html" class="ck-link">Return to home</a></div></div><div class="ckd-page-blank">Coming soon...</div><div class="ckd-box-card" data-cfg-paper="true"><header class="ckd-hd">Console</header><div id="console"></div></div><script type="text/darkscript">require(['dollar', 'mo/console'], function($, console){
+});
+</script>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+        </div>
+        <div class="ckd-item">
+<!--demo-->
+<div class="ck-stars demo-rating demo">
+    <input class="slider-field" id="rating" type="range" min="0" max="5" step="1" value="2"/>
+    <div class="slider-selected" style="width:50px;display:block;"></div>
+    <div class="slider-hover"></div>
+</div>
+<!--demo end-->
+            <div class="my-codebox" 
+    lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<div class="ckd-page-card" id="consoleCard">
+
+    
+<!--demo-->
+<div class="ckd-page-title">Console</div>
+<div class="ckd-page-footer" data-source="myglobal-page-footer"></div>
+<div class="ckd-page-actions" data-source="myglobal-page-actions"></div>
+<div class="ckd-page-nav">
+    <a href="#ckDefault" class="my-top-return ck-link"></a>
+</div>
+<!--demo end-->
+
+<!--demo-->
+<div class="ckd-page-banner"
+        data-cfg-plain="true">
+    <div class="topbox">
+        <a href="index.html" class="ck-link">Return to home</a>
+    </div>
+</div>
+<!--demo end-->
+
+<div class="ckd-page-blank">Coming soon...</div>
+
+
+
+    <div class="ckd-box-card" data-cfg-paper="true">
+        <header class="ckd-hd">Console</header>
+        <div id="console"></div>
+    </div>
+
+    <!--demo-->
+    <script type="text/darkscript">
+    require(['dollar', 'mo/console'], function($, console){
         console.config({
             record: false,
             output: $(this).find('#console')[0]
         });
-    });</script></div><div class="ckd-page-card" id="toNewVersion"><script type="text/darkscript">location.replace(location.href.replace(/oldstyle\//, ''));</script></div></div><div class="myglobal-page-footer"><div class="copyright">Last update: 2014-03-28T11:52:24.786Z</div></div><script src="../static/js/main.js"></script><script src="../static/js/vendor/prism.js" data-manual=""></script><script>require([
+    });
+    </script>
+    <!--demo end-->
+
+</div>
+
+
+<div class="ckd-page-card" id="toNewVersion">
+
+<script type="text/darkscript">
+location.replace(location.href.replace(/oldstyle\//, ''));
+</script>
+
+</div>
+
+
+
+
+</div>
+
+
+<!--demo-->
+<div class="myglobal-page-footer">
+    <div class="copyright">Last update: 2014-03-28T22:33:28.401Z</div>
+</div>
+<!--demo end-->
+
+<script src="../static/js/main.js"></script>
+<script src="../static/js/vendor/prism.js" data-manual></script>
+<script>
+require([
     'dollar',
     'cardkit',
     'mo/console',
@@ -93,7 +529,12 @@ $('#ranger1').on('ranger:changed', function(e){
     });
     console.enable();
 
-});</script><script id="jsForAllDemo">define('show-result', ['cardkit'], function(ck){
+});
+</script>
+
+
+<script id="jsForAllDemo">
+define('show-result', ['cardkit'], function(ck){
     return function(e){
         var result = e.component.val();
         console.info('value: ', result);
@@ -118,4 +559,7 @@ require([
         '#picker3': show_result
     });
 
-});</script></body></html>
+});
+</script>
+</body>
+</html>

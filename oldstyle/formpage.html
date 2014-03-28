@@ -1,4 +1,38 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>demo</title><meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui"><meta name="format-detection" content="telephone=no"><link href="../static/css/main.css" rel="stylesheet"><style></style></head><body><div class="ckd-page-card"><form action="api/post_result.html" id="ajaxForm1"><div class="ck-form-unit"><div class="ckd-item"><label class="ckd-title">章节名</label><input type="text" value="" name="a" placeholder="章节名"></div><div class="ckd-item"><label class="ckd-title">笔记内容</label><textarea name="b" placeholder="笔记内容"></textarea><label><em>注释</em></label></div></div></form></div><script>console.info('iframe loaded');
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>demo</title>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
+<meta name="format-detection" content="telephone=no">
+<link href="../static/css/main.css" rel="stylesheet">
+<style>
+</style>
+</head>
+<body>
+
+<div class="ckd-page-card">
+
+<form action="api/post_result.html" id="ajaxForm1">
+
+<div class="ck-form-unit">
+    <div class="ckd-item">
+        <label class="ckd-title">章节名</label>
+        <input type="text" value="" name="a" placeholder="章节名">
+    </div>
+    <div class="ckd-item">
+        <label class="ckd-title">笔记内容</label>
+        <textarea name="b" placeholder="笔记内容"></textarea>
+        <label><em>注释</em></label>
+    </div>
+</div>
+
+</form>
+
+</div>
+
+<script>
+console.info('iframe loaded');
 parent.require([
     'dollar', 
     'cardkit'
@@ -9,4 +43,7 @@ parent.require([
             modal.hideLoading();
         }).trigger('submit');
     });
-});</script></body></html>
+});
+</script>
+
+</body>

@@ -1,4 +1,348 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>galleryapp</title><meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="format-detection" content="telephone=no"><link href="static/css/main.css" rel="stylesheet"></head><body><div class="myglobal-page-actions"><a href="index.html" class="ckd-overflow-item ck-link">index.html</a> <a href="index.html" class="ckd-overflow-item ck-link" target="_blank">new window</a> <button type="button" class="ckd-overflow-item ck-switch" id="myGlobalVote" data-label=".text" value="0" data-enable-value="1" data-enable-label="Cancel me! (global)"><span class="text">Press me! (global)</span></button></div><div class="my-app"><ck-card type="page" id="ckNavdrawer" deck="navdrawer"><div class="my-navdrawer-mask"></div><div class="my-navdrawer"><header><h2>CardKit Reference</h2></header><article><div class="my-nav-wrap"><div class="my-nav-content"><div class="my-content"><div class="search"><a class="ck-modal-link" href="#" data-url="api/formcontent.html">search</a></div><ul><li><a class="ck-link" href="index.html">Home</a></li></ul><h6>Card Component</h6><ul><li><a class="ck-link" href="page.html">Page</a></li><li><a class="ck-link" href="box.html">Box</a></li><li><a class="ck-link" href="list.html">List</a></li><li><a class="ck-link" href="mini.html">Mini</a></li><li><a class="ck-link" href="form.html">Form</a></li></ul><h6>UI Component</h6><ul><li><a class="ck-link" href="control.html">Control</a></li><li><a class="ck-link" href="picker.html">Picker</a></li><li><a class="ck-link" href="overlay.html">Overlay</a></li></ul><h6>Cross-platform</h6><ul><li><a class="ck-link" href="browsers.html">Compatibility Testing</a></li><li><a class="ck-link" href="#consoleCard">Console</a></li></ul></div></div><div class="my-footer" style="padding-top: 0px"></div></div></article></div></ck-card><ck-card type="page" id="ckDefault"><ck-part type="title">Overlay</ck-part><ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part><ck-part type="actionbar" source-selector=".myglobal-page-actions"><button type="button" action-layout="auto" class="ck-modal-button" data-title="动作3" data-url="api/formcontent.html">动作3</button> <button type="button" action-layout="auto" class="ck-switch" data-label=".text" value="0" data-enable-value="1" data-enable-label="Cancel me! (local)"><span class="text">Press me! (local)</span></button></ck-part><ck-part type="nav" href="#ckNavdrawer"></ck-part><ck-part type="banner" plain-style="true"><div class="topbox"><a href="index.html" class="ck-link">Return to home</a></div></ck-part><ck-card type="box" paper-style="true"><ck-part type="hd">Overlay</ck-part></ck-card><ck-card type="list" subtype="more" paper-style="true"><ck-part type="item" href="#usages">Usages</ck-part><ck-part type="item" href="#toOldVersion">Switch to old style</ck-part><ck-part type="item" href="#consoleCard">Console</ck-part></ck-card><ck-card type="list" subtype="menu"><ck-part type="hd">Source code</ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/modalview.js" target="_blank">cardkit/ui/modalview</ck-part><ck-part type="desc">`require('cardkit').modalCard`</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/modalview.js" target="_blank">moui/modalview</ck-part><ck-part type="desc">The original class</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/actionview.js" target="_blank">cardkit/ui/actionview</ck-part><ck-part type="desc">`require('cardkit').actionView`</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/actionview.js" target="_blank">moui/actionview</ck-part><ck-part type="desc">The original class</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/growl.js" target="_blank">cardkit/ui/growl</ck-part><ck-part type="desc">`require('cardkit').growl`</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/growl.js" target="_blank">moui/growl</ck-part><ck-part type="desc">The original class</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_overlay.scss" target="_blank">scss/cardkit/active/_overlay.scss</ck-part><ck-part type="desc">Skin for overlays</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui.js" target="_blank">cardkit/ui</ck-part><ck-part type="desc">Higher-lever interface</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_popup.scss" target="_blank">scss/cardkit/active/_popup.scss</ck-part><ck-part type="desc">Skin for buttons</ck-part></ck-part><ck-part type="item"><ck-part type="title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/overlay.html" target="_blank">cardkit-demo-gallery/docs/overlay.html</ck-part><ck-part type="desc">The current page</ck-part></ck-part></ck-card><ck-card type="box" paper-style="true"><ck-part type="hd"><span id="usages">Usages</span></ck-part></ck-card><ck-card type="box" plain-style="true"><ck-part type="hd">Modal View</ck-part></ck-card><ck-card type="form"><ck-part type="hd">Examples</ck-part><ck-part type="item"><button type="button" class="ck-modal-button demo" data-url="api/formcontent.html" data-title="ajax">Open</button> <label>用ajax接口加载内容</label><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="ck-modal-button demo" data-json-url="api/form_json.html" data-title="json">Open</button> <label>用json接口加载内容</label><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="ck-modal-button demo" data-iframe-url="formpage.html" disabled="disabled" data-title="iframe">Open</button> <label>用iframe加载内容<br>（暂不支持）</label></ck-part><ck-part type="item"><button type="button" class="ck-modal-button demo" data-source="formBox" data-title="inline html">Open</button> <label>用隐藏的html作内容</label><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part></ck-card><ck-card type="box" plain-style="true"><ck-part type="hd">Action View</ck-part></ck-card><ck-card type="form"><ck-part type="hd">Examples</ck-part><ck-part type="item"><button type="button" class="ck-select demo" data-fluid="true" data-title="Choose the page"><span>Choose the page</span><a href="picker.html" class="ck-option">picker.html</a><a href="control.html" class="ck-option">control.html</a><a href="index.html" class="ck-option">index.html</a></button> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><div class="ck-select demo" id="actions1" data-fluid="true" data-title="Choose the order"><input type="hidden" value="date"><button type="button" value="price" data-a="1" data-b="10" class="ck-option">Order by price</button><button type="button" value="date" data-a="2" data-b="20" class="ck-option enabled">Order by date</button><button type="button" value="alpha" data-a="3" data-b="30" class="ck-option">Order by alphabet</button><button type="button" value="editor" data-a="4" data-b="40" class="ck-option">Order by editor</button></div><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox><my-codebox lang="JS" only-content="true" code-selector="#jsForSelect">Show the source code</my-codebox></ck-part><ck-part type="item"><div class="ck-select demo" id="actions2" data-fluid="true" data-multiselect="true" data-title="Choose members" data-content="1. member A<br>2. member B<br>3. member C<br>4. member D"><span>Choose members</span><input type="hidden" value="date"><button class="ck-option" type="button" value="A" data-a="1" data-b="10">A</button><button class="ck-option enabled" type="button" value="B" data-a="2" data-b="20">B</button><button class="ck-option" type="button" value="C" data-a="3" data-b="30">C</button><button class="ck-option" type="button" value="D" data-a="4" data-b="40">D</button></div><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox><my-codebox lang="JS" only-content="true" code-selector="#jsForSelect">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="ck-actions-button actions3 demo" data-fluid="true" data-multiselect="true" data-confirm-text="继续" data-cancel-text="放弃" data-title="Choose members" data-content="1. member A<br>2. member B<br>3. member C<br>4. member D"><span>Choose members</span><input class="ck-option" type="button" value="A" data-a="1" data-b="10"><input class="ck-option enabled" type="button" value="B" data-a="2" data-b="20"><input class="ck-option" type="button" value="C" data-a="3" data-b="30"><input class="ck-option" type="button" value="D" data-a="4" data-b="40"></button> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="ck-actions-button actions3 demo" data-fluid="true"><span>Jump list</span><a href="picker.html" class="ck-option">picker.html</a><a href="control.html" class="ck-option">control.html</a><a href="index.html" class="ck-option">index.html</a><a href="tel:114" class="ck-option">tel:114</a></button> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="my-actions-button ckbase-btn" data-fluid="true"><span>Generated Action menu</span></button><script type="text/darkscript">var $ = require('dollar');
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>galleryapp</title>
+<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+
+<link href="static/css/main.css" rel="stylesheet">
+
+</head>
+<body>
+
+
+<!--demo-->
+<div class="myglobal-page-actions">
+    <a href="index.html" class="ckd-overflow-item ck-link">index.html</a>
+    <a href="index.html" class="ckd-overflow-item ck-link" target="_blank">new window</a>
+    <button type="button" class="ckd-overflow-item ck-switch"
+            id="myGlobalVote"
+            data-label=".text"
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (global)">
+        <span class="text">Press me! (global)</span>
+    </button>
+</div>
+<!--demo end-->
+
+
+
+<div class="my-app">
+
+
+<!--demo-->
+<ck-card type="page" id="ckNavdrawer" deck="navdrawer">
+
+    <div class="my-navdrawer-mask"></div>
+    <div class="my-navdrawer">
+
+        <header>
+            <h2>CardKit Reference</h2>
+        </header>
+
+        <article>
+            <div class="my-nav-wrap">
+                <div class="my-nav-content"><div class="my-content">
+                    <div class="search">
+                        <a class="ck-modal-link" href="#" data-url="api/formcontent.html">search</a>
+                    </div>
+                    <ul>
+                        <li><a class="ck-link" href="index.html">Home</a></li>
+                    </ul>
+                    <h6>Card Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="page.html">Page</a></li>
+                        <li><a class="ck-link" href="box.html">Box</a></li>
+                        <li><a class="ck-link" href="list.html">List</a></li>
+                        <li><a class="ck-link" href="mini.html">Mini</a></li>
+                        <li><a class="ck-link" href="form.html">Form</a></li>
+                    </ul>
+                    <h6>UI Component</h6>
+                    <ul>
+                        <li><a class="ck-link" href="control.html">Control</a></li>
+                        <li><a class="ck-link" href="picker.html">Picker</a></li>
+                        <li><a class="ck-link" href="overlay.html">Overlay</a></li>
+                    </ul>
+                    <h6>Cross-platform</h6>
+                    <ul>
+                        <li><a class="ck-link" href="browsers.html">Compatibility Testing</a></li>
+                        <li><a class="ck-link" href="#consoleCard">Console</a></li>
+                    </ul>
+                </div></div>
+                <div class="my-footer" style="padding-top: 0px;"></div>
+            </div>
+        </article>
+
+    </div>
+
+</ck-card>
+<!--demo end-->
+
+
+
+<ck-card type="page" id="ckDefault">
+
+    
+<!--demo-->
+<ck-part type="title">Overlay</ck-part>
+<ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part>
+<ck-part type="actionbar" source-selector=".myglobal-page-actions">
+    <button type="button" action-layout="auto"
+        class="ck-modal-button" 
+        data-title="动作3"
+        data-url="api/formcontent.html">动作3</button>
+    <button type="button" action-layout="auto"
+            class="ck-switch"
+            data-label=".text"
+            value="0"
+            data-enable-value="1"
+            data-enable-label="Cancel me! (local)">
+        <span class="text">Press me! (local)</span>
+    </button>
+</ck-part>
+<ck-part type="nav" href="#ckNavdrawer"></ck-part>
+<!--demo end-->
+
+<!--demo-->
+<ck-part type="banner" plain-style="true">
+    <div class="topbox">
+        <a href="index.html" class="ck-link">Return to home</a>
+    </div>
+</ck-part>
+<!--demo end-->
+
+
+<ck-card type="box" paper-style="true">
+    <ck-part type="hd">Overlay</ck-part>
+</ck-card>
+
+<ck-card type="list" subtype="more" paper-style="true">
+    <ck-part type="item" href="#usages">Usages</ck-part>
+    <ck-part type="item" href="#toOldVersion">Switch to old style</ck-part>
+    <ck-part type="item" href="#consoleCard">Console</ck-part>
+</ck-card>
+
+
+
+    <ck-card type="list" subtype="menu">
+        <ck-part type="hd">Source code</ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/modalview.js" target="_blank">cardkit/ui/modalview</ck-part>
+            <ck-part type="desc">`require('cardkit').modalCard`</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/modalview.js" target="_blank">moui/modalview</ck-part>
+            <ck-part type="desc">The original class</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/actionview.js" target="_blank">cardkit/ui/actionview</ck-part>
+            <ck-part type="desc">`require('cardkit').actionView`</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/actionview.js" target="_blank">moui/actionview</ck-part>
+            <ck-part type="desc">The original class</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui/growl.js" target="_blank">cardkit/ui/growl</ck-part>
+            <ck-part type="desc">`require('cardkit').growl`</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/dexteryy/moui/blob/master/growl.js" target="_blank">moui/growl</ck-part>
+            <ck-part type="desc">The original class</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_overlay.scss" target="_blank">scss/cardkit/active/_overlay.scss</ck-part>
+            <ck-part type="desc">Skin for overlays</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/cardkit/ui.js" target="_blank">cardkit/ui</ck-part>
+            <ck-part type="desc">Higher-lever interface</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/CardKit/blob/master/scss/cardkit/active/_popup.scss" target="_blank">scss/cardkit/active/_popup.scss</ck-part>
+            <ck-part type="desc">Skin for buttons</ck-part>
+        </ck-part>
+        <ck-part type="item">
+            <ck-part type="title" href="https://github.com/douban-f2e/cardkit-demo-gallery/blob/master/docs/overlay.html" target="_blank">cardkit-demo-gallery/docs/overlay.html</ck-part>
+            <ck-part type="desc">The current page</ck-part>
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" paper-style="true">
+        <ck-part type="hd"><span id="usages">Usages</span></ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Modal View</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-url="api/formcontent.html" 
+data-title="ajax">Open</button>
+<!--demo end-->
+            <label>用ajax接口加载内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-json-url="api/form_json.html" 
+data-title="json">Open</button>
+<!--demo end-->
+            <label>用json接口加载内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-iframe-url="formpage.html" disabled
+data-title="iframe">Open</button>
+<!--demo end-->
+            <label>用iframe加载内容<br>（暂不支持）</label>
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-source="formBox" 
+data-title="inline html">Open</button>
+<!--demo end-->
+            <label>用隐藏的html作内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Action View</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-select demo"
+    data-fluid="true"
+    data-title="Choose the page">
+<span>Choose the page</span>
+<a href="picker.html" class="ck-option">picker.html</a>
+<a href="control.html" class="ck-option">control.html</a>
+<a href="index.html" class="ck-option">index.html</a>
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<div class="ck-select demo" id="actions1"
+    data-fluid="true"
+    data-title="Choose the order">
+<input type="hidden" value="date">
+<button type="button" value="price" 
+     data-a="1" data-b="10" class="ck-option">Order by price</button>
+<button type="button" value="date" 
+     data-a="2" data-b="20"  class="ck-option enabled">Order by date</button>
+<button type="button" value="alpha" 
+     data-a="3" data-b="30"  class="ck-option">Order by alphabet</button>
+<button type="button" value="editor" 
+     data-a="4" data-b="40"  class="ck-option">Order by editor</button>
+</div>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+            <my-codebox lang="JS"
+    only-content="true"
+    code-selector="#jsForSelect">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<div class="ck-select demo" id="actions2"
+    data-fluid="true"
+    data-multiselect="true"
+    data-title="Choose members"
+    data-content="1. member A<br>2. member B<br>3. member C<br>4. member D">
+<span>Choose members</span>
+<input type="hidden" value="date">
+<button class="ck-option" type="button" value="A" data-a="1" data-b="10">A</button>
+<button class="ck-option enabled" type="button" value="B" data-a="2" data-b="20">B</button>
+<button class="ck-option" type="button" value="C" data-a="3" data-b="30">C</button>
+<button class="ck-option" type="button" value="D" data-a="4" data-b="40">D</button>
+</div>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+            <my-codebox lang="JS"
+    only-content="true"
+    code-selector="#jsForSelect">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-actions-button actions3 demo"
+    data-fluid="true"
+    data-multiselect="true"
+    data-confirm-text="继续"
+    data-cancel-text="放弃"
+    data-title="Choose members"
+    data-content="1. member A<br>2. member B<br>3. member C<br>4. member D">
+<span>Choose members</span>
+<input class="ck-option" type="button" value="A" data-a="1" data-b="10">
+<input class="ck-option enabled" type="button" value="B" data-a="2" data-b="20">
+<input class="ck-option" type="button" value="C" data-a="3" data-b="30">
+<input class="ck-option" type="button" value="D" data-a="4" data-b="40">
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-actions-button actions3 demo"
+    data-fluid="true">
+<span>Jump list</span>
+<a href="picker.html" class="ck-option">picker.html</a>
+<a href="control.html" class="ck-option">control.html</a>
+<a href="index.html" class="ck-option">index.html</a>
+<a href="tel:114" class="ck-option">tel:114</a>
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="my-actions-button ckbase-btn"
+    data-fluid="true">
+<span>Generated Action menu</span>
+</button>
+<script type="text/darkscript">
+var $ = require('dollar');
 var ck = require('cardkit');
 $(this).on('darkdom:rendered', init_events);
 init_events();
@@ -34,7 +378,22 @@ function init_events(){
             ].join('')
         }).open();
     });
-}</script><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="my-confirm-button ckbase-btn" data-fluid="true"><span>Confirm/Alert (No Options)</span></button><script type="text/darkscript" id="jsDemoMyConfirm">var $ = require('dollar');
+}
+</script>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="my-confirm-button ckbase-btn"
+    data-fluid="true">
+<span>Confirm/Alert (No Options)</span>
+</button>
+<script type="text/darkscript" id="jsDemoMyConfirm">
+var $ = require('dollar');
 var ck = require('cardkit');
 $(this).on('darkdom:rendered', init_events);
 init_events();
@@ -64,12 +423,133 @@ function init_events(){
             });
         });
     });
-}</script><my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><a class="ck-confirm-link demo" href="index.html" target="_blank" data-title="确认要跳转吗？">Confirm link</a> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part></ck-card><ck-card type="box" plain-style="true"><ck-part type="hd">Growl</ck-part></ck-card><ck-card type="form"><ck-part type="hd">Examples</ck-part><ck-part type="item"><button type="button" class="ck-growl-button demo" data-corner="center" data-content="测试！">Tips A</button> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part><ck-part type="item"><button type="button" class="ck-growl-button demo" data-expires="1000" data-content="测试！">Tips B</button> <my-codebox lang="HTML" parent-scope="true" code-selector=".demo">Show the source code</my-codebox></ck-part></ck-card><script type="text/darkscript"></script></ck-card><ck-card type="page" id="consoleCard"><ck-part type="title">Console</ck-part><ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part><ck-part type="actionbar" source-selector=".myglobal-page-actions"></ck-part><ck-part type="nav"><a href="#ckDefault" class="my-top-return ck-link"></a></ck-part><ck-part type="banner" plain-style="true"><div class="topbox"><a href="index.html" class="ck-link">Return to home</a></div></ck-part><ck-part type="blank">Coming soon...</ck-part><ck-card type="box" paper-style="true"><ck-part type="hd">Console</ck-part><div id="console"></div></ck-card><script type="text/darkscript">require(['dollar', 'mo/console'], function($, console){
+}
+</script>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<a class="ck-confirm-link demo" 
+    href="index.html" 
+    target="_blank"
+    data-title="确认要跳转吗？">
+Confirm link
+</a>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Growl</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-growl-button demo"
+data-corner="center"
+data-content="测试！">Tips A</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-growl-button demo"
+data-expires="1000"
+data-content="测试！">Tips B</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+    </ck-card>
+
+    
+<script type="text/darkscript">
+</script>
+
+
+</ck-card>
+
+
+<ck-card type="page" id="consoleCard">
+
+    
+<!--demo-->
+<ck-part type="title">Console</ck-part>
+<ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part>
+<ck-part type="actionbar" source-selector=".myglobal-page-actions"></ck-part>
+<ck-part type="nav">
+    <a href="#ckDefault" class="my-top-return ck-link"></a>
+</ck-part>
+<!--demo end-->
+
+<!--demo-->
+<ck-part type="banner" plain-style="true">
+    <div class="topbox">
+        <a href="index.html" class="ck-link">Return to home</a>
+    </div>
+</ck-part>
+<!--demo end-->
+
+<ck-part type="blank">Coming soon...</ck-part>
+
+
+
+    <ck-card type="box" paper-style="true">
+        <ck-part type="hd">Console</ck-part>
+        <div id="console"></div>
+    </ck-card>
+
+    <!--demo-->
+    <script type="text/darkscript">
+    require(['dollar', 'mo/console'], function($, console){
         console.config({
             record: false,
             output: $(this).find('#console')[0]
         });
-    });</script></ck-card><ck-card type="page" id="toOldVersion"><script type="text/darkscript">location.replace(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));</script></ck-card></div><div class="my-raw"><div class="ckdActionbar"><button type="button" class="ckd-overflow-item ck-modal-button ckdActionbarItem1" data-url="api/formcontent.html" data-title="动作1">动作1</button> <button type="button" class="ckd-item ck-modal-button" data-url="api/formcontent.html" data-title="动作2">动作2</button></div><script type="text/modalview-html" class="formBox"><form action="api/post_result_json.html" class="inlineForm1">
+    });
+    </script>
+    <!--demo end-->
+
+</ck-card>
+
+
+<ck-card type="page" id="toOldVersion">
+
+<script type="text/darkscript">
+location.replace(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));
+</script>
+
+</ck-card>
+
+
+
+
+</div>
+
+<div class="my-raw">
+
+<div class="ckdActionbar">
+    <button type="button" class="ckd-overflow-item ck-modal-button ckdActionbarItem1" data-url="api/formcontent.html" data-title="动作1">动作1</button>
+    <button type="button" class="ckd-item ck-modal-button" data-url="api/formcontent.html" data-title="动作2">动作2</button>
+</div>
+
+<script type="text/modalview-html" class="formBox">
+<form action="api/post_result_json.html" class="inlineForm1">
 <ck-card type="form">
     <ck-part type="item">
         <ck-part type="title">章节名</ck-part>
@@ -81,7 +561,11 @@ function init_events(){
         <label><em>注释</em></label>
     </ck-part>
 </ck-card>
-</form></script><script type="text/modalview-javascript" class="formBox">console.info('execute js for formBox');
+</form>
+</script>
+
+<script type="text/modalview-javascript" class="formBox">
+console.info('execute js for formBox');
 var $ = require('dollar');
 var net = require('mo/network');
 var ck = require('cardkit');
@@ -122,7 +606,22 @@ ck.modalCard.event.bind('confirmOnThis', function(modal){
             }
         }
     });
-});</script></div><div class="myglobal-page-footer"><div class="copyright">Last update: 2014-03-28T11:52:24.786Z</div></div><script src="static/js/main.js"></script><script src="static/js/vendor/prism.js" data-manual=""></script><script>require([
+});
+</script>
+
+</div>
+
+
+<!--demo-->
+<div class="myglobal-page-footer">
+    <div class="copyright">Last update: 2014-03-28T22:33:28.401Z</div>
+</div>
+<!--demo end-->
+
+<script src="static/js/main.js"></script>
+<script src="static/js/vendor/prism.js" data-manual></script>
+<script>
+require([
     'dollar',
     'cardkit',
     'mo/console',
@@ -158,7 +657,12 @@ ck.modalCard.event.bind('confirmOnThis', function(modal){
     });
     console.enable();
 
-});</script><script id="jsForSelect">require([
+});
+</script>
+
+
+<script id="jsForSelect">
+require([
     'dollar',
     'cardkit'
 ], function($, ck){
@@ -182,4 +686,8 @@ ck.modalCard.event.bind('confirmOnThis', function(modal){
         }).open();
     }
 
-});</script></body></html>
+});
+</script>
+</body>
+</html>
+
