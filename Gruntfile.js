@@ -230,7 +230,7 @@ module.exports = function(grunt) {
                     cwd: 'docs/',
                     src: ['*.html', 'oldstyle/*.html'],
                     dest: '<%= meta.pubDir %>/',
-                    ext: '.orig.html'
+                    //ext: '.orig.html'
                 }, {
                     expand: true,
                     cwd: 'docs/',
@@ -546,7 +546,7 @@ module.exports = function(grunt) {
     grunt.registerTask('dev:html', [
         'clean:pub_html',
         'includereplace',
-        'htmlmin'
+        //'htmlmin'
     ]);
 
     grunt.registerTask('dev', [
