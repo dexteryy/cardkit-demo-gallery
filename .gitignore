@@ -12,18 +12,3 @@ bower_components/
 .sass-cache/
 .statictmp
 
-js/**/Gruntfile.js
-js/vendor/
-css/**/Gruntfile.js
-css/moui/
-css/cardkit/
-css/cardkit.scss
-css/syntaxhighlighter/
-tpl/cardkit/
-config.js
-dist/
-target/
-public/
-report/
-
-js/vendor/cardkit/tpl/

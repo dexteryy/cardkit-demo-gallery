@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>cardkit-demo-gallery</title>
+<title>galleryapp</title>
 <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="format-detection" content="telephone=no">
 
@@ -121,7 +121,7 @@
 
 <ck-card type="list" subtype="more" paper-style="true">
     <ck-part type="item" href="#usages">Usages</ck-part>
-    <ck-part type="item" href="#optionsCard">Configure</ck-part>
+    <ck-part type="item" href="#toOldVersion">Switch to old style</ck-part>
     <ck-part type="item" href="#consoleCard">Console</ck-part>
 </ck-card>
 
@@ -164,30 +164,6 @@ Would you like to view the old-style version (based on classname and data-* attr
     ck.openLink(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));
 });
 </script>
-
-
-</ck-card>
-
-<ck-card type="page" id="optionsCard">
-    
-<!--demo-->
-<ck-part type="title">Options</ck-part>
-<ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part>
-<ck-part type="actionbar" source-selector=".myglobal-page-actions"></ck-part>
-<ck-part type="nav">
-    <a href="#ckDefault" class="my-top-return ck-link"></a>
-</ck-part>
-<!--demo end-->
-
-<!--demo-->
-<ck-part type="banner" plain-style="true">
-    <div class="topbox">
-        <a href="index.html" class="ck-link">Return to home</a>
-    </div>
-</ck-part>
-<!--demo end-->
-
-<ck-part type="blank">Coming soon...</ck-part>
 
 
 </ck-card>
@@ -236,29 +212,59 @@ Would you like to view the old-style version (based on classname and data-* attr
 </ck-card>
 
 
+<ck-card type="page" id="toOldVersion">
+
+<script type="text/darkscript">
+location.replace(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));
+</script>
+
+</ck-card>
+
+
+
+
 </div>
 
 
 <!--demo-->
 <div class="myglobal-page-footer">
-    <div class="copyright">Last update: 2014-03-25T06:01:37.697Z</div>
+    <div class="copyright">Last update: 2014-03-28T11:52:24.786Z</div>
 </div>
 <!--demo end-->
 
 <script src="static/js/main.js"></script>
+<script src="static/js/vendor/prism.js" data-manual></script>
 <script>
 require([
     'dollar',
     'cardkit',
     'mo/console',
+    'galleryapp/component/codebox',
+    'galleryapp/spec/codebox',
     'mo/domready'
-], function($, cardkit, console){
+], function($, cardkit, console, codebox_component, codebox_spec){
 
     cardkit.init({
         appWrapper: '.my-app',
         defaultPage: 'ckDefault'
     });
     cardkit.openPage();
+
+    cardkit.component('page')
+        .component('form')
+        .component('item')
+        .contain('codebox', codebox_component, {
+            content: true
+        });
+    cardkit.guard('page')
+        .component('form', function(guard, parent, orig_spec){
+            orig_spec(guard);
+            guard.component('item', function(guard, parent, orig_spec){
+                orig_spec(guard);
+                guard.component('codebox', codebox_spec);
+            });
+        });
+    cardkit.updatePage();
 
     console.config({
         record: true

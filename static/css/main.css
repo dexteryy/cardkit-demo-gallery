@@ -1,4 +1,4 @@
-/*! cardkit-demo-gallery - v0.1.0 */
+/*! galleryapp - v */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -840,10 +840,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   z-index: 10;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 .ck-header a {
   -webkit-touch-callout: none;
@@ -865,10 +861,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   min-height: 100%;
   overflow: hidden;
   margin: 0;
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
   font: 11px Helvetica, sans-serif;
   color: #252525;
   line-height: 1.6;
@@ -975,12 +967,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   color: #006ae2;
   -webkit-tap-highlight-color: rgba(0, 119, 220, 0.2);
 }
-.ck-page-card .ck-link-mask {
-  -moz-user-select: -moz-none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
 
 .ck-page-link-mask {
   display: none;
@@ -997,6 +983,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   top: 0;
   left: 0;
   width: 100%;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
   z-index: 210;
   -moz-transition: -moz-transform 0.3s;
   -o-transition: -o-transform 0.3s;
@@ -1320,10 +1310,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   border-color: #e6e6e6;
   padding: 40px 0 10px 0;
   font-size: 17px;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  -webkit-user-select: text;
-  user-select: text;
 }
 .ck-box-card[data-cfg-paper="true"] .ck-card-wrap > section p, .ck-list-card[data-cfg-paper="true"] .ck-card-wrap > section p {
   margin: 0 0 25px 0;
@@ -1534,10 +1520,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   display: block;
   line-height: 1.4;
   margin: 0 0 4px 0;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  -webkit-user-select: text;
-  user-select: text;
 }
 .ck-list-card .ck-content-wrap img, .ck-mini-card .ck-content-wrap img,
 .ck-list-card .ck-author-content-wrap img,
@@ -1784,10 +1766,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  -webkit-user-select: text;
-  user-select: text;
 }
 .ck-form-card .ck-item input[type="number"] {
   width: 80px;
@@ -1821,6 +1799,114 @@ ck-part {
 .ck-select .ck-option,
 .ck-actions-button .ck-option {
   display: none;
+}
+
+/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #f8f8f2;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 1em;
+  margin: .5em 0;
+  overflow: auto;
+  border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: slategray;
+}
+
+.token.punctuation {
+  color: #f8f8f2;
+}
+
+.namespace {
+  opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol {
+  color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+  color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.builtin {
+  color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value {
+  color: #e6db74;
+}
+
+.token.keyword {
+  color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+  color: #fd971f;
+}
+
+.token.important {
+  font-weight: bold;
+}
+
+.token.entity {
+  cursor: help;
 }
 
 .my-navdrawer-mask {
@@ -2009,9 +2095,17 @@ ck-part {
   color: #8e8e8e;
 }
 .my-app .democode {
-  margin-left: -15px;
-  font-size: 14px;
-  min-height: 50px;
+  background: #272822;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.my-app .democode pre {
+  width: 1500px;
+}
+.my-app .democode code {
+  font-size: 10px;
+  line-height: normal;
 }
 .my-app .syntaxhighlighter {
   padding: 0px;

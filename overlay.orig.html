@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>cardkit-demo-gallery</title>
+<title>galleryapp</title>
 <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
 <meta name="format-detection" content="telephone=no">
 
@@ -87,7 +87,7 @@
 
     
 <!--demo-->
-<ck-part type="title">Control</ck-part>
+<ck-part type="title">Overlay</ck-part>
 <ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part>
 <ck-part type="actionbar" source-selector=".myglobal-page-actions">
     <button type="button" action-layout="auto"
@@ -116,12 +116,12 @@
 
 
 <ck-card type="box" paper-style="true">
-    <ck-part type="hd">Control</ck-part>
+    <ck-part type="hd">Overlay</ck-part>
 </ck-card>
 
 <ck-card type="list" subtype="more" paper-style="true">
     <ck-part type="item" href="#usages">Usages</ck-part>
-    <ck-part type="item" href="#optionsCard">Configure</ck-part>
+    <ck-part type="item" href="#toOldVersion">Switch to old style</ck-part>
     <ck-part type="item" href="#consoleCard">Console</ck-part>
 </ck-card>
 
@@ -175,43 +175,311 @@
         <ck-part type="hd"><span id="usages">Usages</span></ck-part>
     </ck-card>
 
-    <ck-card type="list">
-        <ck-part type="blank">Coming soon!</ck-part>
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Modal View</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-url="api/formcontent.html" 
+data-title="ajax">Open</button>
+<!--demo end-->
+            <label>用ajax接口加载内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-json-url="api/form_json.html" 
+data-title="json">Open</button>
+<!--demo end-->
+            <label>用json接口加载内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-iframe-url="formpage.html" disabled
+data-title="iframe">Open</button>
+<!--demo end-->
+            <label>用iframe加载内容<br>（暂不支持）</label>
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-modal-button demo" 
+data-source="formBox" 
+data-title="inline html">Open</button>
+<!--demo end-->
+            <label>用隐藏的html作内容</label>
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Action View</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-select demo"
+    data-fluid="true"
+    data-title="Choose the page">
+<span>Choose the page</span>
+<a href="picker.html" class="ck-option">picker.html</a>
+<a href="control.html" class="ck-option">control.html</a>
+<a href="index.html" class="ck-option">index.html</a>
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<div class="ck-select demo" id="actions1"
+    data-fluid="true"
+    data-title="Choose the order">
+<input type="hidden" value="date">
+<button type="button" value="price" 
+     data-a="1" data-b="10" class="ck-option">Order by price</button>
+<button type="button" value="date" 
+     data-a="2" data-b="20"  class="ck-option enabled">Order by date</button>
+<button type="button" value="alpha" 
+     data-a="3" data-b="30"  class="ck-option">Order by alphabet</button>
+<button type="button" value="editor" 
+     data-a="4" data-b="40"  class="ck-option">Order by editor</button>
+</div>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+            <my-codebox lang="JS"
+    only-content="true"
+    code-selector="#jsForSelect">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<div class="ck-select demo" id="actions2"
+    data-fluid="true"
+    data-multiselect="true"
+    data-title="Choose members"
+    data-content="1. member A<br>2. member B<br>3. member C<br>4. member D">
+<span>Choose members</span>
+<input type="hidden" value="date">
+<button class="ck-option" type="button" value="A" data-a="1" data-b="10">A</button>
+<button class="ck-option enabled" type="button" value="B" data-a="2" data-b="20">B</button>
+<button class="ck-option" type="button" value="C" data-a="3" data-b="30">C</button>
+<button class="ck-option" type="button" value="D" data-a="4" data-b="40">D</button>
+</div>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+            <my-codebox lang="JS"
+    only-content="true"
+    code-selector="#jsForSelect">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-actions-button actions3 demo"
+    data-fluid="true"
+    data-multiselect="true"
+    data-confirm-text="继续"
+    data-cancel-text="放弃"
+    data-title="Choose members"
+    data-content="1. member A<br>2. member B<br>3. member C<br>4. member D">
+<span>Choose members</span>
+<input class="ck-option" type="button" value="A" data-a="1" data-b="10">
+<input class="ck-option enabled" type="button" value="B" data-a="2" data-b="20">
+<input class="ck-option" type="button" value="C" data-a="3" data-b="30">
+<input class="ck-option" type="button" value="D" data-a="4" data-b="40">
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-actions-button actions3 demo"
+    data-fluid="true">
+<span>Jump list</span>
+<a href="picker.html" class="ck-option">picker.html</a>
+<a href="control.html" class="ck-option">control.html</a>
+<a href="index.html" class="ck-option">index.html</a>
+<a href="tel:114" class="ck-option">tel:114</a>
+</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="my-actions-button ckbase-btn"
+    data-fluid="true">
+<span>Generated Action menu</span>
+</button>
+<script type="text/darkscript">
+var $ = require('dollar');
+var ck = require('cardkit');
+$(this).on('darkdom:rendered', init_events);
+init_events();
+function init_events(){
+    var notify = ck.growl({
+        corner: 'bottom'
+    });
+    $('.my-actions-button').bind('actionView:confirm', function(e){
+        var result = e.component.val();
+        console.info('value: ', result);
+        notify.set({
+            content: 'value: ' + result
+        }).open();
+    });
+    $('.my-actions-button').bind('tap', function(){
+        ck.actionView(this, {
+            title: 'This is title',
+            content: 'This is content<br>This is content<br>This is content<br>This is content<br>This is content<br>',
+            options: [
+                '<a href="index.html" class="ck-option">index.html</a>',
+                '<a href="control.html" class="ck-option">control.html</a>',
+                '<a href="picker.html" class="ck-option">picker.html</a>',
+                '<a href="overlay.html" class="ck-option">overlay.html</a>',
+                '<a href="box.html" class="ck-option">box.html</a>',
+                '<a href="mini.html" class="ck-option">mini.html</a>',
+                '<a href="list.html" class="ck-option">list.html</a>',
+                '<a href="unit.html" class="ck-option">unit.html</a>',
+                '<a href="browsers.html" class="ck-option">browsers.html</a>',
+                '<a href="tel:114" class="ck-option">tel:114</a>',
+                '<a href="#C" class="ck-option">C</a>',
+                '<input class="ck-option" type="button" value="A">',
+                '<input class="ck-option" type="button" value="B">'
+            ].join('')
+        }).open();
+    });
+}
+</script>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="my-confirm-button ckbase-btn"
+    data-fluid="true">
+<span>Confirm/Alert (No Options)</span>
+</button>
+<script type="text/darkscript" id="jsDemoMyConfirm">
+var $ = require('dollar');
+var ck = require('cardkit');
+$(this).on('darkdom:rendered', init_events);
+init_events();
+function init_events(){
+    $('.my-confirm-button, .my-confirm-button span').on('tap', function(){
+        var me = $(this);
+        if (!me.hasClass('my-confirm-button')) {
+            me = me.parent();
+        }
+        ck.actionView(me, {
+            title: 'This is the title',
+            content: 'This is the content',
+            multiselect: true
+        }).open();
+    });
+    $('.my-confirm-button').on('actionView:confirm', function(){
+        ck.actionView(this).event.once('close', function(){
+            var o = ck.confirm('This is the content', function(){
+                o.event.once('close', function(){
+                    ck.alert('This is the content', {
+                        title: 'This is the title',
+                        cancelText: 'I see...'
+                    });
+                });
+            }, { 
+                title: 'This is the title'
+            });
+        });
+    });
+}
+</script>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<a class="ck-confirm-link demo" 
+    href="index.html" 
+    target="_blank"
+    data-title="确认要跳转吗？">
+Confirm link
+</a>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+    </ck-card>
+
+    <ck-card type="box" plain-style="true">
+        <ck-part type="hd">Growl</ck-part>
+    </ck-card>
+
+    <ck-card type="form">
+        <ck-part type="hd">Examples</ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-growl-button demo"
+data-corner="center"
+data-content="测试！">Tips A</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
+        <ck-part type="item">
+<!--demo-->
+<button type="button" class="ck-growl-button demo"
+data-expires="1000"
+data-content="测试！">Tips B</button>
+<!--demo end-->
+            <my-codebox lang="HTML"
+    parent-scope="true"
+    code-selector=".demo">Show the source code</my-codebox>
+
+        </ck-part>
     </ck-card>
 
     
 <script type="text/darkscript">
-var ck = require('cardkit');
-ck.confirm('The v2-style version (Custom Elements style) is under development... <br><br>\
-Would you like to view the old-style version (based on classname and data-* attributes) of the current page?<br><br>\
-当前页面是用v2风格的标签来写的，还未完成，要先看旧版风格的页面吗？', function(){
-    ck.openLink(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));
-});
 </script>
-
-
-</ck-card>
-
-<ck-card type="page" id="optionsCard">
-    
-<!--demo-->
-<ck-part type="title">Options</ck-part>
-<ck-part type="footer" source-selector=".myglobal-page-footer"></ck-part>
-<ck-part type="actionbar" source-selector=".myglobal-page-actions"></ck-part>
-<ck-part type="nav">
-    <a href="#ckDefault" class="my-top-return ck-link"></a>
-</ck-part>
-<!--demo end-->
-
-<!--demo-->
-<ck-part type="banner" plain-style="true">
-    <div class="topbox">
-        <a href="index.html" class="ck-link">Return to home</a>
-    </div>
-</ck-part>
-<!--demo end-->
-
-<ck-part type="blank">Coming soon...</ck-part>
 
 
 </ck-card>
@@ -260,29 +528,129 @@ Would you like to view the old-style version (based on classname and data-* attr
 </ck-card>
 
 
+<ck-card type="page" id="toOldVersion">
+
+<script type="text/darkscript">
+location.replace(location.href.replace(/(\w+\.html.*)/, 'oldstyle/$1'));
+</script>
+
+</ck-card>
+
+
+
+
+</div>
+
+<div class="my-raw">
+
+<div class="ckdActionbar">
+    <button type="button" class="ckd-overflow-item ck-modal-button ckdActionbarItem1" data-url="api/formcontent.html" data-title="动作1">动作1</button>
+    <button type="button" class="ckd-item ck-modal-button" data-url="api/formcontent.html" data-title="动作2">动作2</button>
+</div>
+
+<script type="text/modalview-html" class="formBox">
+<form action="api/post_result_json.html" class="inlineForm1">
+<ck-card type="form">
+    <ck-part type="item">
+        <ck-part type="title">章节名</ck-part>
+        <input type="text" value="" name="a" id="inlineForm1_a" placeholder="章节名">
+    </ck-part>
+    <ck-part type="item">
+        <ck-part type="title">笔记内容</ck-part>
+        <textarea name="b" id="inlineForm1_b" placeholder="笔记内容"></textarea>
+        <label><em>注释</em></label>
+    </ck-part>
+</ck-card>
+</form>
+</script>
+
+<script type="text/modalview-javascript" class="formBox">
+console.info('execute js for formBox');
+var $ = require('dollar');
+var net = require('mo/network');
+var ck = require('cardkit');
+var form = $('.inlineForm1', this);
+ck.modalCard.event.bind('confirmOnThis', function(modal){
+    modal.showLoading();
+    net.ajax({
+        url: form.attr('action'),
+        type: 'post',
+        data: new FormData(form[0]),
+        processData: false,
+        contentType: false,
+        success: function(maybe_json){
+            modal.hideLoading();
+            var json = net.parseJSON(maybe_json) || { e: 0 };
+            if (!json.e) {
+                modal.ok();
+                /**
+                 * other usecase:
+                 */
+                //-------------
+                //location.href = 'api/redirect.html';
+                //-------------
+                //location.href = 'picker.html';
+                //-------------
+                //location.reload();
+                //-------------
+                //modal.ok().then(function(){
+                    //location.reload();
+                //});
+                //-------------
+            } else {
+                ck.growl({
+                    expires: 3000,
+                    content: '提交出错！',
+                    corner: 'bottom'
+                }).open();
+            }
+        }
+    });
+});
+</script>
+
 </div>
 
 
 <!--demo-->
 <div class="myglobal-page-footer">
-    <div class="copyright">Last update: 2014-03-25T06:01:37.697Z</div>
+    <div class="copyright">Last update: 2014-03-28T11:52:24.786Z</div>
 </div>
 <!--demo end-->
 
 <script src="static/js/main.js"></script>
+<script src="static/js/vendor/prism.js" data-manual></script>
 <script>
 require([
     'dollar',
     'cardkit',
     'mo/console',
+    'galleryapp/component/codebox',
+    'galleryapp/spec/codebox',
     'mo/domready'
-], function($, cardkit, console){
+], function($, cardkit, console, codebox_component, codebox_spec){
 
     cardkit.init({
         appWrapper: '.my-app',
         defaultPage: 'ckDefault'
     });
     cardkit.openPage();
+
+    cardkit.component('page')
+        .component('form')
+        .component('item')
+        .contain('codebox', codebox_component, {
+            content: true
+        });
+    cardkit.guard('page')
+        .component('form', function(guard, parent, orig_spec){
+            orig_spec(guard);
+            guard.component('item', function(guard, parent, orig_spec){
+                orig_spec(guard);
+                guard.component('codebox', codebox_spec);
+            });
+        });
+    cardkit.updatePage();
 
     console.config({
         record: true
@@ -293,6 +661,33 @@ require([
 </script>
 
 
+<script id="jsForSelect">
+require([
+    'dollar',
+    'cardkit'
+], function($, ck){
+
+    var notify = ck.growl({
+        corner: 'bottom'
+    });
+
+    ck.brightDelegate.on('actionView:confirm', {
+        '#actions1': when_confirm,
+        '#actions2': when_confirm
+    });
+
+    function when_confirm(e){
+        var result = e.component.val();
+        var data = e.component.data();
+        console.info('value: ', result);
+        console.info('data: ', data);
+        notify.set({
+            content: 'value: ' + result
+        }).open();
+    }
+
+});
+</script>
 </body>
 </html>
 
