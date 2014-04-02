@@ -434,6 +434,16 @@ module.exports = function(grunt) {
             }
         },
 
+        throttle: {
+            pub: {
+                remote_host: 'localhost',
+                remote_port: 9001,
+                local_port: 9002,
+                upstream: 10*1024,      // 10K
+                downstream: 100*1024    // 100K
+            }
+        },
+
         karma: {
             main: {
                 configFile: 'karma.conf.js',
@@ -505,6 +515,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-dispatch');
     grunt.loadNpmTasks('grunt-ozjs');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-throttle');
 
     grunt.registerTask('build_components', [
         "copy:origin_to_scss"
@@ -579,6 +590,11 @@ module.exports = function(grunt) {
         'copy:dist_to_pub',
         'copy:min_to_pub',
         'dev:html'
+    ]);
+
+    grunt.registerTask('serve', [
+       'throttle',
+       'connect'
     ]);
 
 };

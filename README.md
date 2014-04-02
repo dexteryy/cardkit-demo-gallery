@@ -22,4 +22,11 @@ title: CardKit
 ## Building
 
 1. `grunt`
-2. `open public/index.html`
+
+## Debug
+
+1. `grunt watch`
+2. `grunt serve`
+3. `gvim docs/index.html`
+4. `open public/index.html` or `open http://localhost:9002/index.html`(throttle)
+
