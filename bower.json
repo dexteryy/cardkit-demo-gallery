@@ -5,7 +5,7 @@
   "dependencies": {
     "mo": "~1.6.7",
     "dollar": "~1.5.1",
-    "cardkit": "~2.0.0-alpha.8",
+    "cardkit": "43cc53d3eb147ad7711ac5e271f291c9e86cb217",
     "prism": "gh-pages"
   },
   "devDependencies": {},
