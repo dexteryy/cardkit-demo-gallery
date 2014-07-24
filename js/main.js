@@ -7,11 +7,6 @@ require.config({
     }
 });
 
-define('prism-src', 'prism.js');
-define('prism', [], function(){
-    return window.Prism;
-});
-
 // @deprecated
 define('cardkit/app', ['cardkit'], function(cardkit){
     return cardkit;
@@ -35,7 +30,7 @@ require([
 ], function(){
 
     if (false) {
-        require(['mo/cookie', 'prism-src'], function(){});
+        require(['mo/cookie'], function(){});
     }
 
 });

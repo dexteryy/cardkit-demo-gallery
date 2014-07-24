@@ -38,13 +38,6 @@ exports.codeGetter = function(node){
     var code = node.attr('only-content') === 'true'
         ? sel[0].innerHTML
         : sel[0].outerHTML;
-    code = code.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/\u00a0/g, ' ');
-    if (lang === 'HTML') {
-        code = code//.replace(/\s+([\w\-]+\=['"])/g, '\n  $1')
-            .replace(/>\s*(\&lt;)/g, '>\n$1');
-    }
     return Prism.highlight(code, grammar);
 };
 
