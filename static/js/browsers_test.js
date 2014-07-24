@@ -21,7 +21,7 @@
         _RE_SUFFIX = /\.(js|json)$/,
         _RE_RELPATH = /^\.+?\/.+/,
         _RE_DOT = /(^|\/)\.\//g,
-        _RE_DOTS = /[^/\/\.]+\/\.\.\//,
+        _RE_DOTS = /[^\/\.]+\/\.\.\//,
         _RE_ALIAS_IN_MID = /^([\w\-]+)\//,
         _builtin_mods = { "require": 1, "exports": 1, "module": 1, 
             "host": 1, "finish": 1 },
@@ -582,7 +582,7 @@
         while (_RE_DOTS.test(url)) {
             url = url.replace(_RE_DOTS, '/').replace(/(^|[^:])\/\/+/g, '$1/');
         }
-        return url;
+        return url.replace(/^\//, '');
     };
 
     var origin = {};
@@ -724,333 +724,423 @@ define("mo/template/string", [], function(require, exports){
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        (this.mo || (this.mo = {})).browsers = factory();
+    };
+}
 define("mo/browsers", [], function(){
 
-    var match, skin, os, is_mobile_webkit, is_touch, is_webview,
-        ua = this.navigator.userAgent.toLowerCase(),
-        rank = { 
-            "360ee": 2,
-            "maxthon/3": 2,
-            "qqbrowser": 2,
-            "metasr": 2,
-            "360se": 1,
-            "theworld": 1,
-            "maxthon": 1,
-            "tencenttraveler": -1
-        };
-
-    try {
-        var rwindows = /(windows) nt ([\w.]+)/,
-            rmac = /(mac) os \w+ ([\w.]+)/,
-            rwindowsphone = /(windows phone)[\sos]* ([\w.]+)/,
-            riphone = /(iphone).*? os ([\w.]+)/,
-            ripad = /(ipad).*? os ([\w.]+)/,
-            randroid = /(android)[ ;]([\w.]*)/,
-            rmobilewebkit = /(\w+)[ \/]([\w.]+)[ \/]mobile/,
-            rsafari = /(\w+)[ \/]([\w.]+)[ \/]safari/,
-            rmobilesafari = /[ \/]mobile.*safari/,
-            rwebview = /[ \/]mobile/,
-            rtouch = / touch/,
-            rwebkit = /(webkit)[ \/]([\w.]+)/,
-            ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
-            rmsie = /(msie) ([\w.]+)/,
-            rie11 = /(trident).*? rv:([\w.]+)/,
-            rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
-
-        var r360se = /(360se)/,
-            r360ee = /(360ee)/,
-            r360phone = /(360) \w+phone/,
-            rtheworld = /(theworld)/,
-            rmaxthon3 = /(maxthon\/3)/,
-            rmaxthon = /(maxthon)/,
-            rtt = /(tencenttraveler)/,
-            rqq = /(qqbrowser)/,
-            rbaidu = /(baidubrowser)/,
-            ruc = /(ucbrowser)/,
-            rsogou = /(sogou\w*browser)/,
-            rmetasr = /(metasr)/;
-
-        os = riphone.exec(ua) 
-            || ripad.exec(ua) 
-            || randroid.exec(ua) 
-            || rmac.exec(ua) 
-            || rwindowsphone.exec(ua) 
-            || rwindows.exec(ua) 
-            || [];
-
-        skin = r360se.exec(ua) 
-            || r360ee.exec(ua) 
-            || r360phone.exec(ua) 
-            || ruc.exec(ua) 
-            || rtheworld.exec(ua) 
-            || rmaxthon3.exec(ua) 
-            || rmaxthon.exec(ua) 
-            || rtt.exec(ua) 
-            || rqq.exec(ua) 
-            || rbaidu.exec(ua) 
-            || rsogou.exec(ua) 
-            || rmetasr.exec(ua) 
-            || [];
-
-        match =  rwebkit.exec(ua) 
-            || ropera.exec(ua) 
-            || rmsie.exec(ua) 
-            || rie11.exec(ua)
-            || ua.indexOf("compatible") < 0 && rmozilla.exec(ua) 
-            || [];
-
-        is_mobile_webkit = rmobilesafari.exec(ua) 
-            || (is_webview = rwebview.exec(ua));
-
-        is_touch = rtouch.exec(ua);
-
-        if (match[1] === 'trident') {
-            match[1] = 'msie';
-        }
-
-        if (match[1] === 'webkit') {
-            var vendor = (is_mobile_webkit ? rmobilewebkit.exec(ua)
-                : rsafari.exec(ua)) || [];
-            match[3] = match[1];
-            match[4] = match[2];
-            match[1] = vendor[1] === 'version' 
-                && ((os[1] === 'iphone' 
-                        || os[1] === 'ipad')
-                        && 'mobilesafari'
-                    || os[1] === 'android' 
-                        && 'aosp' 
-                    || 'safari')
-                || skin[1]
-                || is_webview && 'webview'
-                || vendor[1];
-            match[2] = vendor[2];
-        }
-
-    } catch (ex) {
-        match = [];
-        skin = [];
-    }
-
-    var result = { 
-        browser: match[1] || skin[1] || "", 
-        version: match[2] || "0",
-        engine: match[3],
-        engineversion: match[4] || "0",
-        os: os[1],
-        osversion: os[2] || "0",
-        isMobile: os[1] === 'iphone'
-            || os[1] === 'windows phone'
-            || os[1] === 'android' && !!is_mobile_webkit,
-        isTouch: os[1] === 'iphone'
-            || os[1] === 'windows phone'
-            || os[1] === 'android'
-            || os[1] === 'windows' && is_touch,
-        skin: skin[1] || "",
-        ua: ua
+var match, skin, os, is_mobile_webkit, is_touch, is_webview,
+    ua = this.navigator.userAgent.toLowerCase(),
+    rank = { 
+        "360ee": 2,
+        "maxthon/3": 2,
+        "qqbrowser": 2,
+        "metasr": 2,
+        "360se": 1,
+        "theworld": 1,
+        "maxthon": 1,
+        "tencenttraveler": -1
     };
 
-    if (match[1]) {
-        result[match[1]] = parseInt(result.version, 10) || true;
-    }
-    if (skin[1]) {
-        result.rank = rank[result.skin] || 0;
-    }
-    result.shell = result.skin;
+try {
+    var rwindows = /(windows) nt ([\w.]+)/,
+        rmac = /(mac) os \w+ ([\w.]+)/,
+        rwindowsphone = /(windows phone)[\sos]* ([\w.]+)/,
+        riphone = /(iphone).*? os ([\w.]+)/,
+        ripad = /(ipad).*? os ([\w.]+)/,
+        randroid = /(android)[ ;]([\w.]*)/,
+        rmobilewebkit = /(\w+)[ \/]([\w.]+)[ \/]mobile/,
+        rsafari = /(\w+)[ \/]([\w.]+)[ \/]safari/,
+        rmobilesafari = /[ \/]mobile.*safari/,
+        rwebview = /[ \/]mobile/,
+        rtouch = / touch/,
+        rwebkit = /(webkit)[ \/]([\w.]+)/,
+        ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
+        rmsie = /(msie) ([\w.]+)/,
+        rie11 = /(trident).*? rv:([\w.]+)/,
+        rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/;
 
-    return result;
+    var r360se = /(360se)/,
+        r360ee = /(360ee)/,
+        r360phone = /(360) \w+phone/,
+        rtheworld = /(theworld)/,
+        rmaxthon3 = /(maxthon\/3)/,
+        rmaxthon = /(maxthon)/,
+        rtt = /(tencenttraveler)/,
+        rqq = /(qqbrowser)/,
+        rbaidu = /(baidubrowser)/,
+        ruc = /(ucbrowser)/,
+        rsogou = /(sogou\w*browser)/,
+        rmetasr = /(metasr)/;
+
+    os = riphone.exec(ua) 
+        || ripad.exec(ua) 
+        || randroid.exec(ua) 
+        || rmac.exec(ua) 
+        || rwindowsphone.exec(ua) 
+        || rwindows.exec(ua) 
+        || [];
+
+    skin = r360se.exec(ua) 
+        || r360ee.exec(ua) 
+        || r360phone.exec(ua) 
+        || ruc.exec(ua) 
+        || rtheworld.exec(ua) 
+        || rmaxthon3.exec(ua) 
+        || rmaxthon.exec(ua) 
+        || rtt.exec(ua) 
+        || rqq.exec(ua) 
+        || rbaidu.exec(ua) 
+        || rsogou.exec(ua) 
+        || rmetasr.exec(ua) 
+        || [];
+
+    match =  rwebkit.exec(ua) 
+        || ropera.exec(ua) 
+        || rmsie.exec(ua) 
+        || rie11.exec(ua)
+        || ua.indexOf("compatible") < 0 && rmozilla.exec(ua) 
+        || [];
+
+    is_mobile_webkit = rmobilesafari.exec(ua) 
+        || (is_webview = rwebview.exec(ua));
+
+    is_touch = rtouch.exec(ua);
+
+    if (match[1] === 'trident') {
+        match[1] = 'msie';
+    }
+
+    if (match[1] === 'webkit') {
+        var vendor = (is_mobile_webkit ? rmobilewebkit.exec(ua)
+            : rsafari.exec(ua)) || [];
+        match[3] = match[1];
+        match[4] = match[2];
+        match[1] = vendor[1] === 'version' 
+            && ((os[1] === 'iphone' 
+                    || os[1] === 'ipad')
+                    && 'mobilesafari'
+                || os[1] === 'android' 
+                    && 'aosp' 
+                || 'safari')
+            || skin[1]
+            || is_webview && 'webview'
+            || vendor[1];
+        match[2] = vendor[2];
+    }
+
+} catch (ex) {
+    match = [];
+    skin = [];
+}
+
+var result = { 
+    browser: match[1] || skin[1] || "", 
+    version: match[2] || "0",
+    engine: match[3],
+    engineversion: match[4] || "0",
+    os: os[1],
+    osversion: os[2] || "0",
+    isMobile: os[1] === 'iphone'
+        || os[1] === 'windows phone'
+        || os[1] === 'android' && !!is_mobile_webkit,
+    isTouch: os[1] === 'iphone'
+        || os[1] === 'windows phone'
+        || os[1] === 'android'
+        || os[1] === 'windows' && is_touch,
+    skin: skin[1] || "",
+    ua: ua
+};
+
+if (match[1]) {
+    result[match[1]] = parseInt(result.version, 10) || true;
+}
+if (skin[1]) {
+    result.rank = rank[result.skin] || 0;
+}
+result.shell = result.skin;
+
+return result;
 
 });
 
 /* @source mo/lang/es5.js */;
 
 /**
- * using AMD (Asynchronous Module Definition) API with OzJS
- * see http://ozjs.org for details
- *
- * Copyright (C) 2010-2012, Dexter.Yy, MIT License
+ * Copyright (C) 2010-2014, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        factory();
+    };
+}
 define("mo/lang/es5", [], function(){
 
-    var host = this,
-        Array = host.Array,
-        String = host.String,
-        Object = host.Object,
-        Function = host.Function,
-        //window = host.window,
-        _objproto = Object.prototype,
-        _arrayproto = Array.prototype,
-        _fnproto = Function.prototype;
+var host = this,
+    Array = host.Array,
+    String = host.String,
+    Object = host.Object,
+    Function = host.Function,
+    _objproto = Object.prototype,
+    _arrayproto = Array.prototype,
+    _stringproto = String.prototype,
+    _fnproto = Function.prototype;
 
-    function Empty() {}
+function Empty() {}
 
-    if (!_fnproto.bind) {
-        _fnproto.bind = function (that) {
-            var target = this,
-                args = _arrayproto.slice.call(arguments, 1),
-                bound = function () {
-                    var arglist = args.concat(_arrayproto.slice.call(arguments));
-                    if (this instanceof bound) {
-                        var result = target.apply(this, arglist);
-                        if (Object(result) === result) {
-                            return result;
-                        }
-                        return this;
-                    } else {
-                        return target.apply(that, arglist);
+if (!_fnproto.bind) {
+    _fnproto.bind = function (that) {
+        var target = this,
+            args = _arrayproto.slice.call(arguments, 1),
+            bound = function () {
+                var arglist = args.concat(_arrayproto.slice.call(arguments));
+                if (this instanceof bound) {
+                    var result = target.apply(this, arglist);
+                    if (Object(result) === result) {
+                        return result;
                     }
-                };
-            if(target.prototype) {
-                Empty.prototype = target.prototype;
-                bound.prototype = new Empty();
-                Empty.prototype = null;
-            }
-            return bound;
-        };
-    }
-
-    var _call = _fnproto.call,
-        _hasOwnProperty = _call.bind(_objproto.hasOwnProperty),
-        _toString = _call.bind(_objproto.toString);
-
-    if (!_arrayproto.filter) {
-        _arrayproto.filter = function(fn, sc){
-            var r = [];
-            for (var i = 0, l = this.length; i < l; i++){
-                if (i in this && fn.call(sc, this[i], i, this)) {
-                    r.push(this[i]);
+                    return this;
+                } else {
+                    return target.apply(that, arglist);
                 }
+            };
+        if(target.prototype) {
+            Empty.prototype = target.prototype;
+            bound.prototype = new Empty();
+            Empty.prototype = null;
+        }
+        return bound;
+    };
+}
+
+var _call = _fnproto.call,
+    _hasOwnProperty = _call.bind(_objproto.hasOwnProperty),
+    _toString = _call.bind(_objproto.toString);
+
+if (!_arrayproto.filter) {
+    _arrayproto.filter = function(fn, sc){
+        var r = [];
+        for (var i = 0, l = this.length; i < l; i++){
+            if (i in this && fn.call(sc, this[i], i, this)) {
+                r.push(this[i]);
             }
-            return r;
-        };
-    }
-        
-    if (!_arrayproto.forEach) {
-        _arrayproto.forEach = function(fn, sc){
-            for(var i = 0, l = this.length; i < l; i++){
-                if (i in this)
-                    fn.call(sc, this[i], i, this);
-            }
-        };
-    }
-
-    if (!_arrayproto.map) {
-        _arrayproto.map = function(fn, sc){
-            for (var i = 0, copy = [], l = this.length; i < l; i++) {
-                if (i in this) {
-                    copy[i] = fn.call(sc, this[i], i, this);
-                }
-            }
-            return copy;
-        };
-    }
-
-    if (!_arrayproto.reduce) {
-        _arrayproto.reduce = function(fn, sc){
-            for (var i = 1, prev = this[0], l = this.length; i < l; i++) {
-                if (i in this) {
-                    prev = fn.call(sc, prev, this[i], i, this);
-                }
-            }
-            return prev;
-        };
-    }
-
-    if (!_arrayproto.some) {
-        _arrayproto.some = function(fn, sc){
-            for (var i = 0, l = this.length; i < l; i++){
-                if (i in this && fn.call(sc, this[i], i, this)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-    }
-
-    if (!_arrayproto.every) {
-        _arrayproto.every = function(fn, sc){
-            for (var i = 0, l = this.length; i < l; i++){
-                if (i in this && !fn.call(sc, this[i], i, this)) {
-                    return false;
-                }
-            }
-            return true;
-        };
-    }
-
-    if (!_arrayproto.indexOf) {
-        _arrayproto.indexOf = function(elt, from){
-            var l = this.length;
-            from = parseInt(from, 10) || 0;
-            if (from < 0)
-                from += l;
-            for (; from < l; from++) {
-                if (from in this && this[from] === elt)
-                    return from;
-            }
-            return -1;
-        };
-    }
-
-    if (!_arrayproto.lastIndexOf) {
-        _arrayproto.lastIndexOf = function(elt, from){
-            var l = this.length;
-            from = parseInt(from, 10) || l - 1;
-            if (from < 0)
-                from += l;
-            for (; from > -1; from--) {
-                if (from in this && this[from] === elt)
-                    return from;
-            }
-            return -1;
-        };
-    }
-
-    if (!Array.isArray) {
-        Array.isArray = function(obj) {
-            return _toString(obj) === "[object Array]";
-        };
-    }
-
-    var rnotwhite = /\S/,
-        trimLeft = /^\s+/,
-        trimRight = /\s+$/;
-    if (rnotwhite.test( "\xA0")) {
-        trimLeft = /^[\s\xA0]+/;
-        trimRight = /[\s\xA0]+$/;
-    }
-    if (!String.prototype.trim) {
-        String.prototype.trim = function() {
-            return this.replace(trimLeft, "").replace(trimRight, "");
-        };
-    }
-
-    if (!Object.keys) {
-        Object.keys = function(obj) {
-            var keys = [];
-            for (var prop in obj) {
-                if (_hasOwnProperty(obj, prop)) {
-                    keys.push(prop);
-                }
-            }
-            return keys;
-        };
-    }
-
-    if (!Object.create) {
-        Object.create = function(obj) {
-            function NewObj(){}
-            NewObj.prototype = obj;
-            return new NewObj();
-        };
-    }
-
-    if (!Object.getPrototypeOf) {
-        Object.getPrototypeOf = function (obj) {
-            return obj.__proto__ || obj.constructor.prototype;
-        };
-    }
+        }
+        return r;
+    };
+}
     
+if (!_arrayproto.forEach) {
+    _arrayproto.forEach = function(fn, sc){
+        for(var i = 0, l = this.length; i < l; i++){
+            if (i in this)
+                fn.call(sc, this[i], i, this);
+        }
+    };
+}
+
+if (!_arrayproto.map) {
+    _arrayproto.map = function(fn, sc){
+        for (var i = 0, copy = [], l = this.length; i < l; i++) {
+            if (i in this) {
+                copy[i] = fn.call(sc, this[i], i, this);
+            }
+        }
+        return copy;
+    };
+}
+
+var EMPTY_ERROR = " of empty array with no initial value";
+// modified from es-shims/es5-shim
+if (!_arrayproto.reduce) {
+    _arrayproto.reduce = function reduce(fun /*, initial*/) {
+        var l = this.length;
+        if (!l && arguments.length === 1) {
+            throw new TypeError("reduce" + EMPTY_ERROR);
+        }
+        var i = 0;
+        var result;
+        if (arguments.length >= 2) {
+            result = arguments[1];
+        } else {
+            do {
+                if (i in this) {
+                    result = this[i++];
+                    break;
+                }
+                if (++i >= l) {
+                    throw new TypeError("reduce" + EMPTY_ERROR);
+                }
+            } while (true);
+        }
+        for (; i < l; i++) {
+            if (i in this) {
+                result = fun.call(void 0, result, this[i], i, this);
+            }
+        }
+        return result;
+    };
+}
+
+// modified from es-shims/es5-shim
+if (!_arrayproto.reduceRight) {
+    _arrayproto.reduceRight = function(fun /*, initial*/) {
+        var l = this.length;
+        if (!l && arguments.length === 1) {
+            throw new TypeError("reduceRight" + EMPTY_ERROR);
+        }
+        var result, i = l - 1;
+        if (arguments.length >= 2) {
+            result = arguments[1];
+        } else {
+            do {
+                if (i in this) {
+                    result = this[i--];
+                    break;
+                }
+                if (--i < 0) {
+                    throw new TypeError("reduceRight" + EMPTY_ERROR);
+                }
+            } while (true);
+        }
+        if (i < 0) {
+            return result;
+        }
+        do {
+            if (i in this) {
+                result = fun.call(void 0, result, this[i], i, this);
+            }
+        } while (i--);
+        return result;
+    };
+}
+
+if (!_arrayproto.some) {
+    _arrayproto.some = function(fn, sc){
+        for (var i = 0, l = this.length; i < l; i++){
+            if (i in this && fn.call(sc, this[i], i, this)) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
+
+if (!_arrayproto.every) {
+    _arrayproto.every = function(fn, sc){
+        for (var i = 0, l = this.length; i < l; i++){
+            if (i in this && !fn.call(sc, this[i], i, this)) {
+                return false;
+            }
+        }
+        return true;
+    };
+}
+
+if (!_arrayproto.indexOf) {
+    _arrayproto.indexOf = function(elt, from){
+        var l = this.length;
+        from = parseInt(from, 10) || 0;
+        if (from < 0)
+            from += l;
+        for (; from < l; from++) {
+            if (from in this && this[from] === elt)
+                return from;
+        }
+        return -1;
+    };
+}
+
+if (!_arrayproto.lastIndexOf) {
+    _arrayproto.lastIndexOf = function(elt, from){
+        var l = this.length;
+        from = parseInt(from, 10) || l - 1;
+        if (from < 0)
+            from += l;
+        for (; from > -1; from--) {
+            if (from in this && this[from] === elt)
+                return from;
+        }
+        return -1;
+    };
+}
+
+if (!Array.isArray) {
+    Array.isArray = function(obj) {
+        return _toString(obj) === "[object Array]";
+    };
+}
+
+// modified from es-shims/es5-shim
+var ws = "\x09\x0A\x0B\x0C\x0D \xA0\u1680\u180E\u2000\u2001\u2002\u2003" +
+    "\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028" +
+    "\u2029\uFEFF";
+var zeroWidth = '\u200b';
+if (!_stringproto.trim || ws.trim() || !zeroWidth.trim()) {
+    // http://blog.stevenlevithan.com/archives/faster-trim-javascript
+    // http://perfectionkills.com/whitespace-deviations/
+    ws = "[" + ws + "]";
+    var trimBeginRegexp = new RegExp("^" + ws + ws + "*"),
+        trimEndRegexp = new RegExp(ws + ws + "*$");
+    _stringproto.trim = function trim() {
+        if (this === void 0 || this === null) {
+            throw new TypeError("can't convert " + this + " to object");
+        }
+        return String(this)
+            .replace(trimBeginRegexp, "")
+            .replace(trimEndRegexp, "");
+    };
+}
+
+if (!Date.now) {
+    Date.now = function now() {
+        return new Date().getTime();
+    };
+}
+
+if (!Object.keys) {
+    Object.keys = function(obj) {
+        var keys = [];
+        for (var prop in obj) {
+            if (_hasOwnProperty(obj, prop)) {
+                keys.push(prop);
+            }
+        }
+        return keys;
+    };
+}
+
+if (!Object.create) {
+    var Temp = function(){};
+    Object.create = function(proto, des) {
+        Temp.prototype = proto;
+        var obj = new Temp();
+        for (var key in des) {
+            obj[key] = des[key].value;
+        }
+        obj.__proto__ = proto;
+        obj.constructor = Object;
+        return obj;
+    };
+}
+
+if (!Object.getPrototypeOf) {
+    Object.getPrototypeOf = function (obj) {
+        var proto = obj.__proto__;
+        if (proto || proto === null) {
+            return proto;
+        } else if (obj.constructor) {
+            return obj.constructor.prototype;
+        } else {
+            return _objproto;
+        }
+    };
+}
+
 });
 
 /* @source mo/lang/type.js */;
@@ -1062,52 +1152,60 @@ define("mo/lang/es5", [], function(){
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        var exports = ((this.mo || (this.mo = {})).lang 
+            || (this.mo.lang = {})).type = {};
+        factory(null, null, exports);
+    };
+}
 define("mo/lang/type", [
   "mo/lang/es5"
 ], function(_0, require, exports){
 
-    var _toString = Object.prototype.toString,
-        _aproto = Array.prototype,
-        _typeMap = {};
+var _toString = Object.prototype.toString,
+    _aproto = Array.prototype,
+    _typeMap = {};
 
-    _aproto.forEach.call("Boolean Number String Function Array Date RegExp Object".split(" "), function(name){
-        this[ "[object " + name + "]" ] = name.toLowerCase();
-    }, _typeMap);
+_aproto.forEach.call("Boolean Number String Function Array Date RegExp Object".split(" "), function(name){
+    this[ "[object " + name + "]" ] = name.toLowerCase();
+}, _typeMap);
 
-    function type(obj) {
-        return obj == null ?
-            String(obj) :
-            _typeMap[ _toString.call(obj) ] || "object";
+function type(obj) {
+    return obj == null ?
+        String(obj) :
+        _typeMap[ _toString.call(obj) ] || "object";
+}
+
+exports.type = type;
+
+exports.isFunction = function(obj) {
+    return _toString.call(obj) === "[object Function]";
+};
+
+exports.isWindow = function(obj) {
+    return obj && obj === obj.window;
+};
+
+exports.isEmptyObject = function(obj) {
+    for (var name in obj) {
+        name = null;
+        return false;
     }
+    return true;
+};
 
-    exports.type = type;
-
-    exports.isFunction = function(obj) {
-        return _toString.call(obj) === "[object Function]";
-    };
-
-    exports.isWindow = function(obj) {
-		return obj && obj === obj.window;
-    };
-
-	exports.isEmptyObject = function(obj) {
-        for (var name in obj) {
-            name = null;
-            return false;
-        }
-        return true;
-	};
-
-    exports.isArraylike = function(obj){
-        var l = obj.length;
-        return !exports.isWindow(obj) 
-            && (typeof obj !== 'function' 
-                || obj.constructor !== Function)
-            && (l === 0 
-                || typeof l === "number"
-                && l > 0 
-                && (l - 1) in obj);
-    };
+exports.isArraylike = function(obj){
+    var l = obj.length;
+    return !exports.isWindow(obj) 
+        && (typeof obj !== 'function' 
+            || obj.constructor !== Function)
+        && (l === 0 
+            || typeof l === "number"
+            && l > 0 
+            && (l - 1) in obj);
+};
 
 });
 
@@ -1120,218 +1218,226 @@ define("mo/lang/type", [
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        var exports = ((this.mo || (this.mo = {})).lang 
+            || (this.mo.lang = {})).mix = {};
+        factory(null, this.mo.lang.type, null, exports);
+    };
+}
 define("mo/lang/mix", [
   "mo/lang/es5",
   "mo/lang/type"
 ], function(_0, _, require, exports){
 
-    var type = _.type;
+var type = _.type;
 
-    function mix(origin) {
-        var objs = arguments, ol = objs.length, 
-            VALTYPE = { 'number': 1, 'boolean': 2, 'string': 3 },
-            obj, lvl, i, l;
-        if (typeof objs[ol - 1] !== 'object') {
-            lvl = objs[ol - 1] || 0;
-            ol--;
-        } else {
-            lvl = 0;
-        }
-        for (var n = 1; n < ol; n++) {
-            obj = objs[n];
-            if (Array.isArray(obj)) {
-                origin = !VALTYPE[typeof origin] && origin || [];
-                l = obj.length;
-                for (i = 0; i < l; i++) {
-                    if (lvl >= 1 && obj[i] && typeof obj[i] === 'object') {
-                        origin[i] = mix(origin[i], obj[i], lvl - 1);
-                    } else {
-                        origin[i] = obj[i];
-                    }
+function mix(origin) {
+    var objs = arguments, ol = objs.length, 
+        VALTYPE = { 'number': 1, 'boolean': 2, 'string': 3 },
+        obj, lvl, i, l;
+    if (typeof objs[ol - 1] !== 'object') {
+        lvl = objs[ol - 1] || 0;
+        ol--;
+    } else {
+        lvl = 0;
+    }
+    for (var n = 1; n < ol; n++) {
+        obj = objs[n];
+        if (Array.isArray(obj)) {
+            origin = !VALTYPE[typeof origin] && origin || [];
+            l = obj.length;
+            for (i = 0; i < l; i++) {
+                if (lvl >= 1 && obj[i] && typeof obj[i] === 'object') {
+                    origin[i] = mix(origin[i], obj[i], lvl - 1);
+                } else {
+                    origin[i] = obj[i];
                 }
-            } else {
-                origin = !VALTYPE[typeof origin] && origin || {};
-                for (i in obj) {
-                    if (lvl >= 1 && obj[i] && typeof obj[i] === 'object') {
-                        origin[i] = mix(origin[i], obj[i], lvl - 1);
-                    } else {
-                        origin[i] = obj[i];
-                    }
+            }
+        } else {
+            origin = !VALTYPE[typeof origin] && origin || {};
+            for (i in obj) {
+                if (lvl >= 1 && obj[i] && typeof obj[i] === 'object') {
+                    origin[i] = mix(origin[i], obj[i], lvl - 1);
+                } else {
+                    origin[i] = obj[i];
                 }
             }
         }
-        return origin;
     }
+    return origin;
+}
 
-    function merge(origin) {
-        var objs = arguments, ol = objs.length, 
-            ITERTYPE = { 'object': 1, 'array': 2 },
-            obj, lvl, i, k, lib, marked, mark;
-        if (typeof objs[ol - 1] !== 'object') {
-            lvl = objs[ol - 1] || 0;
-            ol--;
-        } else {
-            lvl = 0;
+function merge(origin) {
+    var objs = arguments, ol = objs.length, 
+        ITERTYPE = { 'object': 1, 'array': 2 },
+        obj, lvl, i, k, lib, marked, mark;
+    if (typeof objs[ol - 1] !== 'object') {
+        lvl = objs[ol - 1] || 0;
+        ol--;
+    } else {
+        lvl = 0;
+    }
+    for (var n = 1; n < ol; n++) {
+        obj = objs[n];
+        if (typeof obj !== 'object') {
+            continue;
         }
-        for (var n = 1; n < ol; n++) {
-            obj = objs[n];
-            if (typeof obj !== 'object') {
+        if (Array.isArray(origin)) {
+            if (!Array.isArray(obj)) {
                 continue;
             }
-            if (Array.isArray(origin)) {
-                if (!Array.isArray(obj)) {
-                    continue;
-                }
-                origin = origin || [];
-                lib = {};
-                marked = [];
-                mark = '__oz_uniqmark_' + (+new Date() + Math.random());
-                obj = obj.concat(origin);
-                origin.length = 0;
-                obj.forEach(function(i){
-                    if (i && typeof i === 'object') {
-                        if (!i[mark]) {
-                            if (lvl >= 1 && Array.isArray(i)) {
-                                origin.push(merge(i, [], lvl - 1));
-                            } else {
-                                origin.push(i);
-                            }
-                            i[mark] = 1;
-                            marked.push(i);
-                        }
-                    } else {
-                        k = (typeof i) + '_' + i;
-                        if (!this[k]) {
+            origin = origin || [];
+            lib = {};
+            marked = [];
+            mark = '__oz_uniqmark_' + (+new Date() + Math.random());
+            obj = obj.concat(origin);
+            origin.length = 0;
+            obj.forEach(function(i){
+                if (i && typeof i === 'object') {
+                    if (!i[mark]) {
+                        if (lvl >= 1 && Array.isArray(i)) {
+                            origin.push(merge(i, [], lvl - 1));
+                        } else {
                             origin.push(i);
-                            this[k] = 1;
                         }
-                    }
-                }, lib);
-                marked.forEach(function(i){
-                    delete i[mark];
-                });
-            } else {
-                origin = origin || {};
-                for (i in obj) {
-                    if (!origin.hasOwnProperty(i)) {
-                        origin[i] = obj[i];
-                    } else if (lvl >= 1 && i 
-                            // avoid undefined === undefined
-                            && ITERTYPE[type(origin[i])] + 0 === ITERTYPE[type(obj[i])] + 0) {
-                        origin[i] = merge(origin[i], obj[i], lvl - 1);
-                    }
-                }
-            }
-        }
-        return origin;
-    }
-
-    function interset(origin) {
-        var objs = arguments, ol = objs.length, 
-            ITERTYPE = { 'object': 1, 'array': 2 },
-            obj, lvl, i, k, lib, marked, mark;
-        if (typeof objs[ol - 1] !== 'object') {
-            lvl = objs[ol - 1] || 0;
-            ol--;
-        } else {
-            lvl = 0;
-        }
-        for (var n = 1; n < ol; n++) {
-            obj = objs[n];
-            if (typeof obj !== 'object') {
-                continue;
-            }
-            if (Array.isArray(origin)) {
-                if (!Array.isArray(obj)) {
-                    continue;
-                }
-                origin = origin || [];
-                lib = {};
-                marked = [];
-                mark = '__oz_uniqmark_' + (+new Date() + Math.random());
-                origin.forEach(function(i){
-                    if (i && typeof i === 'object' && !i[mark]) {
                         i[mark] = 1;
                         marked.push(i);
-                    } else {
-                        k = (typeof i) + '_' + i;
+                    }
+                } else {
+                    k = (typeof i) + '_' + i;
+                    if (!this[k]) {
+                        origin.push(i);
                         this[k] = 1;
                     }
-                }, lib);
-                origin.length = 0;
-                obj.forEach(function(i){
-                    if (i && typeof i === 'object') {
-                        if (i[mark] === 1) {
-                            origin.push(i);
-                            i[mark] = 2;
-                        }
-                    } else {
-                        k = (typeof i) + '_' + i;
-                        if (this[k] === 1) {
-                            origin.push(i);
-                            this[k] = 2;
-                        }
-                    }
-                }, lib);
-                marked.forEach(function(i){
-                    delete i[mark];
-                });
-            } else {
-                origin = origin || {};
-                for (i in origin) {
-                    if (!obj.hasOwnProperty(i)) {
-                        delete origin[i];
-                    } else if (lvl >= 1 && i 
-                            && ITERTYPE[type(origin[i])] + 0 === ITERTYPE[type(obj[i])] + 0) {
-                        origin[i] = interset(origin[i], obj[i], lvl - 1);
-                    }
                 }
-            }
-        }
-        return origin;
-    }
-
-    exports.mix = mix;
-    exports.merge = merge;
-    exports.interset = interset;
-
-    exports.copy = function(obj, lvl) {
-        return mix(null, obj, lvl);
-    };
-
-    exports.occupy = function(origin, obj, lvl) {
-        return mix(interset(origin, obj, lvl), obj, lvl);
-    };
-
-    exports.defaults = merge;
-
-    exports.config = function(cfg, opt, default_cfg, lvl){
-        return mix(merge(cfg, default_cfg, lvl), interset(mix(null, opt, lvl), default_cfg, lvl), lvl);
-    };
-
-    exports.unique = function(origin, lvl) {
-        return merge(origin, [], lvl);
-    };
-
-    exports.each = function(obj, fn, context){
-        var i = 0, l = obj.length, re;
-        if (_.isArraylike(obj)) {
-            for (; i < l; i++) {
-                re = fn.call(context, obj[i], i);
-                if (re === false) {
-                    break;
-                }
-            }
+            }, lib);
+            marked.forEach(function(i){
+                delete i[mark];
+            });
         } else {
+            origin = origin || {};
             for (i in obj) {
-                re = fn.call(context, obj[i], i);
-                if (re === false) {
-                    break;
+                if (!origin.hasOwnProperty(i)) {
+                    origin[i] = obj[i];
+                } else if (lvl >= 1 && i 
+                        // avoid undefined === undefined
+                        && ITERTYPE[type(origin[i])] + 0 === ITERTYPE[type(obj[i])] + 0) {
+                    origin[i] = merge(origin[i], obj[i], lvl - 1);
                 }
             }
         }
-        return obj;
-    };
+    }
+    return origin;
+}
+
+function interset(origin) {
+    var objs = arguments, ol = objs.length, 
+        ITERTYPE = { 'object': 1, 'array': 2 },
+        obj, lvl, i, k, lib, marked, mark;
+    if (typeof objs[ol - 1] !== 'object') {
+        lvl = objs[ol - 1] || 0;
+        ol--;
+    } else {
+        lvl = 0;
+    }
+    for (var n = 1; n < ol; n++) {
+        obj = objs[n];
+        if (typeof obj !== 'object') {
+            continue;
+        }
+        if (Array.isArray(origin)) {
+            if (!Array.isArray(obj)) {
+                continue;
+            }
+            origin = origin || [];
+            lib = {};
+            marked = [];
+            mark = '__oz_uniqmark_' + (+new Date() + Math.random());
+            origin.forEach(function(i){
+                if (i && typeof i === 'object' && !i[mark]) {
+                    i[mark] = 1;
+                    marked.push(i);
+                } else {
+                    k = (typeof i) + '_' + i;
+                    this[k] = 1;
+                }
+            }, lib);
+            origin.length = 0;
+            obj.forEach(function(i){
+                if (i && typeof i === 'object') {
+                    if (i[mark] === 1) {
+                        origin.push(i);
+                        i[mark] = 2;
+                    }
+                } else {
+                    k = (typeof i) + '_' + i;
+                    if (this[k] === 1) {
+                        origin.push(i);
+                        this[k] = 2;
+                    }
+                }
+            }, lib);
+            marked.forEach(function(i){
+                delete i[mark];
+            });
+        } else {
+            origin = origin || {};
+            for (i in origin) {
+                if (!obj.hasOwnProperty(i)) {
+                    delete origin[i];
+                } else if (lvl >= 1 && i 
+                        && ITERTYPE[type(origin[i])] + 0 === ITERTYPE[type(obj[i])] + 0) {
+                    origin[i] = interset(origin[i], obj[i], lvl - 1);
+                }
+            }
+        }
+    }
+    return origin;
+}
+
+exports.mix = mix;
+exports.merge = merge;
+exports.interset = interset;
+
+exports.copy = function(obj, lvl) {
+    return mix(null, obj, lvl);
+};
+
+exports.occupy = function(origin, obj, lvl) {
+    return mix(interset(origin, obj, lvl), obj, lvl);
+};
+
+exports.defaults = merge;
+
+exports.config = function(cfg, opt, default_cfg, lvl){
+    return mix(merge(cfg, default_cfg, lvl), interset(mix(null, opt, lvl), default_cfg, lvl), lvl);
+};
+
+exports.unique = function(origin, lvl) {
+    return merge(origin, [], lvl);
+};
+
+exports.each = function(obj, fn, context){
+    var i = 0, l = obj.length, re;
+    if (_.isArraylike(obj)) {
+        for (; i < l; i++) {
+            re = fn.call(context, obj[i], i);
+            if (re === false) {
+                break;
+            }
+        }
+    } else {
+        for (i in obj) {
+            re = fn.call(context, obj[i], i);
+            if (re === false) {
+                break;
+            }
+        }
+    }
+    return obj;
+};
 
 });
 
@@ -1345,89 +1451,97 @@ define("mo/lang/mix", [
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        var exports = ((this.mo || (this.mo = {})).lang 
+            || (this.mo.lang = {})).oop = {};
+        factory(null, this.mo.lang.mix, null, exports);
+    };
+}
 define("mo/lang/oop", [
   "mo/lang/es5",
   "mo/lang/mix"
 ], function(es5, _, require, exports){
 
-    var mix = _.mix;
+var mix = _.mix;
 
-    exports.construct = function(base, mixes, factory){
-        if (mixes && !Array.isArray(mixes)) {
-            factory = mixes;
-            mixes = null;
-        }
-        if (!factory) {
-            factory = function(){
-                this.superConstructor.apply(this, arguments);
-            };
-        }
-        if (!base.__constructor) {
-            base.__constructor = base;
-            base.__supr = base.prototype;
-        }
-        var proto = Object.create(base.prototype),
-            supr = Object.create(base.prototype),
-            current_supr = {};
-        supr.__super = base.__supr;
-        supr.__self = base.prototype;
-        var sub = function(){
-            this.superMethod = sub.__superMethod;
-            this.superConstructor = su_construct;
-            this.constructor = sub.__constructor;
-            this.superClass = supr; // deprecated!
-            return factory.apply(this, arguments);
-        };
-        sub.__supr = supr;
-        sub.__constructor = sub;
-        sub.__superMethod = function(name, args){
-            var tm = {}, re = tm,
-                last_supr = current_supr[name];
-            if (!last_supr) {
-                current_supr[name] = supr;
-                if (!sub.prototype.hasOwnProperty(name)) {
-                    re = this.superMethod.apply(this, arguments);
-                }
-            } else {
-                current_supr[name] = last_supr.__super;
-                if (!last_supr.__self.hasOwnProperty(name)) {
-                    re = this.superMethod.apply(this, arguments);
-                }
-            }
-            if (re === tm) {
-                re = current_supr[name][name].apply(this, args);
-            }
-            current_supr[name] = last_supr;
-            return re;
-        };
-        sub.prototype = proto;
-        if (mixes) {
-            mixes = mix.apply(this, mixes);
-            mix(proto, mixes);
-            mix(supr, mixes);
-        }
-        function su_construct(){
-            var cache_constructor = base.__constructor,
-                cache_super_method = base.__superMethod;
-            base.__constructor = sub;
-            base.__superMethod = sub.__superMethod;
-            _apply.prototype = base.prototype;
-            var su = new _apply(base, this, arguments);
-            for (var i in su) {
-                if (!this[i]) {
-                    this[i] = supr[i] = su[i];
-                }
-            }
-            base.__constructor = cache_constructor;
-            base.__superMethod = cache_super_method;
-            this.superConstructor = su_construct;
-        }
-        return sub;
-    };
-
-    function _apply(base, self, args){
-        base.apply(self, args);
+exports.construct = function(base, mixes, factory){
+    if (mixes && !Array.isArray(mixes)) {
+        factory = mixes;
+        mixes = null;
     }
+    if (!factory) {
+        factory = function(){
+            this.superConstructor.apply(this, arguments);
+        };
+    }
+    if (!base.__constructor) {
+        base.__constructor = base;
+        base.__supr = base.prototype;
+    }
+    var proto = Object.create(base.prototype),
+        supr = Object.create(base.prototype),
+        current_supr = {};
+    supr.__super = base.__supr;
+    supr.__self = base.prototype;
+    var sub = function(){
+        this.superMethod = sub.__superMethod;
+        this.superConstructor = su_construct;
+        this.constructor = sub.__constructor;
+        this.superClass = supr; // deprecated!
+        return factory.apply(this, arguments);
+    };
+    sub.__supr = supr;
+    sub.__constructor = sub;
+    sub.__superMethod = function(name, args){
+        var tm = {}, re = tm,
+            last_supr = current_supr[name];
+        if (!last_supr) {
+            current_supr[name] = supr;
+            if (!sub.prototype.hasOwnProperty(name)) {
+                re = this.superMethod.apply(this, arguments);
+            }
+        } else {
+            current_supr[name] = last_supr.__super;
+            if (!last_supr.__self.hasOwnProperty(name)) {
+                re = this.superMethod.apply(this, arguments);
+            }
+        }
+        if (re === tm) {
+            re = current_supr[name][name].apply(this, args);
+        }
+        current_supr[name] = last_supr;
+        return re;
+    };
+    sub.prototype = proto;
+    if (mixes) {
+        mixes = mix.apply(this, mixes);
+        mix(proto, mixes);
+        mix(supr, mixes);
+    }
+    function su_construct(){
+        var cache_constructor = base.__constructor,
+            cache_super_method = base.__superMethod;
+        base.__constructor = sub;
+        base.__superMethod = sub.__superMethod;
+        _apply.prototype = base.prototype;
+        var su = new _apply(base, this, arguments);
+        for (var i in su) {
+            if (!this[i]) {
+                this[i] = supr[i] = su[i];
+            }
+        }
+        base.__constructor = cache_constructor;
+        base.__superMethod = cache_super_method;
+        this.superConstructor = su_construct;
+    }
+    return sub;
+};
+
+function _apply(base, self, args){
+    base.apply(self, args);
+}
 
 });
 
@@ -1440,66 +1554,856 @@ define("mo/lang/oop", [
  * Copyright (C) 2010-2012, Dexter.Yy, MIT License
  * vim: et:ts=4:sw=4:sts=4
  */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        var exports = ((this.mo || (this.mo = {})).lang 
+            || (this.mo.lang = {})).struct = {};
+        factory(null, this.mo.lang.mix, null, exports);
+    };
+}
 define("mo/lang/struct", [
   "mo/lang/es5",
   "mo/lang/mix"
 ], function(_0, _, require, exports){
 
-    var mix = _.mix;
+var mix = _.mix;
 
-    exports.index = function(list, key) {
-        var obj = {}, item;
-        for (var i = 0, l = list.length; i < l; i++) {
-            item = list[i];
-            if (key && typeof item === 'object') {
-                obj[item[key]] = item;
+exports.index = function(list, key) {
+    var obj = {}, item;
+    for (var i = 0, l = list.length; i < l; i++) {
+        item = list[i];
+        if (key && typeof item === 'object') {
+            obj[item[key]] = item;
+        } else {
+            obj[item] = true;
+        }
+    }
+    return obj;
+};
+
+exports.fnQueue = function(){
+    var queue = [], dup = false;
+    function getCallMethod(type){
+        return function(){
+            var re, fn;
+            dup = this.slice().reverse();
+            while (fn = dup.pop()) {
+                re = fn[type].apply(fn, arguments);
+            }
+            dup = false;
+            return re;
+        };
+    }
+    mix(queue, {
+        call: getCallMethod('call'),
+        apply: getCallMethod('apply'),
+        clear: function(func){
+            if (!func) {
+                this.length = 0;
             } else {
-                obj[item] = true;
-            }
-        }
-        return obj;
-    };
-
-    exports.fnQueue = function(){
-        var queue = [], dup = false;
-        function getCallMethod(type){
-            return function(){
-                var re, fn;
-                dup = this.slice().reverse();
-                while (fn = dup.pop()) {
-                    re = fn[type].apply(fn, arguments);
-                }
-                dup = false;
-                return re;
-            };
-        }
-        mix(queue, {
-            call: getCallMethod('call'),
-            apply: getCallMethod('apply'),
-            clear: function(func){
-                if (!func) {
-                    this.length = 0;
-                } else {
-                    var size = this.length,
-                        popsize = size - dup.length;
-                    for (var i = this.length - 1; i >= 0; i--) {
-                        if (this[i] === func) {
-                            this.splice(i, 1);
-                            if (dup && i >= popsize)
-                                dup.splice(size - i - 1, 1);
-                        }
+                var size = this.length,
+                    popsize = size - dup.length;
+                for (var i = this.length - 1; i >= 0; i--) {
+                    if (this[i] === func) {
+                        this.splice(i, 1);
+                        if (dup && i >= popsize)
+                            dup.splice(size - i - 1, 1);
                     }
-                    if (i < 0)
-                        return false;
                 }
-                return true;
+                if (i < 0)
+                    return false;
             }
-        });
-        return queue;
-    };
+            return true;
+        }
+    });
+    return queue;
+};
 
 });
 
+
+/* @source mo/lang/es6-promise.js */;
+
+/**
+ * Copyright (C) 2010-2014, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        factory();
+    };
+}
+define("mo/lang/es6-promise", [], function(){
+
+var host = this;
+
+if (host.Promise) {
+    return host.Promise;
+}
+
+// forked from jakearchibald/es6-promise
+
+var PENDING   = void 0, // Hasn't fulfilled or rejected yet
+    SEALED    = 0,      // Has fulfilled or rejected
+    FULFILLED = 1,      // The action relating to the promise succeeded
+    REJECTED  = 2,      // The action relating to the promise failed
+    ERROR_CALLBACK = "A promises callback cannot return that same promise.",
+    ERROR_CYCLE = "Chaining cycle detected",
+    ERROR_ALL = "You must pass an array to all.";
+
+function Promise(fn){
+    var self = this;
+    self._state = PENDING;
+    self._subscribers = [];
+    self._result = undefined;
+    try {
+        fn(onFulfilled, onRejected);
+    } catch(e) {
+        onRejected(e);
+    }
+    // @params {thenable|msg} value
+    function onFulfilled(value) {
+        resolve.call(self, value);
+    }
+    // @params {msg} reason 
+    function onRejected(reason) {
+        reject.call(self, reason);
+    }
+}
+
+Promise.prototype = {
+
+    constructor: Promise,
+
+    // * if either/both are omitted, the next in the chain is called
+    // * Both callbacks have a single parameter
+    // * returns a new promise equivalent to the value you return from 
+    //   onFulfilled/onRejected after being passed through Promise.resolve
+    then: function(onFulfilled, onRejected){
+        var me = this;
+        var sub_promise = new this.constructor(function(){});
+        if (this._state) {
+            var callbacks = arguments;
+            setTimeout(function() {
+                followCallback.call(sub_promise, 
+                    callbacks[me._state - 1], me._result, me._state);
+            }, 0);
+        } else {
+            this._subscribers.push(sub_promise, onFulfilled, onRejected);
+        }
+        return sub_promise;
+    },
+
+    'catch': function(onRejected){
+        return this.then(null, onRejected);
+    }
+
+};
+
+// private methods for Promise.prototype
+
+function resolve(value) {
+    var self = this;
+    if (self === value) {
+        throw new TypeError(ERROR_CYCLE);
+    } else if (!follow.call(self, value)) {
+        fulfill.call(self, value);
+    }
+}
+
+function fulfill(value) {
+    var self = this;
+    if (self._state !== PENDING) {
+        return;
+    }
+    self._state = SEALED;
+    self._result = value;
+    setTimeout(function(){
+        publish.call(self, self._state = FULFILLED);
+    }, 0);
+}
+
+function reject(reason) {
+    var self = this;
+    if (self._state !== PENDING) {
+        return;
+    }
+    self._state = SEALED;
+    self._result = reason;
+    setTimeout(function(){
+        publish.call(self, self._state = REJECTED);
+    }, 0);
+}
+
+function publish(final_state) {
+    var sub_promise, 
+        callback,
+        subscribers = this._subscribers,
+        result = this._result;
+    for (var i = 0; i < subscribers.length; i += 3) {
+        sub_promise = subscribers[i];
+        callback = subscribers[i + final_state];
+        followCallback.call(sub_promise, 
+            callback, result, final_state);
+    }
+    this._subscribers.length = 0;
+}
+
+function follow(thenable) {
+    var resolved,
+        self = this;
+    try {
+        if (self === thenable) {
+            throw new TypeError(ERROR_CALLBACK);
+        }
+        if (!is_thenable(thenable)) {
+            return false;
+        }
+        thenable.then(function(value){
+            if (resolved) {
+                return;
+            }
+            resolved = true;
+            if (thenable !== value) {
+                resolve.call(self, value);
+            } else {
+                fulfill.call(self, value);
+            }
+        }, function(reason){
+            if (resolved) {
+                return;
+            }
+            resolved = true;
+            reject.call(self, reason);
+        });
+    } catch (error) {
+        if (resolved) {
+            return true;
+        }
+        reject.call(self, error);
+    }
+    return true;
+}
+
+function followCallback(callback, result, final_state) {
+    var self = this,
+        need_pipe = is_function(callback);
+    if (need_pipe) {
+        try {
+            result = callback(result);
+        } catch(ex) {
+            return reject.call(self, ex);
+        }
+    }
+    if (follow.call(self, result)) {
+        return;
+    }
+    if (need_pipe || final_state === FULFILLED) {
+        resolve.call(self, result);
+    } else if (final_state === REJECTED) {
+        reject.call(self, result);
+    }
+}
+
+// @params {Promise|thenable|msg} value
+Promise.resolve = function(value){
+    if (value && typeof value === 'object' 
+            && value.constructor === this) {
+        return value;
+    }
+    return new this(function(onFulfilled){
+        onFulfilled(value);
+    });
+};
+// @params {msg} reason 
+Promise.reject = function(reason){
+    return new this(function(onFulfilled, onRejected){
+        onRejected(reason);
+    });
+};
+
+Promise.all = function(promises){
+    if (!Array.isArray(promises)) {
+        throw new TypeError(ERROR_ALL);
+    }
+    return new this(function(onFulfilled, onRejected) {
+        var results = [],
+            promise,
+            remaining = promises.length;
+        if (remaining === 0) {
+            onFulfilled([]);
+        }
+        for (var i = 0; i < promises.length; i++) {
+            promise = promises[i];
+            if (promise && is_function(promise.then)) {
+                promise.then(track(i), onRejected);
+            } else {
+                mark(i, promise);
+            }
+        }
+        function track(index) {
+            return function(value) {
+                mark(index, value);
+            };
+        }
+        function mark(index, value) {
+            results[index] = value;
+            if (--remaining === 0) {
+                onFulfilled(results);
+            }
+        }
+    });
+};
+
+Promise.race = function(promises){
+    if (!Array.isArray(promises)) {
+        throw new TypeError('You must pass an array to race.');
+    }
+    return new this(function(resolve, reject) {
+        var promise;
+        for (var i = 0; i < promises.length; i++) {
+            promise = promises[i];
+            if (promise && is_function(promise.then)) {
+                promise.then(resolve, reject);
+            } else {
+                resolve.call(promise);
+            }
+        }
+    });
+};
+
+function is_thenable(x) {
+    var type = typeof x;
+    return x && (type === 'object' || type === 'function')
+        && is_function(x.then);
+}
+
+function is_function(x) {
+    return typeof x === "function";
+}
+
+return host.Promise = Promise;
+
+});
+
+/* @source mo/lang/es6-utils.js */;
+
+/**
+ * Copyright (C) 2010-2014, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        factory();
+    };
+}
+define("mo/lang/es6-utils", [
+  "mo/lang/es5"
+], function(es5){
+
+var host = this,
+    Array = host.Array,
+    String = host.String,
+    Object = host.Object,
+    isFinite = host.isFinite,
+    _stringproto = String.prototype,
+    _arrayproto = Array.prototype,
+    _slice = _arrayproto.slice,
+    _string_indexof = _stringproto.indexOf;
+
+if (!_arrayproto.find) {
+    _arrayproto.find = function(fn, context) {
+        var list = Object(this);
+        var l = list.length >>> 0;
+        if (!l || l < 0) {
+            return;
+        }
+        for (var i = 0, value; i < l && i in list; i++) {
+            value = list[i];
+            if (fn.call(context, value, i, list)) {
+                return value;
+            }
+        }
+    };
+}
+
+if (!_arrayproto.findIndex) {
+    _arrayproto.findIndex = function(fn, context) {
+        var list = Object(this);
+        var l = list.length >>> 0;
+        if (!l || l < 0) {
+            return -1;
+        }
+        for (var i = 0; i < l && i in list; i++) {
+            if (fn.call(context, list[i], i, list)) {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
+if (!_arrayproto.fill) {
+    _arrayproto.fill = function(value, start, end) {
+        var list = Object(this);
+        var l = list.length >>> 0;
+        start = start || 0;
+        end = end || l;
+        var i = start < 0 
+            ? Math.max(l + start, 0) : Math.min(start, l);
+        for (; i < l && i < end; ++i) {
+            list[i] = value;
+        }
+        return list;
+    };
+}
+
+// modified from MDN
+if (!_arrayproto.copyWithin) {
+    _arrayproto.copyWithin = function(target, start /*, end*/) {
+        var O = Object(this);
+        var len = O.length >>> 0;
+        var relativeTarget = parseInt(target, 10);
+        var to = relativeTarget < 0 ? Math.max(len + relativeTarget, 0)
+            : Math.min(relativeTarget, len);
+        var relativeStart = parseInt(start, 10);
+        var from = relativeStart < 0 ? Math.max(len + relativeStart, 0)
+            : Math.min(relativeStart, len);
+        var end = arguments[2];
+        var relativeEnd = end === undefined ? len : parseInt(end, 10);
+        var final = relativeEnd < 0 ? Math.max(len + relativeEnd, 0)
+            : Math.min(relativeEnd, len);
+        var count = Math.min(final - from, len - to);
+        if (from < to && to < (from + count)) {
+            from = from + count - 1;
+            to = to + count - 1;
+            while (count > 0) {
+                if (from in O)
+                    O[to] = O[from];
+                else
+                    delete O[to];
+                from--;
+                to--;
+                count--;
+            }
+        } else {
+            while (count > 0) {
+                if (from in O)
+                    O[to] = O[from];
+                else
+                    delete O[to];
+                from++;
+                to++;
+                count--;
+            }
+        }
+        return O;
+    };
+}
+
+if (!Array.of) {
+    Array.of = function() {
+        return _slice.call(arguments);
+    };
+}
+
+// modified from mathiasbynens/Array.from
+if (!Array.from) {
+    var to_length = function(value) {
+        var number = Number(value);
+        var length;
+        if (number != number) { // better `isNaN`
+            length = 0;
+        } else if (number === 0 || !isFinite(number)) {
+            length = number;
+        } else {
+            length = (number < 0 ? -1 : +1) 
+                * Math.floor(Math.abs(number));
+        }
+        if (length <= 0) {
+            return 0;
+        }
+        return Math.min(length, 0x1FFFFFFFFFFFFF);
+    };
+    Array.from = function(arrayLike) {
+        var items = Object(arrayLike),
+            mapfn = arguments.length > 1 ? arguments[1] : undefined,
+            context = arguments.length > 2 ? arguments[2] : undefined,
+            mapping = true;
+        if (mapfn === undefined) {
+            mapping = false;
+        } else if (typeof mapfn != 'function') {
+            throw TypeError();
+        }
+        var l = to_length(items.length),
+            re = new Array(l),
+            k = 0,
+            kvalue,
+            mapped_value;
+        while (k < l) {
+            if (k in items) {
+                kvalue = items[k];
+                mapped_value = mapping 
+                    ? mapfn.call(context, kvalue, k) 
+                    : kvalue;
+                re[k] = mapped_value;
+            }
+            ++k;
+        }
+        re.length = l;
+        return re;
+    };
+}
+
+// modified from paulmillr/es6-shim
+if (!_stringproto.startsWith) {
+    _stringproto.startsWith = function(searchStr, startArg) {
+        var thisStr = String(this);
+        searchStr = String(searchStr);
+        var start = Math.max(parseInt(startArg, 10), 0);
+        return thisStr.slice(start, start + searchStr.length) === searchStr;
+    };
+}
+
+// modified from paulmillr/es6-shim
+if (!_stringproto.endsWith) {
+    _stringproto.endsWith = function(searchStr, posArg) {
+        var thisStr = String(this);
+        searchStr = String(searchStr);
+        var thisLen = thisStr.length;
+        var pos = posArg === undefined ? thisLen : parseInt(posArg, 10);
+        var end = Math.min(Math.max(pos, 0), thisLen);
+        return thisStr.slice(end - searchStr.length, end) === searchStr;
+    };
+}
+
+// modified from paulmillr/es6-shim
+if (!_stringproto.contains) {
+    _stringproto.contains = function(searchString, position) {
+        return _string_indexof.call(this, searchString, position) !== -1;
+    };
+}
+
+// modified from paulmillr/es6-shim
+if (!_stringproto.repeat) {
+    var repeat = function(s, times) {
+        if (times < 1) {
+            return '';
+        }
+        if (times % 2) {
+            return repeat(s, times - 1) + s;
+        }
+        var half = repeat(s, times / 2);
+        return half + half;
+    };
+    _stringproto.repeat = function(times) {
+        var thisStr = String(this);
+        times = parseInt(times, 10);
+        if (times < 0 || times === Infinity) {
+            throw new RangeError('Invalid String#repeat value');
+        }
+        return repeat(thisStr, times);
+    };
+}
+
+if (!Number.MAX_SAFE_INTEGER) {
+    var maxSafeInteger = Math.pow(2, 53) - 1;
+    Number.MAX_SAFE_INTEGER = maxSafeInteger;
+    Number.MIN_SAFE_INTEGER = -maxSafeInteger;
+}
+
+if (!Number.EPSILON) {
+    Number.EPSILON = 2.220446049250313e-16;
+}
+
+if (!Number.isFinite) {
+    Number.isFinite = function(value) {
+        return typeof value === 'number' && isFinite(value);
+    };
+}
+
+if (!Number.isInteger) {
+    Number.isInteger = function(value) {
+        return typeof value === "number" 
+            && isFinite(value) 
+            && value > -9007199254740992 
+            && value < 9007199254740992 
+            && Math.floor(value) === value;
+    };
+}
+
+if (!Number.isSafeInteger) {
+    Number.isSafeInteger = function(value) {
+        return Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER;
+    };
+}
+
+if (!Number.isNaN) {
+    Number.isNaN = function(value) {
+        return value !== value;
+    };
+}
+
+// modified from ljharb/object-is
+if (!Object.is) {
+    var number_is_NaN = function(value) {
+        return typeof value === 'number' && isNaN(value);
+    };
+    Object.is = function is(a, b) {
+        if (a === 0 && b === 0) {
+            return 1 / a === 1 / b;
+        } else if (a === b) {
+            return true;
+        } else if (number_is_NaN(a) && number_is_NaN(b)) {
+            return true;
+        }
+        return false;
+    };
+}
+
+// modified from ljharb/object.assign
+if (!Object.assign) {
+    var is_object = function(obj) {
+        return obj && typeof obj === 'object';
+    };
+    Object.assign = function assign(target, source) {
+        var s, i, l, props;
+        if (!is_object(target)) {
+            throw new TypeError('target must be an object');
+        }
+        for (s = 1, l = arguments.length; s < l; ++s) {
+            source = arguments[s];
+            if (!is_object(source)) {
+                throw new TypeError('source ' + s + ' must be an object');
+            }
+            props = Object.keys(Object(source));
+            for (i = 0, l = props.length; i < l; ++i) {
+                target[props[i]] = source[props[i]];
+            }
+        }
+        return target;
+    };
+}
+
+});
+
+/* @source mo/lang/es6-collection.js */;
+
+/**
+ * Copyright (C) 2010-2014, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        factory();
+    };
+}
+define("mo/lang/es6-collection", [
+  "mo/lang/es6-utils"
+], function(_0, require, exports){
+
+var host = this,
+    Object = host.Object,
+    _array_indexof = [].indexOf;
+
+function Map(){
+    var keys = [],
+        values = [];
+    return Object.create(Map.prototype, {
+        'get': collection_get(keys, values),
+        'set': collection_set(keys, values),
+        'delete': collection_del(keys, values),
+        'clear': collection_clear(keys, values),
+        'size': collection_size(keys),
+        'forEach': collection_foreach(values, keys),
+        'has': collection_has(keys, values)
+    });
+}
+
+function Set(){
+    var values = [],
+        temp = [];
+    return Object.create(Set.prototype, {
+        'add': collection_add(values),
+        'delete': collection_del(values, temp),
+        'clear': collection_clear(values, temp),
+        'size': collection_size(values),
+        'forEach': collection_foreach(values, temp),
+        'has': collection_has(values, temp)
+    });
+}
+
+function WeakMap(){
+    var keys = [],
+        values = [];
+    return Object.create(WeakMap.prototype, {
+        'get': collection_get(keys, values, true),
+        'set': collection_set(keys, values, true),
+        'delete': collection_del(keys, values, true),
+        'clear': collection_clear(keys, values),
+        'has': collection_has(keys, values, true)
+    });
+}
+
+function WeakSet(){
+    var values = [],
+        temp = [];
+    return Object.create(WeakSet.prototype, {
+        'add': collection_add(values, true),
+        'delete': collection_del(values, temp, true),
+        'clear': collection_clear(values, temp),
+        'has': collection_has(values, temp, true)
+    });
+}
+
+Map.prototype = Map();
+Set.prototype = Set();
+WeakMap.prototype = WeakMap();
+WeakSet.prototype = WeakSet();
+
+function collection_get(keys, values, only_object){
+    return {
+        value: function(key){
+            var i = collection_check(keys, key, only_object);
+            return i > -1 ? values[i] : undefined;
+        }
+    };
+}
+
+function collection_set(keys, values, only_object){
+    return {
+        value: function(key, value){
+            var i = collection_check(keys, key, only_object);
+            if (i > -1) {
+                values[i] = value;
+            } else {
+                values[keys.push(key) - 1] = value;
+            }
+        }
+    };
+}
+
+function collection_del(keys, values, only_object){
+    return {
+        value: function(key){
+            var i = collection_check(keys, key, only_object);
+            if (i > -1) {
+                keys.splice(i, 1);
+                values.splice(i, 1);
+                return true;
+            }
+            return false;
+        }
+    };
+}
+
+function collection_has(keys, values, only_object){
+    return {
+        value: function(key){
+            return collection_check(keys, key, only_object) > -1;
+        }
+    };
+}
+
+function collection_add(values, only_object){
+    return {
+        value: function(value){
+            var i = collection_check(values, value, only_object);
+            if (i === -1) {
+                values.push(value);
+            }
+        }
+    };
+}
+
+function collection_clear(keys, values){
+    return {
+        value: function(){
+            keys.length = 0;
+            values.length = 0;
+        }
+    };
+}
+
+function collection_size(keys){
+    return {
+        value: function(){
+            return keys.length;
+        }
+    };
+}
+
+function collection_foreach(values, keys){
+    return {
+        value: function(fn, context){
+            values.forEach(function(value, i){
+                fn.call(this, value, keys[i]);
+            }, context);
+        }
+    };
+}
+
+function collection_check(keys, key, only_object) {
+    if (only_object && key !== Object(key)) {
+        throw new TypeError("not a non-null object");
+    }
+    var i;
+    if (key != key || key === 0) {
+        for (i = keys.length; i--;) {
+            if (Object.is(keys[i], key)) {
+                break;
+            }
+        }
+    } else {
+        i = _array_indexof.call(keys, key);
+    }
+    return i;
+}
+
+if (!host.Map) {
+    host.Map = Map;
+}
+
+if (!host.Set) {
+    host.Set = Set;
+}
+
+if (!host.WeakMap) {
+    host.WeakMap = WeakMap;
+}
+
+if (!host.WeakSet) {
+    host.WeakSet = WeakSet;
+}
+
+exports.Map = Map;
+exports.Set = Set;
+exports.WeakMap = WeakMap;
+exports.WeakSet = WeakSet;
+
+});
+
+/* @source mo/lang/es6.js */;
+
+/**
+ * Copyright (C) 2010-2014, Dexter.Yy, MIT License
+ * vim: et:ts=4:sw=4:sts=4
+ */
+if (typeof module === 'undefined' 
+        && (typeof define !== 'function' || !define.amd)) {
+    define = function(mid, deps, factory){
+        factory();
+    };
+}
+define("mo/lang/es6", [
+  "mo/lang/es6-utils",
+  "mo/lang/es6-collection",
+  "mo/lang/es6-promise"
+], function(_0, _1, _2){});
 
 /* @source mo/lang.js */;
 
@@ -1513,7 +2417,7 @@ define("mo/lang/struct", [
  * vim: et:ts=4:sw=4:sts=4
  */
 define("mo/lang", [
-  "mo/lang/es5",
+  "mo/lang/es6",
   "mo/lang/type",
   "mo/lang/mix",
   "mo/lang/struct",

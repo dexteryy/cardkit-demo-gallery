@@ -1011,6 +1011,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   -webkit-transform: translateY(0);
   transform: translateY(0);
 }
+.ck-in-hybird .ck-header {
+  display: none;
+}
 
 .ck-header-shd {
   background: #333;
@@ -2112,13 +2115,11 @@ pre[class*="language-"] {
 }
 .my-app .democode pre {
   width: 1500px;
+  padding: 0 0 0 10px;
 }
 .my-app .democode code {
   font-size: 10px;
   line-height: normal;
-}
-.my-app .syntaxhighlighter {
-  padding: 0px;
 }
 .my-app #console {
   height: 5000px;
