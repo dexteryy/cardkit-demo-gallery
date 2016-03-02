@@ -37,7 +37,7 @@ module.exports = function(grunt) {
             origin: ["<%= meta.originDir %>/"],
             js_vendor: ["<%= meta.jsVendorDir %>/"],
             css_vendor: [
-                "<%= meta.cssVendorDir %>/moui", 
+                "<%= meta.cssVendorDir %>/moui",
                 "<%= meta.cssVendorDir %>/cardkit"
             ],
             js_tpl: ["<%= meta.jsTplDir %>"],
@@ -51,11 +51,11 @@ module.exports = function(grunt) {
                     //force: true
                 //},
                 src: [
-                    "<%= meta.jsStaticDir %>/*", 
-                    "<%= meta.cssStaticDir %>/*", 
-                    "<%= meta.assetStaticDir %>/*", 
-                    "!<%= meta.jsStaticDir %>/.**", 
-                    "!<%= meta.cssStaticDir %>/.**", 
+                    "<%= meta.jsStaticDir %>/*",
+                    "<%= meta.cssStaticDir %>/*",
+                    "<%= meta.assetStaticDir %>/*",
+                    "!<%= meta.jsStaticDir %>/.**",
+                    "!<%= meta.cssStaticDir %>/.**",
                     "!<%= meta.assetStaticDir %>/.**"
                 ]
             },
@@ -400,13 +400,13 @@ module.exports = function(grunt) {
                 options: {
                     devel: true,
                     debug: true,
-                    asi: true 
+                    asi: true
                 },
                 files: {
                     src: [
-                        '*.js', 
-                        'js/**/*.js', 
-                        '!<%= meta.jsVendorDir %>/**', 
+                        '*.js',
+                        'js/**/*.js',
+                        '!<%= meta.jsVendorDir %>/**',
                         '!<%= meta.jsTplDir %>/**'
                     ]
                 }
@@ -414,9 +414,9 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     src: [
-                        '*.js', 
-                        'js/**/*.js', 
-                        '!<%= meta.jsVendorDir %>/**', 
+                        '*.js',
+                        'js/**/*.js',
+                        '!<%= meta.jsVendorDir %>/**',
                         '!<%= meta.jsTplDir %>/**'
                     ]
                 }
@@ -454,7 +454,7 @@ module.exports = function(grunt) {
         watch: {
             js: {
                 files: [
-                    'js/**/*.js', 
+                    'js/**/*.js',
                     '!<%= meta.jsTplDir %>/**',
                     '!<%= meta.cardkitJsTplDir %>/**',
                     'test/**'
@@ -530,18 +530,18 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('dev:js', [
-        'clean:target_js', 
+        'clean:target_js',
         'ozma',
     ]);
 
     grunt.registerTask('dev:css', [
-        'clean:target_css', 
+        'clean:target_css',
         'compass',
     ]);
 
     grunt.registerTask('dev:asset', [
-        'clean:target_pics', 
-        'imagemin', 
+        'clean:target_pics',
+        'imagemin',
         'copy:asset_to_target',
         'dev:css'
     ]);
@@ -549,8 +549,8 @@ module.exports = function(grunt) {
     grunt.registerTask('dev:tpl', [
         'clean:js_tpl',
         'clean:cardkit_tpl',
-        'furnace:js_tpl', 
-        'furnace:cardkit_tpl', 
+        'furnace:js_tpl',
+        'furnace:cardkit_tpl',
         'dev:js'
     ]);
 
@@ -564,12 +564,12 @@ module.exports = function(grunt) {
         'dev:tpl',
         'dev:asset'
     ]);
-    
+
     grunt.registerTask('build', [
         'clean:dist',
         'concat',
         'copy:asset_to_dist',
-        'uglify', 
+        'uglify',
         'cssmin'
     ]);
 

@@ -38,7 +38,10 @@ PLATFORMS
 DEPENDENCIES
   animate (>= 0.2.beta.0)
   ceaser-easing (~> 0.6.1)
-  compass (>= 0.13.alpha.4)
+  compass (>= 0.13.alpha.10)
   compass-normalize (>= 1.3)
   compass-recipes (~> 0.3.0)
   sass (>= 3.2.0)
+
+BUNDLED WITH
+   1.11.2
